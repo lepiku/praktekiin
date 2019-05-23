@@ -1,0 +1,7 @@
+{% extends 'antri/base.html' %}
+{% block content %}
+    <h1>Website antri Dokter Iin</h1>
+    <p>Silahkan masuk/daftar terlebih dahulu:</p>
+    <a href="{% url 'antri:masuk' %}">Masuk</a>
+    <a href="{% url 'antri:daftar' %}">Buat Akun</a>
+{% endblock %}

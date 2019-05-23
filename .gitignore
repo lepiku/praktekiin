@@ -8,3 +8,6 @@ db.sqlite3
 
 # ignore staticfiles for whitenoise
 staticfiles/
+
+# ignore ycm settings
+.ycm_extra_conf.py
