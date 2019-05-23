@@ -1,7 +1,38 @@
 {% extends 'antri/base.html' %}
+{% block style %}
+<style>
+.card p {
+  text-align: center;
+}
+.masukdaftar {
+  display: flex;
+  justify-content: center;
+}
+.button {
+  font-family: 'Muli', sans-serif;
+  background-color: #009688;
+  color: #fff;
+  border: none;
+  color: white;
+  padding: 15px 25px;
+  text-align: center;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 15px;
+  border-radius: 8px;
+}
+</style>
+{% endblock %}
 {% block content %}
-    <h1>Website antri Dokter Iin</h1>
-    <p>Silahkan masuk/daftar terlebih dahulu:</p>
-    <a href="{% url 'antri:masuk' %}">Masuk</a>
-    <a href="{% url 'antri:daftar' %}">Buat Akun</a>
+<div class="card">
+  <p>Silahkan masuk/daftar terlebih dahulu:</p>
+  <div class="masukdaftar">
+    <form action="{% url 'antri:masuk' %}">
+      <input class="button" type="submit" value="Masuk" />
+    </form>
+    <form action="{% url 'antri:daftar' %}">
+      <input class="button" type="submit" value="Buat Akun" />
+    </form>
+  </div>
+</div>
 {% endblock %}

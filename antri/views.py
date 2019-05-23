@@ -10,3 +10,5 @@ def masuk(request):
 def daftar(request):
     return render(request, 'antri/daftar.html')
 
+def tentang(request):
+    return render(request, 'antri/tentang.html')
