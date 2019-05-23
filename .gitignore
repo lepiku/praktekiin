@@ -1,0 +1,10 @@
+# Ignore python cache files
+__pycache__/
+*.py[cod]
+*.sw[op]
+
+# ignore the database
+db.sqlite3
+
+# ignore staticfiles for whitenoise
+staticfiles/
