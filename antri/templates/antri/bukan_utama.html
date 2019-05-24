@@ -1,0 +1,25 @@
+{% extends 'antri/base.html' %}
+{% block style %}
+<style>
+.card p {
+  text-align: center;
+}
+.masukdaftar {
+  display: flex;
+  justify-content: center;
+}
+</style>
+{% endblock %}
+{% block content %}
+<div class="card">
+  <p>Silahkan masuk/daftar terlebih dahulu:</p>
+  <div class="masukdaftar">
+    <form action="{% url 'antri:masuk' %}">
+      <input class="button" type="submit" value="Masuk" />
+    </form>
+    <form action="{% url 'antri:daftar' %}">
+      <input class="button" type="submit" value="Buat Akun" />
+    </form>
+  </div>
+</div>
+{% endblock %}

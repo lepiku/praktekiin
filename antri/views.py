@@ -1,14 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from .models import Pengguna, User
 from .forms import CreateUserForm, MasukForm
 
 def utama(request):
     if request.user.is_authenticated:
         return render(request, 'antri/utama.html')
-    return render(request, 'antri/utama.html')
+    return render(request, 'antri/bukan_utama.html')
 
 def tentang(request):
     return render(request, 'antri/tentang.html')
@@ -27,10 +27,14 @@ def daftar(request):
             user.save()
             pengguna = Pengguna(user=user, nama=nama, no_hp=no_hp)
             pengguna.save()
-            return HttpResponseRedirect(reverse('antri:masuk'))
+
+            login(request, authenticate(request,
+                    username=username, password=password))
+            return HttpResponseRedirect(reverse('antri:utama'))
 
     # if a GET (or any other method) we'll create a blank form
-    form = CreateUserForm()
+    else:
+        form = CreateUserForm()
 
     return render(request, 'antri/daftar.html', {'form': form})
 
@@ -50,3 +54,7 @@ def masuk(request):
     form = MasukForm()
     return render(request, 'antri/masuk.html',
             {'form': form, 'message': message})
+
+def keluar(request):
+    logout(request)
+    return render(request, 'antri/keluar.html')
