@@ -77,7 +77,13 @@ body {
             <a href="{% url 'antri:utama' %}"><b>Halaman Utama</b></a>
             <a href="{% url 'antri:tentang' %}"><b>Tentang</b></a>
           </div>
-          Status login disini
+          {% if request.user.is_authenticated %}
+          {% if request.user.pengguna %}
+          {{ request.user.pengguna.nama }}
+          {% else %}
+          (Username) {{ request.user.username }}
+          {% endif %}
+          {% endif %}
         </div>
       </div>
     </div>

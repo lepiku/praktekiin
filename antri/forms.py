@@ -26,3 +26,6 @@ class CreateUserForm(forms.Form):
             raise forms.ValidationError('Password tidak sama.')
         return password
 
+class MasukForm(forms.Form):
+    username = forms.CharField(label='Username', max_length=32)
+    password = forms.CharField(widget=forms.PasswordInput())
