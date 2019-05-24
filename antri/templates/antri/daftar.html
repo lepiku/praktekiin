@@ -2,7 +2,7 @@
 {% block style %}
 <style>
 th {
-  width: 160px;
+  width: 175px;
   margin-top: 0;
   vertical-align: text-top;
   text-align: start;
@@ -13,13 +13,18 @@ th label {
 td {
   display: flex;
   flex-direction: row-reverse;
-  color: red;
   justify-content: flex-end;
-  font-size: 14px;
 }
 td input {
   margin: 10px 0 auto 0;
   height: 0;
+  width: 200px;
+  font-family: 'Muli', sans-serif;
+  font-size: 18px;
+}
+.errorlist {
+  color: red;
+  font-size: 13px;
 }
 </style>
 {% endblock %}

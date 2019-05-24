@@ -10,11 +10,19 @@ class CreateUserForm(forms.Form):
     # TODO username, password, no hp
     username = forms.CharField(label='Username', max_length=32)
     password = forms.CharField(widget=forms.PasswordInput())
+    ulangi_password = forms.CharField(widget=forms.PasswordInput())
     no_hp = forms.CharField(validators=[regex_hp], max_length=18)
 
     def clean_username(self):
         username = self.cleaned_data.get('username')
         if User.objects.filter(username=username): # if username already exist
             raise forms.ValidationError('Username sudah dipakai.')
-        else:
-            return username
+        return username
+
+    def clean_ulangi_password(self):
+        password = self.cleaned_data.get('password')
+        ulangi_password = self.cleaned_data.get('ulangi_password')
+        if password != ulangi_password:
+            raise forms.ValidationError('Password tidak sama.')
+        return password
+
