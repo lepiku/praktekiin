@@ -1,4 +1,12 @@
 {% extends 'antri/base.html' %}
 {% block content %}
-<p>daftar</p>
+<div class="card">
+  <form action="{% url 'antri:daftar' %}" method="post">
+    {% csrf_token %}
+    <table>
+      {{ form.as_table }}
+    </table>
+    <input class="button" type="submit" value="Buat Akun">
+  </form>
+</div>
 {% endblock %}
