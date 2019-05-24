@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from .forms import CreateUserForm
 from django.urls import reverse
-from .models import Pengguna, User, Phone
+from .models import Pengguna, User
 
 # Create your views here.
 def utama(request):
@@ -26,13 +26,10 @@ def daftar(request):
 
             user = User.objects.create_user(username, '', password)
             user.save()
-            phone = Phone(phone_number=no_hp)
-            phone.save()
-            pengguna = Pengguna(user=user, nama=nama, no_hp=phone)
+            pengguna = Pengguna(user=user, nama=nama, no_hp=no_hp)
             pengguna.save()
             return HttpResponseRedirect(reverse('antri:masuk'))
-        else:
-            print('form is not valid')
+
     # if a GET (or any other method) we'll create a blank form
     else:
         form = CreateUserForm()

@@ -2,17 +2,13 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 
-class Phone(models.Model):
-    phone_regex = RegexValidator(regex=r'^(\+62|0)\d{9,15}$', \
-            message="Phone number must be entered in the format: \
-                    '+628...' or '08...'. Up to 15 digits allowed.")
-    phone_number = models.CharField(validators=[phone_regex], max_length=18, \
-            blank=True)
-
 class Pengguna(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     nama = models.CharField(max_length=128)
-    no_hp = models.OneToOneField(Phone, on_delete=models.CASCADE)
+    regex_hp = RegexValidator(regex=r'^(\+62|0)\d{9,15}$', \
+            message="Nomor Handphone harus mengikuti format: \
+                    '+628...' or '08...' maksimal 15 digit.")
+    no_hp = models.CharField(validators=[regex_hp], max_length=18)
 
     def __str__(self):
         return str(self.nama)
