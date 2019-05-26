@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
-from .models import Pengguna, User
+from .models import Pengguna, User, KepalaKeluarga
 from .forms import DaftarPenggunaForm, DaftarKKForm, MasukForm
 
 def utama(request):
@@ -15,71 +15,45 @@ def tentang(request):
 
 def daftar(request):
     # if this is a POST request we need to process the form data
-    """
-
     if request.method == 'POST':
-        form = CreatePenggunaForm(request.POST)
-        if form.is_valid():
-            # nama = form.cleaned_data['nama']
-            # tanggal_lahir = form.cleaned_data['tanggal_lahir']
-            # jenis_kelamin = form.cleaned_data['jenis_kelamin']
-            # telp = form.cleaned_data['telp']
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
+        form_pengguna = DaftarPenggunaForm(request.POST)
 
-            # TODO bikin kk, cek kk
-            # user = User.objects.create_user(username, '', password)
-            # user.save()
-            # pengguna = Pengguna(user=user, nama=nama, telp=telp)
-            # pengguna.save()
+        if form_pengguna.is_valid():
+            form_kk = DaftarKKForm(request.POST)
 
-            # login(request, authenticate(request,
-                    # username=username, password=password))
-            return HttpResponseRedirect(reverse('antri:daftarkk'), request)
+            if form_kk.data.get('alamat'):
+                nama = form_pengguna.cleaned_data['nama']
+                tanggal_lahir = form_pengguna.cleaned_data['tanggal_lahir']
+                jenis_kelamin = form_pengguna.cleaned_data['jenis_kelamin']
+                telp = form_pengguna.cleaned_data['telp']
+                nama_kk = form_kk.data['nama_kk']
+                alamat = form_kk.data['alamat']
 
-    # if a GET (or any other method) we'll create a blank form
+                username = form_pengguna.cleaned_data['username']
+                password = form_pengguna.cleaned_data['password']
+
+                user = User.objects.create_user(username, '', password)
+                user.save()
+                kk = KepalaKeluarga(nama=nama_kk, alamat=alamat)
+                kk.save()
+                pengguna = Pengguna(nama=nama, tanggal_lahir=tanggal_lahir,
+                        jenis_kelamin=jenis_kelamin, telp=telp,
+                        kepala_keluarga=kk, user=user)
+                pengguna.save()
+
+                login(request, authenticate(request,
+                        username=username, password=password))
+                return HttpResponseRedirect(reverse('antri:utama'))
+            return render(request, 'antri/daftar.html', {'form': form_kk})
+
     else:
-        form = CreatePenggunaForm()
-
-    return render(request, 'antri/daftar.html', {'form': form})
-    """
-
-    if request.method == 'POST':
-        form = DaftarKKForm(request.POST)
-        if form.is_valid():
-            nama = form.cleaned_data['nama']
-            tanggal_lahir = form.cleaned_data['tanggal_lahir']
-            jenis_kelamin = form.cleaned_data['jenis_kelamin']
-            telp = form.cleaned_data['telp']
-            nama_kk = form.cleaned_data['nama_kk']
-            alamat = form.cleaned_data['alamat']
-
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-
-            user = User.objects.create_user(username, '', password)
-            user.save()
-            kk = KepalaKeluarga(nama=nama_kk, alamat=alamat)
-            kk.save()
-            pengguna = Pengguna(nama=nama, tanggal_lahir=tanggal_lahir,
-                    jenis_kelamin=jenis_kelamin, telp=telp, kepala_keluarga=kk,
-                    user=user)
-            pengguna.save()
-
-            login(request, authenticate(request,
-                    username=username, password=password))
-            return HttpResponseRedirect(reverse('antri:utama'))
-
-        form = DaftarPenggunaForm(request.POST)
-        if form.is_valid():
-            return render(request, 'antri/daftarkk.html')
-    else:
-        form = DaftarPenggunaForm()
-    return render(request, 'antri/daftar.html', {'form': form})
+        form_pengguna = DaftarPenggunaForm()
+    return render(request, 'antri/daftar.html', {'form': form_pengguna})
 
 def masuk(request):
     message = ""
     if request.method == 'POST':
+        form = MasukForm(request.POST)
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
@@ -89,8 +63,9 @@ def masuk(request):
         else:
             message = "Salah Username atau Password"
             # Return an 'invalid login' error message.
+    else:
+        form = MasukForm()
 
-    form = MasukForm()
     return render(request, 'antri/masuk.html',
             {'form': form, 'message': message})
 
