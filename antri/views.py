@@ -44,11 +44,13 @@ def daftar(request):
                 login(request, authenticate(request,
                         username=username, password=password))
                 return HttpResponseRedirect(reverse('antri:utama'))
-            return render(request, 'antri/daftar.html', {'form': form_kk})
+            return render(request, 'antri/daftar.html',
+                    {'form': form_kk, 'kk': True})
 
     else:
         form_pengguna = DaftarPenggunaForm()
-    return render(request, 'antri/daftar.html', {'form': form_pengguna})
+    return render(request, 'antri/daftar.html',
+            {'form': form_pengguna, 'kk': False})
 
 def masuk(request):
     message = ""

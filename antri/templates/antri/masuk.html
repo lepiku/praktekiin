@@ -6,8 +6,16 @@
   flex-direction: column;
   align-items: center;
 }
+.errorlist {
+  display: none;
+}
+#error {
+  color: red;
+  font-size: 13px;
+}
 </style>
 {% endblock %}
+
 {% block content %}
 <div class="card">
   {% if user.is_authenticated %}
@@ -18,13 +26,14 @@
     <table>
       {{ form.as_table }}
     </table>
-
     <input class="button" type="submit" value="login">
-    <input type="hidden" name="next" value="{{ next }}">
   </form>
   {{ message }}
   {% endif %}
   {% comment %}<p><a href="{% url 'password_reset' %}">Lost password?</a></p>{% endcomment %}
   {% comment %}TODO reset password{% endcomment %}
 </div>
+{% if form.errors %}
+<p id="error">Your username and password didn't match. Please try again.</p>
+{% endif %}
 {% endblock %}
