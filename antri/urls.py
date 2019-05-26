@@ -8,5 +8,6 @@ urlpatterns = [
     path('masuk/', views.masuk, name='masuk'),
     path('keluar/', views.keluar, name='keluar'),
     path('daftar/', views.daftar, name='daftar'),
+    path('daftarkk/', views.daftar, name='daftarkk'),
     path('tentang/', views.tentang, name='tentang'),
 ]
