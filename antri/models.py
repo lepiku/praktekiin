@@ -15,7 +15,6 @@ class KepalaKeluarga(models.Model):
         return str(self.id) + ": " + str(self.nama)
 
 class Pengguna(models.Model):
-
     nama = models.CharField(max_length=128)
     tanggal_lahir= models.DateField()
     jenis_kelamin = models.CharField(max_length=1, choices=JENIS_KELAMIN)
@@ -29,11 +28,15 @@ class Pengguna(models.Model):
 
 class Hari(models.Model):
     tanggal = models.DateField()
-    waktu_buka = models.TimeField()
-    waktu_tutup = models.TimeField()
+    # waktu_buka = models.TimeField(default='17:00:00')
+    # waktu_tutup = models.TimeField(default='20:00:00')
+    waktu_buka = models.TimeField(default='10:00:00')
+    waktu_tutup = models.TimeField(default='13:00:00')
 
     def __str__(self):
         return str(self.tanggal)
+    # def get_absolute_url(self):
+        # return
 
 class Pendaftaran(models.Model):
     watu_daftar = models.DateTimeField(auto_now=True)

@@ -4,10 +4,13 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from .models import Pengguna, User, KepalaKeluarga
 from .forms import DaftarPenggunaForm, DaftarKKForm, MasukForm
+from .utils import Calendar
+from django.utils.safestring import mark_safe
 
 def utama(request):
     if request.user.is_authenticated:
-        return render(request, 'antri/utama.html')
+        calendar = Calendar().formatmonth(2019, 5)
+        return render(request, 'antri/utama.html', {'calendar': mark_safe(calendar)})
     return render(request, 'antri/bukan_utama.html')
 
 def tentang(request):
