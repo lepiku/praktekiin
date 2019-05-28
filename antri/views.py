@@ -2,10 +2,11 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
-from .models import Pengguna, User, KepalaKeluarga
+from .models import Pengguna, User, KepalaKeluarga, Hari
 from .forms import DaftarPenggunaForm, DaftarKKForm, MasukForm
 from .utils import Calendar
 from django.utils.safestring import mark_safe
+from django.http import JsonResponse
 
 def utama(request):
     if request.user.is_authenticated:
@@ -77,3 +78,22 @@ def masuk(request):
 def keluar(request):
     logout(request)
     return render(request, 'antri/keluar.html')
+
+def details(request):
+    if request.is_ajax():
+        day = int(request.GET.get('day'))
+        month = int(request.GET.get('month'))
+        year = int(request.GET.get('year'))
+
+        try:
+            data = list(Hari.objects.get(
+                    tanggal__day=day,
+                    tanggal__month=month,
+                    tanggal__year=year).pendaftaran_set.all().values())
+        except Hari.DoesNotExist as e:
+            return JsonResponse({'data': None})
+        for i in range(len(data)):
+            data[i]['nama_pendaftar'] = Pengguna.objects.get(id=data[i]['pengguna_id']).nama
+        return JsonResponse({'data': data})
+
+    return JsonResponse({'data': None})

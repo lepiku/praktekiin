@@ -12,4 +12,5 @@ urlpatterns = [
     path('daftar/', views.daftar, name='daftar'),
     path('daftarkk/', views.daftar, name='daftarkk'),
     path('tentang/', views.tentang, name='tentang'),
+    path('data.json/', views.details, name='details'),
 ]

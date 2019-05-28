@@ -28,10 +28,8 @@ class Pengguna(models.Model):
 
 class Hari(models.Model):
     tanggal = models.DateField()
-    # waktu_buka = models.TimeField(default='17:00:00')
-    # waktu_tutup = models.TimeField(default='20:00:00')
-    waktu_buka = models.TimeField(default='10:00:00')
-    waktu_tutup = models.TimeField(default='13:00:00')
+    waktu_buka = models.TimeField(default='17:00:00')
+    waktu_tutup = models.TimeField(default='20:00:00')
 
     def __str__(self):
         return str(self.tanggal)

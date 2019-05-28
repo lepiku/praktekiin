@@ -8,7 +8,7 @@ class Calendar(HTMLCalendar):
 
     def formatday(self, day, weekday):
         """Return a day as a table cell."""
-        if self.hari.objects.filter( tanggal__year=self.year,
+        if self.hari.objects.filter(tanggal__year=self.year,
                 tanggal__month=self.month, tanggal__day=day):
             banyak = len(self.hari.objects.get(tanggal__year=self.year,
                 tanggal__month=self.month, tanggal__day=day)
@@ -17,12 +17,23 @@ class Calendar(HTMLCalendar):
             banyak = 0
 
         if day == 0:
-            # return '<td class="noday">&nbsp;</td>'  # day outside month
-            return '<td class="%s"><span style="color:grey">%s</span></td>' % \
-                    (self.cssclasses[weekday], banyak)
+            return '<td class="%s greyed"> \
+            <span class="date">%s</span>\
+                    <span class="data">%s</span></td>' % \
+                    (self.cssclasses[weekday], day, banyak)
         else:
-            return '<td class="%s">%s</td>' % (self.cssclasses[weekday],
-                    banyak)
+            return '''
+            <td class="%s">
+            <a onclick="render('%s', '%s', '%s')">
+            <div>
+                <span class="date">%s</span>
+                <span class="data">%s</span>
+            </div>
+            </a>
+            </td>
+            ''' % \
+                    (self.cssclasses[weekday], day, self.month, self.year,
+                            day, banyak)
 
     def formatweek(self, week):
         """Return a complete week as a table row."""
@@ -30,11 +41,16 @@ class Calendar(HTMLCalendar):
         return '<tr>%s</tr>' % s
 
     def formatweekheader(self):
+        nama_bulan = ["",
+                "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli",
+                "Agustus", "September", "Oktober", "November", "Desember"]
         nama_hari = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"]
-        header_html = '<tr>'
+
+        header_html = '<tr><th colspan="7" class="bulan">%s %s</th></tr><tr>' % \
+                (nama_bulan[self.month], self.year)
         for x in range(7):
             num = (x + self.firstweekday) % 7
-            header_html += '<td class="%s">%s</td>' % (
+            header_html += '<th class="%s">%s</th>' % (
                     self.cssclasses[num], nama_hari[num])
         return header_html + '</tr>'
 

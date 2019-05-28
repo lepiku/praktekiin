@@ -1,10 +1,79 @@
 {% extends 'antri/base.html' %}
 {% block style %}
 <style>
+table {
+  table-layout: fixed;
+  width: 720px;
+}
+th, td {
+  padding: 0px;
+  border: 1px solid grey;
+}
+/*
+.date {
+  font-size: 12px;
+  color: #009688;
+  vertical-align: top;
+  float: left;
+}
+.data {
+  float: right;
+}
+.bulan {
+  border-radius: 5px;
+  background-color: #009688;
+  color: #fff;
+}
+.month .month {
+  display: none;
+}
+.sun {
+  background-color: red;
+}
+.greyed {
+  background-color: grey;
+}
+*/
 </style>
 {% endblock %}
 {% block content %}
 <div class="card">
   {{ calendar }}
 </div>
+<div class="card" id="details">
+</div>
+{% endblock %}
+
+{% block script %}
+  <script>
+    function render(d, m, y) {
+      console.log(d + m + y)
+      $.ajax({
+        url: '/data.json',
+        method: 'GET',
+        data: {
+          "day": d,
+          "month": m,
+          "year": y
+        },
+        success: function(result) {
+          console.log(result.data)
+          data = result.data
+          $('#details').html('')
+          if (data === null) {
+            $('#details').html('<p>Tidak ada yang daftar</p>')
+          }
+          else {
+            $.each(data, function(index, value) {
+              $('#details').append('<p>' + Number(index + 1) + ". " + value.nama_pendaftar + '</p>')
+            })
+          }
+        },
+        error: function(a, b) {
+          console.log(a)
+          console.log(b)
+        }
+      })
+    }
+  </script>
 {% endblock %}
