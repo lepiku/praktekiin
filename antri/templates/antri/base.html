@@ -33,7 +33,7 @@ a {
   text-decoration: none;
 }
 .spacing {
-  max-width: 1080px;
+  max-width: 1350px;
   margin: 0 auto;
 }
 .content {
@@ -84,12 +84,7 @@ a {
             <a href="{% url 'antri:tentang' %}"><b>Tentang</b></a>
           </div>
           {% if request.user.is_authenticated %}
-          {% if request.user.pengguna %}
-          {{ request.user.pengguna.nama }}
-          {% else %}
-          (Username) {{ request.user.username }}
-          {% endif %}
-          {% endif %}
+          {{ request.user.pengguna.nama }}{% endif %}
         </div>
       </div>
     </div>
@@ -103,12 +98,10 @@ a {
       </div>
       <div class="footer">
         {% if request.user.is_authenticated %}
-        <a href="{% url 'antri:keluar' %}">Keluar</a>
-        {% endif %}
+        <a href="{% url 'antri:keluar' %}">Keluar</a>{% endif %}
         <p>Dibuat oleh M. Oktoluqman F.</p>
       </div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     {% block script %}{% endblock %}
   </body>
 </html>

@@ -3,77 +3,99 @@
 <style>
 table {
   table-layout: fixed;
-  width: 720px;
+  border-radius: 10px;
+  width: 640px;
 }
-th, td {
-  padding: 0px;
-  border: 1px solid grey;
-}
-/*
-.date {
-  font-size: 12px;
-  color: #009688;
-  vertical-align: top;
-  float: left;
-}
-.data {
-  float: right;
+th {
+  font-weight: normal;
 }
 .bulan {
-  border-radius: 5px;
+  margin: 4px;
+  padding: 8px;
   background-color: #009688;
   color: #fff;
 }
-.month .month {
-  display: none;
+.margin {
+  margin: 4px;
 }
-.sun {
-  background-color: red;
+.cell {
+  cursor: pointer;
+  margin: 4px;
+  padding: 8px;
+  background-color: #eff0ed;
+  transition: background-color 0.2s ease-in-out;
 }
-.greyed {
-  background-color: grey;
+.month th .cell {
+  cursor: auto;
+  background-color: #abdad5;
 }
-*/
+.sun .cell {
+  background-color: #fcd8e7;
+}
+.cell:hover {
+  background-color: #bdbdbd;
+}
+.cell:active {
+  background-color: #abdad5;
+  transition: background-color 0.01s ease-in-out;
+}
+.date {
+  font-size: 14px;
+  color: #009688;
+  vertical-align: top;
+}
+.data {
+  font-weight: bold;
+  float: right;
+  color: black;
+}
 </style>
 {% endblock %}
 {% block content %}
 <div class="card">
   {{ calendar }}
-</div>
-<div class="card" id="details">
+  <div id="details" />
 </div>
 {% endblock %}
 
 {% block script %}
-  <script>
-    function render(d, m, y) {
-      console.log(d + m + y)
-      $.ajax({
-        url: '/data.json',
-        method: 'GET',
-        data: {
-          "day": d,
-          "month": m,
-          "year": y
-        },
-        success: function(result) {
-          console.log(result.data)
-          data = result.data
-          $('#details').html('')
-          if (data === null) {
-            $('#details').html('<p>Tidak ada yang daftar</p>')
-          }
-          else {
-            $.each(data, function(index, value) {
-              $('#details').append('<p>' + Number(index + 1) + ". " + value.nama_pendaftar + '</p>')
-            })
-          }
-        },
-        error: function(a, b) {
-          console.log(a)
-          console.log(b)
-        }
-      })
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+  function escapeHtml(unsafe) {
+    return unsafe
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+function render(d, m, y) {
+  $.ajax({
+    url: '/data.json',
+    method: 'GET',
+    data: {
+      "day": d,
+      "month": m,
+      "year": y
+    },
+    success: function(result) {
+      //console.log(result.data)
+      data = result.data
+      $('#details').html('')
+      if (data === null) {
+        $('#details').html('<p>Tidak ada yang daftar</p>')
+      }
+      else {
+        $.each(data, function(index, value) {
+          $('#details').append('<p>' + Number(index + 1) + ". " + escapeHtml(value.nama_pendaftar) + '</p>')
+        })
+      }
     }
-  </script>
+//    error: function(a, b) {
+//      console.log(a)
+//      console.log(b)
+//    }
+  })
+}
+</script>
 {% endblock %}
