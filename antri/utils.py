@@ -1,5 +1,6 @@
 from calendar import HTMLCalendar
 from .models import Hari
+from datetime import datetime
 
 class Calendar(HTMLCalendar):
     def __init__(self, hari=Hari):
@@ -28,17 +29,21 @@ class Calendar(HTMLCalendar):
             ''' % (self.cssclasses[weekday])
         # if day is in the month
         else:
-            if banyak == 0:
-                data = ''
-            else:
+            data = ''
+            if banyak > 0:
                 data = '<span class="data">%s</span>' % banyak
 
+            now = datetime.now()
+            today = ""
+            if now.year == self.year and now.month == self.month and \
+                    now.day == day:
+                today = " today"
             return '''
-<td class="{0}"><div class="cell">
+<td class="{0}"><div class="cell{6}">
 <a onclick="render('{1}', '{2}', '{3}')" title="{1} {4} {3}"><div>
 <span class="date">{1}</span>{5}</div></a></div></td>'''.format(
         self.cssclasses[weekday], day, self.month, self.year,
-        self.nama_bulan[self.month], data)
+        self.nama_bulan[self.month], data, today)
 
     def formatweek(self, week):
         """Return a complete week as a table row."""
@@ -63,6 +68,7 @@ class Calendar(HTMLCalendar):
     def formatmonth(self, year, month):
         """Display the calendar in a month"""
         self.year, self.month = year, month
+
         return super().formatmonth(year, month)
 
     def formatmonthname(self, year, month, withyear=False):

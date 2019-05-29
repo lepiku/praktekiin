@@ -1,6 +1,9 @@
 {% extends 'antri/base.html' %}
 {% block style %}
 <style>
+.calendar {
+  width: 640px;
+}
 table {
   table-layout: fixed;
   border-radius: 10px;
@@ -29,12 +32,9 @@ th {
   cursor: auto;
   background-color: #abdad5;
 }
-.sun .cell {
-  background-color: #fcd8e7;
-}
-.cell:hover {
-  background-color: #bdbdbd;
-}
+.sun .cell { background-color: #fcd8e7; }
+.today { background-color: yellow; }
+.cell:hover { background-color: #d4d4d4; }
 .cell:active {
   background-color: #abdad5;
   transition: background-color 0.01s ease-in-out;
@@ -49,11 +49,21 @@ th {
   float: right;
   color: black;
 }
+.navigation {
+  display: flex;
+  justify-content: center;
+}
 </style>
 {% endblock %}
 {% block content %}
 <div class="card">
-  {{ calendar }}
+  <div class="calendar">
+    {{ calendar }}
+    <div class="navigation">
+      <div class="button"><a href="{% url 'antri:utama_month' data.prev_year data.prev_month %}">Sebelum</a></div>
+      <div class="button"><a href="{% url 'antri:utama_month' data.next_year data.next_month %}">Setelah</a></div>
+    </div>
+  </div>
   <div id="details" />
 </div>
 {% endblock %}
@@ -96,6 +106,23 @@ function render(d, m, y) {
 //      console.log(b)
 //    }
   })
+}
+function calendar(m, y) {
+  $.ajax({
+    url: '/data.json',
+    method: 'GET',
+    data: {
+      "month": m,
+      "year": y
+    },
+    success: function(result) {
+    }
+//    error: function(a, b) {
+//      console.log(a)
+//      console.log(b)
+//    }
+  })
+
 }
 </script>
 {% endblock %}

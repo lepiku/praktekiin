@@ -7,11 +7,30 @@ from .forms import DaftarPenggunaForm, DaftarKKForm, MasukForm
 from .utils import Calendar
 from django.utils.safestring import mark_safe
 from django.http import JsonResponse
+from datetime import datetime
 
 def utama(request):
+    now = datetime.now()
+    return utama_month(request, now.year, now.month)
+
+def utama_month(request, year, month):
+    prev_month = month - 1
+    next_month = month + 1
+    prev_year = next_year = year
+    if month == 1:
+        prev_month = 12
+        prev_year = year - 1
+    elif month == 12:
+        next_month = 1
+        next_year = year + 1
+
+    data = {'prev_year': prev_year, 'prev_month': prev_month,
+            'next_year': next_year, 'next_month': next_month}
+
     if request.user.is_authenticated:
-        calendar = Calendar().formatmonth(2019, 5)
-        return render(request, 'antri/utama.html', {'calendar': mark_safe(calendar)})
+        calendar = Calendar().formatmonth(year, month)
+        return render(request, 'antri/utama.html', {'calendar': mark_safe(calendar),
+            'data': data})
     return render(request, 'antri/bukan_utama.html')
 
 def tentang(request):
