@@ -2,6 +2,7 @@ from django import forms
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import User
 from .models import REGEX_TELP, JENIS_KELAMIN
+import re
 
 class DaftarPenggunaForm(forms.Form):
     nama = forms.CharField(label='Nama Lengkap', max_length=128)
@@ -16,10 +17,16 @@ class DaftarPenggunaForm(forms.Form):
     ulangi_password = forms.CharField(widget=forms.PasswordInput())
 
     def clean_nama(self):
-        return str.title(self.data.get('nama'))
+        nama = self.data.get('nama')
+        if re.search(r'[`~!@#$%^&*()_+=\[\]{}\\|;:",<>/?\d]', nama):
+            raise forms.ValidationError('Nama tidak boleh mengandung karakter spesial kecuali \' dan -')
+        return str.title(nama)
 
     def clean_nama_kk(self):
-        return str.title(self.data.get('nama_kk'))
+        nama_kk = self.data.get('nama')
+        if re.search(r'[`~!@#$%^&*()_+=\[\]{}\\|;:",<>/?\d]', nama_kk):
+            raise forms.ValidationError('Nama Kepala Keluarga tidak boleh mengandung karakter spesial kecuali \' dan -')
+        return str.title(nama_kk)
 
     # TODO cek kk udah ada apa blom? kalo udah, tanya itu sama gk?
     def clean_username(self):
@@ -57,6 +64,8 @@ class DaftarKKForm(forms.Form):
     alamat = forms.CharField(label='Alamat', max_length=256,
             widget=forms.Textarea)
 
-class MasukForm(forms.Form):
-    username = forms.CharField(label='Username', max_length=32)
-    password = forms.CharField(widget=forms.PasswordInput())
+    def clean_alamat(self):
+        alamat = self.data.get('alamat')
+        if re.search(r'[`~!@#$%^&*()_+=\[\]{}\\|;:",<>/?]', alamat):
+            raise forms.ValidationError('Alamat tidak boleh mengandung karakter spesial')
+        return alamat

@@ -11,7 +11,7 @@
 }
 #error {
   color: red;
-  font-size: 13px;
+  font-size: 14px;
 }
 </style>
 {% endblock %}
@@ -19,14 +19,15 @@
 {% block content %}
 <div class="card">
   {% if user.is_authenticated %}
-  <p>You already have logged in. Log out?</p>
+  <p>Kamu sudah masuk sebagai pengguna,
+  <a href="{% url 'antri:keluar' %}">Keluar?</a></p>
   {% else %}
   <form method="post" action="{% url 'antri:masuk' %}">
     {% csrf_token %}
     <table>
       {{ form.as_table }}
     </table>
-    <input class="button" type="submit" value="login">
+    <input class="button" type="submit" value="Masuk">
   </form>
   {{ message }}
   {% endif %}
@@ -34,6 +35,6 @@
   {% comment %}TODO reset password{% endcomment %}
 </div>
 {% if form.errors %}
-<p id="error">Your username and password didn't match. Please try again.</p>
+<p id="error">Username atau Password salah.</p>
 {% endif %}
 {% endblock %}

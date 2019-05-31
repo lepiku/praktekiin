@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from .models import Pengguna, User, KepalaKeluarga, Hari
-from .forms import DaftarPenggunaForm, DaftarKKForm, MasukForm
+from .forms import DaftarPenggunaForm, DaftarKKForm
 from .utils import Calendar
 from django.utils.safestring import mark_safe
 from django.http import JsonResponse
@@ -74,29 +74,6 @@ def daftar(request):
         form_pengguna = DaftarPenggunaForm()
     return render(request, 'antri/daftar.html',
             {'form': form_pengguna, 'kk': False})
-
-def masuk(request):
-    message = ""
-    if request.method == 'POST':
-        form = MasukForm(request.POST)
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return HttpResponseRedirect(reverse('antri:utama'))
-        else:
-            message = "Salah Username atau Password"
-            # Return an 'invalid login' error message.
-    else:
-        form = MasukForm()
-
-    return render(request, 'antri/masuk.html',
-            {'form': form, 'message': message})
-
-def keluar(request):
-    logout(request)
-    return render(request, 'antri/keluar.html')
 
 def details(request):
     if request.is_ajax():

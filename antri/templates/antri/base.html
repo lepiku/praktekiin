@@ -27,13 +27,16 @@ a {
   align-items: baseline;
   font-size: 20px;
 }
+.navbar #left {
+  min-width: 276px;
+}
 .navbar a {
   margin-right: 10px;
   color: #fff;
   text-decoration: none;
 }
 .spacing {
-  max-width: 1350px;
+  max-width: 1366px;
   margin: 0 auto;
 }
 .content {
@@ -76,7 +79,13 @@ form .button {
 }
 .errorlist {
   color: red;
-  font-size: 13px;
+  font-size: 14px;
+}
+#name {
+  max-width: 720px;
+  height: 25px;
+  overflow: hidden;
+  text-align: right;
 }
     </style>
     {% block style %}{% endblock %}
@@ -90,7 +99,9 @@ form .button {
             <a href="{% url 'antri:tentang' %}"><b>Tentang</b></a>
           </div>
           {% if request.user.is_authenticated %}
-          {{ request.user.pengguna.nama }}{% endif %}
+          <div id="name">
+            {{ request.user.pengguna.nama }}
+          </div>{% endif %}
         </div>
       </div>
     </div>
