@@ -28,10 +28,9 @@ a {
   font-size: 20px;
 }
 .navbar #left {
-  min-width: 276px;
+  min-width: 280px;
 }
 .navbar a {
-  margin-right: 10px;
   color: #fff;
   text-decoration: none;
 }
@@ -96,6 +95,7 @@ form .button {
         <div class="navbar">
           <div id="left">
             <a href="{% url 'antri:utama' %}"><b>Halaman Utama</b></a>
+
             <a href="{% url 'antri:tentang' %}"><b>Tentang</b></a>
           </div>
           {% if request.user.is_authenticated %}

@@ -6,11 +6,11 @@ from .models import Pengguna, User, KepalaKeluarga, Hari
 from .forms import DaftarPenggunaForm, DaftarKKForm
 from .utils import Calendar
 from django.utils.safestring import mark_safe
+from django.utils import timezone
 from django.http import JsonResponse
-from datetime import datetime
 
 def utama(request):
-    now = datetime.now()
+    now = timezone.now()
     return utama_month(request, now.year, now.month)
 
 def utama_month(request, year, month):

@@ -1,6 +1,6 @@
 from calendar import HTMLCalendar
 from .models import Hari
-from datetime import datetime
+from django.utils import timezone
 
 class Calendar(HTMLCalendar):
     def __init__(self, hari=Hari):
@@ -33,7 +33,7 @@ class Calendar(HTMLCalendar):
             if banyak > 0:
                 data = '<span class="data">%s</span>' % banyak
 
-            now = datetime.now()
+            now = timezone.now()
             today = ""
             if now.year == self.year and now.month == self.month and \
                     now.day == day:
