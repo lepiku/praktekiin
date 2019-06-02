@@ -16,9 +16,7 @@ a {
   color: #009688;
   text-decoration: none;
 }
-.navback {
-  background-color: #009688;
-}
+.navback { background-color: #009688; }
 .navbar {
   color: #fff;
   display: flex;
@@ -38,14 +36,32 @@ a {
 #right {
   max-width: 720px;
   text-align: right;
-  overflow: hidden;
 }
-#item {
-  padding: 20px 10px;
+#item { padding: 20px 10px; }
+#item:hover { background-color: #39b0a3; }
+.dropdown {
+  display: inline-block;
+  position: relative;
 }
-#item:hover {
-  background-color: #39b0a3;
+.dropdown #item {
+  cursor: default;
 }
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #d3e9e4;
+  min-width: 200px;
+  z-index: 1;
+  right: 0px;
+}
+.dropdown-content a {
+  color: #009688;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+.dropdown-content a:hover {background-color: #e3f2ee;}
+.dropdown:hover .dropdown-content {display: block;}
 .spacing {
   max-width: 1366px;
   margin: 0 auto;
@@ -80,9 +96,7 @@ a {
   color: #fff;
   padding: 15px 25px;
 }
-form .button {
-  padding: 15px 25px;
-}
+form .button { padding: 15px 25px; }
 .footer {
   margin: 20px 40px;
   font-size: 16px;
@@ -113,13 +127,17 @@ form .button {
           </div>
           {% if request.user.is_authenticated %}
           <div id="right">
-            <a href="{% url 'antri:profil' %}">
+            <div class="dropdown">
               <div id="item">
                 <div style="height: 25px; overflow: hidden">
                   {{ request.user.pengguna.nama }}
                 </div>
               </div>
-            </a>
+              <div class="dropdown-content">
+                <a href="{% url 'antri:profil' %}">Profil</a>
+                <a href="{% url 'antri:keluar' %}">Keluar</a>
+              </div>
+            </div>
           </div>{% endif %}
         </div>
       </div>
