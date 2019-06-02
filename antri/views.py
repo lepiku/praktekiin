@@ -93,3 +93,6 @@ def details(request):
         return JsonResponse({'data': data})
 
     return JsonResponse({'data': None})
+
+def profil(request):
+    return render(request, 'antri/profil.html')
