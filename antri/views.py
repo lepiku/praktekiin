@@ -95,4 +95,30 @@ def details(request):
     return JsonResponse({'data': None})
 
 def profil(request):
-    return render(request, 'antri/profil.html')
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('antri:utama'))
+
+    user = request.user
+    pengguna = user.pengguna
+    kepala_keluarga = pengguna.kepala_keluarga
+
+    data_pengguna = [
+            ('Nama Lengkap', pengguna.nama),
+            ('Tanggal Lahir', pengguna.tanggal_lahir),
+            ('Jenis Kelamin', pengguna.jenis_kelamin),
+            ('No. HP / Telp', pengguna.telp),
+            ]
+
+    data_kepala_keluarga = [
+            ('Nama Kepala Keluarga', kepala_keluarga.nama),
+            ('Alamat', kepala_keluarga.alamat),
+            ]
+
+    data_user = [
+            ('Username', user.username),
+            ]
+
+    data = {'pengguna': data_pengguna, 'user': data_user,
+            'kepala_keluarga': data_kepala_keluarga}
+
+    return render(request, 'antri/profil.html', data)

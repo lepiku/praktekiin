@@ -1,4 +1,31 @@
 {% extends 'antri/base.html' %}
 {% block content %}
-<p>Profil</p>
+<div class="card">
+  <table id="pengguna">
+    {% for label, value in pengguna %}
+    <tr>
+      <td id="label">{{ label }}</td>
+      <td id="value">{{ value }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  <hr>
+  <table id="kepala_keluarga">
+    {% for label, value in kepala_keluarga %}
+    <tr>
+      <td id="label">{{ label }}</td>
+      <td id="value">{{ value }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  <hr>
+  <table id="user">
+    {% for label, value in user %}
+    <tr>
+      <td id="label">{{ label }}</td>
+      <td id="value">{{ value }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
 {% endblock %}
