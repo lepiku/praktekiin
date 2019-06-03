@@ -60,12 +60,8 @@ th {
   <div class="calendar">
     {{ calendar }}
     <div class="navigation">
-      <div class="button">
-        <a href="{% url 'antri:utama_month' data.prev_year data.prev_month %}">Sebelum</a>
-      </div>
-      <div class="button">
-        <a href="{% url 'antri:utama_month' data.next_year data.next_month %}">Setelah</a>
-      </div>
+      <a class="button" href="{% url 'antri:utama_month' data.prev_year data.prev_month %}">Sebelum</a>
+      <a class="button" href="{% url 'antri:utama_month' data.next_year data.next_month %}">Setelah</a>
     </div>
   </div>
   <div id="details" />

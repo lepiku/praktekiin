@@ -8,6 +8,7 @@ from .utils import Calendar
 from django.utils.safestring import mark_safe
 from django.utils import timezone
 from django.http import JsonResponse
+from django.views.generic.edit import UpdateView
 
 def utama(request):
     now = timezone.now()
@@ -122,3 +123,14 @@ def profil(request):
             'kepala_keluarga': data_kepala_keluarga}
 
     return render(request, 'antri/profil.html', data)
+
+class ProfilUpdate(UpdateView):
+    model = Pengguna
+    fields = ['nama', 'tanggal_lahir', 'jenis_kelamin', 'telp']
+    template_name = 'antri/ubah_profil.html'
+
+    def get_object(self):
+        return self.request.user.pengguna
+
+    def get_success_url(self):
+        return reverse('antri:profil')
