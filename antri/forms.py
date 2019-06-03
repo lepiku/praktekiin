@@ -1,8 +1,10 @@
 from django import forms
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import PasswordChangeForm
 from .models import REGEX_TELP, JENIS_KELAMIN
 import re
+from django.contrib.auth import authenticate, get_user_model, password_validation
 
 class DaftarPenggunaForm(forms.Form):
     nama = forms.CharField(label='Nama Lengkap', max_length=128)
@@ -69,3 +71,48 @@ class DaftarKKForm(forms.Form):
         if re.search(r'[`~!@#$%^&*()_+=\[\]{}\\|;:",<>/?]', alamat):
             raise forms.ValidationError('Alamat tidak boleh mengandung karakter spesial')
         return alamat
+
+class UbahPasswordForm(PasswordChangeForm):
+    error_messages = {
+        **PasswordChangeForm.error_messages,
+        'password_incorrect': "Password lama salah",
+    }
+
+    old_password = forms.CharField(
+            label="Password Lama",
+            strip=False,
+            widget=forms.PasswordInput(attrs={'autofocus': True}),
+            )
+    new_password1 = forms.CharField(
+            label="Password Baru",
+            widget=forms.PasswordInput,
+            strip=False,
+            )
+    new_password2 = forms.CharField(
+            label="Ulangi Password Baru",
+            strip=False,
+            widget=forms.PasswordInput,
+            )
+
+    def clean_old_password(self):
+        """
+        Validate that the old_password field is correct.
+        """
+        old_password = self.data["old_password"]
+        if not self.user.check_password(old_password):
+            raise forms.ValidationError(
+                    self.error_messages['password_incorrect'],
+                    code='password_incorrect',
+                    )
+        return old_password
+
+    def clean_new_password2(self):
+        password1 = self.data.get('new_password1')
+        password2 = self.data.get('new_password2')
+        if password1 and password2:
+            if password1 != password2:
+                raise forms.ValidationError(
+                    self.error_messages['password_mismatch'],
+                    code='password_mismatch',
+                )
+        return password2

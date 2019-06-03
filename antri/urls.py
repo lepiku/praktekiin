@@ -16,8 +16,7 @@ urlpatterns = [
     path('data.json/', views.details, name='details'),
     path('profil/', views.profil, name='profil'),
     path('ubah/profil/', views.ProfilUpdate.as_view(), name='ubah_profil'),
-    # path('ubah/kepala-keluarga/', views.ubah, name='ubah_kk'),
-    # path('ubah/username/', views.ubah, name='ubah_username'),
-    # path('ubah/password/', views.ubah, name='ubah_password'),
+    path('ubah/kepala-keluarga/', views.KepalaKeluargaUpdate.as_view(), name='ubah_kk'),
+    path('ubah/password/', views.ubah_password, name='ubah_password'),
 ]
 

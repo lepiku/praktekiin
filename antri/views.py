@@ -1,14 +1,16 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from .models import Pengguna, User, KepalaKeluarga, Hari
-from .forms import DaftarPenggunaForm, DaftarKKForm
+from .forms import DaftarPenggunaForm, DaftarKKForm, UbahPasswordForm
 from .utils import Calendar
 from django.utils.safestring import mark_safe
 from django.utils import timezone
 from django.http import JsonResponse
 from django.views.generic.edit import UpdateView
+# from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
 
 def utama(request):
     now = timezone.now()
@@ -134,3 +136,29 @@ class ProfilUpdate(UpdateView):
 
     def get_success_url(self):
         return reverse('antri:profil')
+
+class KepalaKeluargaUpdate(UpdateView):
+    model = KepalaKeluarga
+    fields = '__all__'
+    template_name = 'antri/ubah_kk.html'
+
+    def get_object(self):
+        return self.request.user.pengguna.kepala_keluarga
+
+    def get_success_url(self):
+        return reverse('antri:profil')
+
+
+def ubah_password(request):
+    if request.method == 'POST':
+        form = UbahPasswordForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            # messages.success(request, 'Your password was successfully updated!')
+            return HttpResponseRedirect(reverse('antri:profil'))
+        # else:
+            # messages.error(request, 'Please correct the error below.')
+    else:
+        form = UbahPasswordForm(request.user)
+    return render(request, 'antri/ubah_password.html', {'form': form})

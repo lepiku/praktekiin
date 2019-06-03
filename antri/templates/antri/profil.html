@@ -19,6 +19,7 @@
     </tr>
     {% endfor %}
   </table>
+  <a class="button" href="{% url 'antri:ubah_kk' %}">Ubah Kepala Keluarga</a>
   <hr>
   <table id="user">
     {% for label, value in user %}
@@ -28,5 +29,6 @@
     </tr>
     {% endfor %}
   </table>
+  <a class="button" href="{% url 'antri:ubah_password' %}">Ubah Password</a>
 </div>
 {% endblock %}
