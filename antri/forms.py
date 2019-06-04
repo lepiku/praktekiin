@@ -2,13 +2,14 @@ from django import forms
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm
-from .models import REGEX_TELP, JENIS_KELAMIN
+from .models import REGEX_TELP, JENIS_KELAMIN, KepalaKeluarga
 import re
 from django.contrib.auth import authenticate, get_user_model, password_validation
 
 class DaftarPenggunaForm(forms.Form):
     nama = forms.CharField(label='Nama Lengkap', max_length=128)
-    tanggal_lahir = forms.DateField()
+    tanggal_lahir = forms.DateField() # TODO error meesage still 'Enter a valid date'
+    # TODO https://docs.djangoproject.com/en/2.1/ref/forms/fields/#datefield
     jenis_kelamin = forms.ChoiceField(choices=JENIS_KELAMIN)
     telp = forms.CharField(label='No. HP / Telp', validators=[REGEX_TELP],
             max_length=18)
@@ -25,7 +26,7 @@ class DaftarPenggunaForm(forms.Form):
         return str.title(nama)
 
     def clean_nama_kk(self):
-        nama_kk = self.data.get('nama')
+        nama_kk = self.data.get('nama_kk')
         if re.search(r'[`~!@#$%^&*()_+=\[\]{}\\|;:",<>/?\d]', nama_kk):
             raise forms.ValidationError('Nama Kepala Keluarga tidak boleh mengandung karakter spesial kecuali \' dan -')
         return str.title(nama_kk)
@@ -66,11 +67,37 @@ class DaftarKKForm(forms.Form):
     alamat = forms.CharField(label='Alamat', max_length=256,
             widget=forms.Textarea)
 
+    def clean_nama_kk(self):
+        nama_kk = self.data.get('nama_kk')
+        if re.search(r'[`~!@#$%^&*()_+=\[\]{}\\|;:",<>/?\d]', nama_kk):
+            raise forms.ValidationError('Nama Kepala Keluarga tidak boleh mengandung karakter spesial kecuali \' dan -')
+        return str.title(nama_kk)
+
     def clean_alamat(self):
         alamat = self.data.get('alamat')
         if re.search(r'[`~!@#$%^&*()_+=\[\]{}\\|;:",<>/?]', alamat):
             raise forms.ValidationError('Alamat tidak boleh mengandung karakter spesial')
         return alamat
+
+class PilihKKForm(forms.Form):
+    nama = forms.CharField(widget=forms.HiddenInput)
+    tanggal_lahir = forms.DateField(widget=forms.HiddenInput)
+    jenis_kelamin = forms.ChoiceField(widget=forms.HiddenInput,
+            choices=JENIS_KELAMIN)
+    telp = forms.CharField(widget=forms.HiddenInput)
+    username = forms.CharField(widget=forms.HiddenInput)
+    password = forms.CharField(widget=forms.HiddenInput)
+    ulangi_password = forms.CharField(widget=forms.HiddenInput)
+    nama_kk = forms.CharField(widget=forms.HiddenInput)
+
+    # TODO get data from last post
+    def __init__(self, *args, **kwargs):
+        nama_kk = kwargs.pop('nama_kk', '')
+        super().__init__(*args, **kwargs)
+
+        self.fields['kk'] = forms.ModelChoiceField(
+                KepalaKeluarga.objects.filter(nama=nama_kk),
+                label='Kepala Keluarga')
 
 class UbahPasswordForm(PasswordChangeForm):
     error_messages = {
@@ -93,18 +120,6 @@ class UbahPasswordForm(PasswordChangeForm):
             strip=False,
             widget=forms.PasswordInput,
             )
-
-    def clean_old_password(self):
-        """
-        Validate that the old_password field is correct.
-        """
-        old_password = self.data["old_password"]
-        if not self.user.check_password(old_password):
-            raise forms.ValidationError(
-                    self.error_messages['password_incorrect'],
-                    code='password_incorrect',
-                    )
-        return old_password
 
     def clean_new_password2(self):
         password1 = self.data.get('new_password1')

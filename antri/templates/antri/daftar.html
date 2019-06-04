@@ -31,7 +31,7 @@ ul {
   list-style: none;
   padding-left: 18px;
 }
-{% if kk %}
+{% if kode > 0 %}
 .errorlist {
   display: none;
 }
@@ -45,7 +45,11 @@ ul {
     <table>
       {{ form.as_table }}
     </table>
-    <input class="button" type="submit" value="Buat Akun">
+    <input type="hidden" name="kode" value="{{ kode }}">
+    <input class="button" type="submit" name="select" value="Buat Akun">
+    {% if kode == 2 %}
+    <input class="button" type="submit" name="new" value="Buat KK Baru">
+    {% endif %}
   </form>
 </div>
 {% endblock %}
