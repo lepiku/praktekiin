@@ -1,6 +1,14 @@
 {% extends 'antri/base.html' %}
 {% block style %}
 <style>
+.flex {
+  display: flex;
+}
+@media (max-width: 640px) {
+  .flex {
+    flex-direction: column;
+  }
+}
 .calendar {
   width: 640px;
 }
@@ -56,15 +64,22 @@ th {
 </style>
 {% endblock %}
 {% block content %}
-<div class="card">
-  <div class="calendar">
-    {{ calendar }}
-    <div class="navigation">
-      <a class="button" href="{% url 'antri:utama_month' data.prev_year data.prev_month %}">Sebelum</a>
-      <a class="button" href="{% url 'antri:utama_month' data.next_year data.next_month %}">Setelah</a>
+<div class="flex">
+  <div class="card">
+    <div class="calendar">
+      {{ calendar }}
+      <div class="navigation">
+        <a class="button" href="{% url 'antri:utama_month' data.prev_year data.prev_month %}">Sebelum</a>
+        <a class="button" href="{% url 'antri:utama_month' data.next_year data.next_month %}">Setelah</a>
+      </div>
     </div>
   </div>
-  <div id="details" />
+  <div class="card">
+    <p>
+    Tanggal: <div id="tanggal" />
+    </p>
+    <div id="details" />
+  </div>
 </div>
 {% endblock %}
 
@@ -89,8 +104,13 @@ function render(d, m, y) {
       "year": y
     },
     success: function(result) {
-      //console.log(result.data)
+      console.log(result)
       data = result.data
+
+      // set date TODO kok kalo di uncomment #details gk bisa?
+      //$('#tanggal').html(d + ' ' + result.month_name + ' ' + y)
+
+      // set pengguna who booked that day
       $('#details').html('')
       if (data === null) {
         $('#details').html('<p>Tidak ada yang daftar</p>')
@@ -106,23 +126,6 @@ function render(d, m, y) {
 //      console.log(b)
 //    }
   })
-}
-function calendar(m, y) {
-  $.ajax({
-    url: '/data.json',
-    method: 'GET',
-    data: {
-      "month": m,
-      "year": y
-    },
-    success: function(result) {
-    }
-//    error: function(a, b) {
-//      console.log(a)
-//      console.log(b)
-//    }
-  })
-
 }
 </script>
 {% endblock %}

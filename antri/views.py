@@ -79,6 +79,10 @@ def daftar(request):
             {'form': form_pengguna, 'kk': False})
 
 def details(request):
+    nama_bulan = ("", "Januari", "Februari", "Maret", "April", "Mei",
+            "Juni", "Juli", "Agustus", "September", "Oktober", "November",
+            "Desember")
+
     if request.is_ajax():
         day = int(request.GET.get('day'))
         month = int(request.GET.get('month'))
@@ -89,13 +93,17 @@ def details(request):
                     tanggal__day=day,
                     tanggal__month=month,
                     tanggal__year=year).pendaftaran_set.all().values())
-        except Hari.DoesNotExist as e:
-            return JsonResponse({'data': None})
-        for i in range(len(data)):
-            data[i]['nama_pendaftar'] = Pengguna.objects.get(id=data[i]['pengguna_id']).nama
-        return JsonResponse({'data': data})
 
-    return JsonResponse({'data': None})
+        except Hari.DoesNotExist as e:
+            data = None
+
+        else:
+            for i in range(len(data)):
+                data[i]['nama_pendaftar'] = Pengguna.objects.get(
+                        id=data[i]['pengguna_id']).nama
+
+        return JsonResponse({'data': data, 'month_name': nama_bulan[month]})
+    return HttpResponseRedirect(reverse('antri:404'))
 
 def profil(request):
     if not request.user.is_authenticated:

@@ -6,11 +6,11 @@ class Calendar(HTMLCalendar):
     def __init__(self, hari=Hari):
         super().__init__(firstweekday=6)
         self.hari = hari
-        self.nama_bulan = ["", "Januari", "Februari", "Maret", "April", "Mei",
+        self.nama_bulan = ("", "Januari", "Februari", "Maret", "April", "Mei",
                 "Juni", "Juli", "Agustus", "September", "Oktober", "November",
-                "Desember"]
-        self.nama_hari = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu",
-                "Minggu"]
+                "Desember")
+        self.nama_hari = ("Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu",
+                "Minggu")
 
     def formatday(self, day, weekday):
         """Return a day as a table cell."""
