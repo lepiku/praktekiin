@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
-from .models import Pengguna, User, KepalaKeluarga, Hari
+from .models import Pengguna, User, KepalaKeluarga, Hari, Pendaftaran
 from .forms import DaftarPenggunaForm, DaftarKKForm, UbahPasswordForm, \
         PilihKKForm
 from .utils import Calendar
@@ -12,6 +12,7 @@ from django.http import JsonResponse
 from django.views.generic.edit import UpdateView
 # from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
+from datetime import date
 
 def utama(request):
     now = timezone.now()
@@ -97,23 +98,39 @@ def daftar(request):
             {'form': form_pengguna, 'kode': 0})
 
 def details(request):
+    nama_bulan = ("", "Januari", "Februari", "Maret", "April", "Mei",
+            "Juni", "Juli", "Agustus", "September", "Oktober", "November",
+            "Desember")
+
     if request.is_ajax():
         day = int(request.GET.get('day'))
         month = int(request.GET.get('month'))
         year = int(request.GET.get('year'))
+        booked = 'Tambah'
+        url = reverse('antri:tambah')
 
         try:
             data = list(Hari.objects.get(
                     tanggal__day=day,
                     tanggal__month=month,
                     tanggal__year=year).pendaftaran_set.all().values())
-        except Hari.DoesNotExist as e:
-            return JsonResponse({'data': None})
-        for i in range(len(data)):
-            data[i]['nama_pendaftar'] = Pengguna.objects.get(id=data[i]['pengguna_id']).nama
-        return JsonResponse({'data': data})
 
-    return JsonResponse({'data': None})
+        except Hari.DoesNotExist as e:
+            data = None
+
+        else:
+            for i in range(len(data)):
+                pengguna = Pengguna.objects.get(id=data[i]['pengguna_id'])
+                data[i]['nama_pendaftar'] = pengguna.nama
+                if pengguna == request.user.pengguna:
+                    booked = 'Kurang'
+                    url = reverse('antri:kurang')
+                    print(url)
+
+        return JsonResponse({'data': data, 'month_name': nama_bulan[month],
+            'booked': booked, 'url': url})
+
+    return HttpResponseRedirect(reverse('antri:404'))
 
 def profil(request):
     if not request.user.is_authenticated:
@@ -180,3 +197,41 @@ def ubah_password(request):
     else:
         form = UbahPasswordForm(request.user)
     return render(request, 'antri/ubah_password.html', {'form': form})
+
+def tambah(request):
+    if request.method == 'POST':
+        tahun = int(request.POST['tahun'])
+        bulan = int(request.POST['bulan'])
+        hari = int(request.POST['hari'])
+
+        tanggal = date(year=tahun, month=bulan, day=hari)
+        if Hari.objects.filter(tanggal=tanggal):
+            hari = Hari.objects.get(tanggal=tanggal)
+        else:
+            hari = Hari.objects.create(tanggal=tanggal)
+            hari.save()
+
+        pengguna = request.user.pengguna
+        tambah = Pendaftaran.objects.create(pengguna=pengguna, hari=hari)
+        tambah.save()
+
+        return HttpResponseRedirect(reverse('antri:utama_month',
+            kwargs={'year':tahun, 'month':bulan}))
+    # return HttpResponseRedirect(reverse('antri:utama'))
+
+def kurang(request):
+    if request.method == 'POST':
+
+        tahun = int(request.POST['tahun'])
+        bulan = int(request.POST['bulan'])
+        hari = int(request.POST['hari'])
+
+        tanggal = date(year=tahun, month=bulan, day=hari)
+        hari = Hari.objects.get(tanggal=tanggal)
+        pengguna = request.user.pengguna
+
+        hari.pendaftaran_set.get(pengguna=pengguna).delete()
+
+        return HttpResponseRedirect(reverse('antri:utama_month',
+            kwargs={'year':tahun, 'month':bulan}))
+    # return HttpResponseRedirect(reverse('antri:utama'))

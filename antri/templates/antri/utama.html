@@ -1,6 +1,15 @@
 {% extends 'antri/base.html' %}
 {% block style %}
 <style>
+.flex {
+  display: flex;
+  width: 100%
+}
+@media (max-width: 640px) {
+  .flex {
+    flex-direction: column;
+  }
+}
 .calendar {
   width: 640px;
 }
@@ -56,15 +65,36 @@ th {
 </style>
 {% endblock %}
 {% block content %}
-<div class="card">
-  <div class="calendar">
-    {{ calendar }}
-    <div class="navigation">
-      <a class="button" href="{% url 'antri:utama_month' data.prev_year data.prev_month %}">Sebelum</a>
-      <a class="button" href="{% url 'antri:utama_month' data.next_year data.next_month %}">Setelah</a>
+<div class="flex">
+  <div class="card">
+    <div class="calendar">
+      {{ calendar }}
+      <div class="navigation">
+        <a class="button" href="{% url 'antri:utama_month' data.prev_year data.prev_month %}">Sebelum</a>
+        <a class="button" href="{% url 'antri:utama_month' data.next_year data.next_month %}">Setelah</a>
+      </div>
     </div>
   </div>
-  <div id="details" />
+  <div class="card">
+    <p>
+    <b>Tanggal:</b>
+    <div id="date">Silahkan klik sebuah tanggal</div>
+    </p>
+    <form id="form" method="POST">
+      {% csrf_token %}
+      <input type='hidden' name='tahun' id='tahun'>
+      <input type='hidden' name='bulan' id='bulan'>
+      <input type='hidden' name='hari' id='hari'>
+      <input type="submit" class="button" id="button" value="tambah">
+    </form>
+    <div id="daftar"></div>
+    <p>
+    <b>Keterangan:</b>
+    <ol>
+      <div id="details">Nama2 yang daftar</div>
+    </ol>
+    </p>
+  </div>
 </div>
 {% endblock %}
 
@@ -83,46 +113,43 @@ function render(d, m, y) {
   $.ajax({
     url: '/data.json',
     method: 'GET',
-    data: {
-      "day": d,
-      "month": m,
-      "year": y
-    },
+    data: {"day": d, "month": m, "year": y},
     success: function(result) {
-      //console.log(result.data)
+      console.log(result)
+
+      // change to current date
+      $('#date').html(d + ' ' + result.month_name + ' ' + y)
+      $('#tahun').val(y)
+      $('#bulan').val(m)
+      $('#hari').val(d)
+
+      $('#form').attr('action', result.url)
+      $('#button').attr('value', result.booked)
+      // list pengguna who booked that day
       data = result.data
       $('#details').html('')
       if (data === null) {
-        $('#details').html('<p>Tidak ada yang daftar</p>')
+        $('#details').html('Tidak ada yang daftar')
       }
       else {
         $.each(data, function(index, value) {
-          $('#details').append('<p>' + Number(index + 1) + ". " + escapeHtml(value.nama_pendaftar) + '</p>')
+          $('#details').append('<li>' + escapeHtml(value.nama_pendaftar) + '</li>')
         })
       }
-    }
-//    error: function(a, b) {
-//      console.log(a)
-//      console.log(b)
-//    }
-  })
-}
-function calendar(m, y) {
-  $.ajax({
-    url: '/data.json',
-    method: 'GET',
-    data: {
-      "month": m,
-      "year": y
     },
-    success: function(result) {
+    error: function(a, b) {
+      console.log(a)
+      console.log(b)
     }
-//    error: function(a, b) {
-//      console.log(a)
-//      console.log(b)
-//    }
   })
-
 }
+function clicked() {
+  if (confirm('Do you want to book?')) {
+    alert('yes')
+  } else {
+    return false;
+  }
+}
+
 </script>
 {% endblock %}

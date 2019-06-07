@@ -6,11 +6,11 @@ class Calendar(HTMLCalendar):
     def __init__(self, hari=Hari):
         super().__init__(firstweekday=6)
         self.hari = hari
-        self.nama_bulan = ["", "Januari", "Februari", "Maret", "April", "Mei",
+        self.nama_bulan = ("", "Januari", "Februari", "Maret", "April", "Mei",
                 "Juni", "Juli", "Agustus", "September", "Oktober", "November",
-                "Desember"]
-        self.nama_hari = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu",
-                "Minggu"]
+                "Desember")
+        self.nama_hari = ("Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu",
+                "Minggu")
 
     def formatday(self, day, weekday):
         """Return a day as a table cell."""
@@ -39,9 +39,8 @@ class Calendar(HTMLCalendar):
                     now.day == day:
                 today = " today"
             return '''
-<td class="{0}"><div class="cell{6}">
-<a onclick="render('{1}', '{2}', '{3}')" title="{1} {4} {3}"><div>
-<span class="date">{1}</span>{5}</div></a></div></td>'''.format(
+<td class="{0}"><a onclick="render('{1}', '{2}', '{3}')" title="{1} {4} {3}">
+<div class="cell{6}"><span class="date">{1}</span>{5}</div></a></td>'''.format(
         self.cssclasses[weekday], day, self.month, self.year,
         self.nama_bulan[self.month], data, today)
 
