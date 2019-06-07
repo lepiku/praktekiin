@@ -80,12 +80,12 @@ th {
     <b>Tanggal:</b>
     <div id="date">Silahkan klik sebuah tanggal</div>
     </p>
-    <form id="#theForm" action="{% url 'antri:tambah' %}" method="POST">
+    <form id="form" method="POST">
       {% csrf_token %}
       <input type='hidden' name='tahun' id='tahun'>
       <input type='hidden' name='bulan' id='bulan'>
       <input type='hidden' name='hari' id='hari'>
-      <input type="submit" class="button" value="tambah">
+      <input type="submit" class="button" id="button" value="tambah">
     </form>
     <div id="daftar"></div>
     <p>
@@ -113,14 +113,9 @@ function render(d, m, y) {
   $.ajax({
     url: '/data.json',
     method: 'GET',
-    data: {
-      "day": d,
-      "month": m,
-      "year": y
-    },
+    data: {"day": d, "month": m, "year": y},
     success: function(result) {
       console.log(result)
-      data = result.data
 
       // change to current date
       $('#date').html(d + ' ' + result.month_name + ' ' + y)
@@ -128,7 +123,10 @@ function render(d, m, y) {
       $('#bulan').val(m)
       $('#hari').val(d)
 
+      $('#form').attr('action', result.url)
+      $('#button').attr('value', result.booked)
       // list pengguna who booked that day
+      data = result.data
       $('#details').html('')
       if (data === null) {
         $('#details').html('Tidak ada yang daftar')
@@ -138,11 +136,11 @@ function render(d, m, y) {
           $('#details').append('<li>' + escapeHtml(value.nama_pendaftar) + '</li>')
         })
       }
+    },
+    error: function(a, b) {
+      console.log(a)
+      console.log(b)
     }
-//    error: function(a, b) {
-//      console.log(a)
-//      console.log(b)
-//    }
   })
 }
 function clicked() {

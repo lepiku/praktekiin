@@ -88,6 +88,8 @@ def details(request):
         day = int(request.GET.get('day'))
         month = int(request.GET.get('month'))
         year = int(request.GET.get('year'))
+        booked = 'Tambah'
+        url = reverse('antri:tambah')
 
         try:
             data = list(Hari.objects.get(
@@ -100,10 +102,16 @@ def details(request):
 
         else:
             for i in range(len(data)):
-                data[i]['nama_pendaftar'] = Pengguna.objects.get(
-                        id=data[i]['pengguna_id']).nama
+                pengguna = Pengguna.objects.get(id=data[i]['pengguna_id'])
+                data[i]['nama_pendaftar'] = pengguna.nama
+                if pengguna == request.user.pengguna:
+                    booked = 'Kurang'
+                    url = reverse('antri:kurang')
+                    print(url)
 
-        return JsonResponse({'data': data, 'month_name': nama_bulan[month]})
+        return JsonResponse({'data': data, 'month_name': nama_bulan[month],
+            'booked': booked, 'url': url})
+
     return HttpResponseRedirect(reverse('antri:404'))
 
 def profil(request):
@@ -189,6 +197,23 @@ def tambah(request):
         tambah = Pendaftaran.objects.create(pengguna=pengguna, hari=hari)
         tambah.save()
 
-        return HttpResponseRedirect(reverse('antri:utama_month', kwargs={'year':tahun, 'month':bulan}))
+        return HttpResponseRedirect(reverse('antri:utama_month',
+            kwargs={'year':tahun, 'month':bulan}))
+    # return HttpResponseRedirect(reverse('antri:utama'))
 
+def kurang(request):
+    if request.method == 'POST':
+
+        tahun = int(request.POST['tahun'])
+        bulan = int(request.POST['bulan'])
+        hari = int(request.POST['hari'])
+
+        tanggal = date(year=tahun, month=bulan, day=hari)
+        hari = Hari.objects.get(tanggal=tanggal)
+        pengguna = request.user.pengguna
+
+        hari.pendaftaran_set.get(pengguna=pengguna).delete()
+
+        return HttpResponseRedirect(reverse('antri:utama_month',
+            kwargs={'year':tahun, 'month':bulan}))
     # return HttpResponseRedirect(reverse('antri:utama'))
