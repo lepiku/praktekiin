@@ -39,9 +39,8 @@ class Calendar(HTMLCalendar):
                     now.day == day:
                 today = " today"
             return '''
-<td class="{0}"><div class="cell{6}">
-<a onclick="render('{1}', '{2}', '{3}')" title="{1} {4} {3}"><div>
-<span class="date">{1}</span>{5}</div></a></div></td>'''.format(
+<td class="{0}"><a onclick="render('{1}', '{2}', '{3}')" title="{1} {4} {3}">
+<div class="cell{6}"><span class="date">{1}</span>{5}</div></a></td>'''.format(
         self.cssclasses[weekday], day, self.month, self.year,
         self.nama_bulan[self.month], data, today)
 

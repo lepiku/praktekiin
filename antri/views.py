@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
-from .models import Pengguna, User, KepalaKeluarga, Hari
+from .models import Pengguna, User, KepalaKeluarga, Hari, Pendaftaran
 from .forms import DaftarPenggunaForm, DaftarKKForm, UbahPasswordForm
 from .utils import Calendar
 from django.utils.safestring import mark_safe
@@ -11,6 +11,7 @@ from django.http import JsonResponse
 from django.views.generic.edit import UpdateView
 # from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
+from datetime import date
 
 def utama(request):
     now = timezone.now()
@@ -170,3 +171,24 @@ def ubah_password(request):
     else:
         form = UbahPasswordForm(request.user)
     return render(request, 'antri/ubah_password.html', {'form': form})
+
+def tambah(request):
+    if request.method == 'POST':
+        tahun = int(request.POST['tahun'])
+        bulan = int(request.POST['bulan'])
+        hari = int(request.POST['hari'])
+
+        tanggal = date(year=tahun, month=bulan, day=hari)
+        if Hari.objects.filter(tanggal=tanggal):
+            hari = Hari.objects.get(tanggal=tanggal)
+        else:
+            hari = Hari.objects.create(tanggal=tanggal)
+            hari.save()
+
+        pengguna = request.user.pengguna
+        tambah = Pendaftaran.objects.create(pengguna=pengguna, hari=hari)
+        tambah.save()
+
+        return HttpResponseRedirect(reverse('antri:utama_month', kwargs={'year':tahun, 'month':bulan}))
+
+    # return HttpResponseRedirect(reverse('antri:utama'))

@@ -3,6 +3,7 @@
 <style>
 .flex {
   display: flex;
+  width: 100%
 }
 @media (max-width: 640px) {
   .flex {
@@ -76,9 +77,23 @@ th {
   </div>
   <div class="card">
     <p>
-    Tanggal: <div id="tanggal" />
+    <b>Tanggal:</b>
+    <div id="date">Silahkan klik sebuah tanggal</div>
     </p>
-    <div id="details" />
+    <form id="#theForm" action="{% url 'antri:tambah' %}" method="POST">
+      {% csrf_token %}
+      <input type='hidden' name='tahun' id='tahun'>
+      <input type='hidden' name='bulan' id='bulan'>
+      <input type='hidden' name='hari' id='hari'>
+      <input type="submit" class="button" value="tambah">
+    </form>
+    <div id="daftar"></div>
+    <p>
+    <b>Keterangan:</b>
+    <ol>
+      <div id="details">Nama2 yang daftar</div>
+    </ol>
+    </p>
   </div>
 </div>
 {% endblock %}
@@ -107,17 +122,20 @@ function render(d, m, y) {
       console.log(result)
       data = result.data
 
-      // set date TODO kok kalo di uncomment #details gk bisa?
-      //$('#tanggal').html(d + ' ' + result.month_name + ' ' + y)
+      // change to current date
+      $('#date').html(d + ' ' + result.month_name + ' ' + y)
+      $('#tahun').val(y)
+      $('#bulan').val(m)
+      $('#hari').val(d)
 
-      // set pengguna who booked that day
+      // list pengguna who booked that day
       $('#details').html('')
       if (data === null) {
-        $('#details').html('<p>Tidak ada yang daftar</p>')
+        $('#details').html('Tidak ada yang daftar')
       }
       else {
         $.each(data, function(index, value) {
-          $('#details').append('<p>' + Number(index + 1) + ". " + escapeHtml(value.nama_pendaftar) + '</p>')
+          $('#details').append('<li>' + escapeHtml(value.nama_pendaftar) + '</li>')
         })
       }
     }
@@ -127,5 +145,13 @@ function render(d, m, y) {
 //    }
   })
 }
+function clicked() {
+  if (confirm('Do you want to book?')) {
+    alert('yes')
+  } else {
+    return false;
+  }
+}
+
 </script>
 {% endblock %}

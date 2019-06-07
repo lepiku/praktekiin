@@ -18,5 +18,6 @@ urlpatterns = [
     path('ubah/profil/', views.ProfilUpdate.as_view(), name='ubah_profil'),
     path('ubah/kepala-keluarga/', views.KepalaKeluargaUpdate.as_view(), name='ubah_kk'),
     path('ubah/password/', views.ubah_password, name='ubah_password'),
+    path('tambah', views.tambah, name='tambah'),
 ]
 
