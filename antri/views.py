@@ -109,16 +109,17 @@ def details(request):
         booked = 'Tambah'
         url = reverse('antri:tambah')
 
+        buka = '17.00'
+        tutup = '20.00'
         try:
-            data = list(Hari.objects.get(
-                    tanggal__day=day,
-                    tanggal__month=month,
-                    tanggal__year=year).pendaftaran_set.all().values())
+            hari = Hari.objects.get(tanggal__day=day, tanggal__month=month,
+                tanggal__year=year)
 
         except Hari.DoesNotExist as e:
             data = None
 
         else:
+            data = list(hari.pendaftaran_set.all().values())
             for i in range(len(data)):
                 pengguna = Pengguna.objects.get(id=data[i]['pengguna_id'])
                 data[i]['nama_pendaftar'] = pengguna.nama
@@ -127,8 +128,11 @@ def details(request):
                     url = reverse('antri:kurang')
                     print(url)
 
+            buka = hari.waktu_buka
+            tutup = hari.waktu_tutup
+
         return JsonResponse({'data': data, 'month_name': nama_bulan[month],
-            'booked': booked, 'url': url})
+            'booked': booked, 'url': url, 'buka': buka, 'tutup': tutup})
 
     return HttpResponseRedirect(reverse('antri:404'))
 

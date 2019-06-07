@@ -12,7 +12,10 @@ class KepalaKeluarga(models.Model):
     alamat = models.TextField()
 
     def __str__(self):
-        return str(self.id) + ": " + str(self.nama)
+        first = self.pengguna_set.first().nama
+        if len(first) > 32:
+            first = first[:32] + '...'
+        return "{}: {}".format(self.nama, first)
 
 class Pengguna(models.Model):
     nama = models.CharField(max_length=128)
@@ -24,7 +27,9 @@ class Pengguna(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.nama)
+        if len(self.nama) > 32:
+            return self.nama[:32] + '...'
+        return self.nama
 
 class Hari(models.Model):
     tanggal = models.DateField()
@@ -32,9 +37,7 @@ class Hari(models.Model):
     waktu_tutup = models.TimeField(default='20:00:00')
 
     def __str__(self):
-        return str(self.tanggal)
-    # def get_absolute_url(self):
-        # return
+        return '{} ({})'.format(self.tanggal, len(self.pendaftaran_set.all()))
 
 class Pendaftaran(models.Model):
     watu_daftar = models.DateTimeField(auto_now=True)

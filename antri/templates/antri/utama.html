@@ -78,22 +78,26 @@ th {
   <div class="card">
     <p>
     <b>Tanggal:</b>
-    <div id="date">Silahkan klik sebuah tanggal</div>
+    <span id="date">Klik sebuah tanggal</span>
+    </p>
+    <p>
+    <span id="buka">Jam Buka: -</span><br>
+    <span id="tutup">Jam Tutup: -</span>
     </p>
     <form id="form" method="POST">
       {% csrf_token %}
-      <input type='hidden' name='tahun' id='tahun'>
-      <input type='hidden' name='bulan' id='bulan'>
-      <input type='hidden' name='hari' id='hari'>
-      <input type="submit" class="button" id="button" value="tambah">
+      <input type="hidden" name="tahun" id="tahun">
+      <input type="hidden" name="bulan" id="bulan">
+      <input type="hidden" name="hari" id="hari">
+      <input type="hidden" class="button" id="button" value="">
     </form>
     <div id="daftar"></div>
     <p>
     <b>Keterangan:</b>
-    <ol>
-      <div id="details">Nama2 yang daftar</div>
-    </ol>
     </p>
+    <ol>
+      <div id="details">Nama-nama pendaftar</div>
+    </ol>
   </div>
 </div>
 {% endblock %}
@@ -123,15 +127,21 @@ function render(d, m, y) {
       $('#bulan').val(m)
       $('#hari').val(d)
 
+      // change form and url if 
       $('#form').attr('action', result.url)
-      $('#button').attr('value', result.booked)
+      $('#button').attr('type', 'submit')
+      $('#button').val(result.booked)
+
+      $('#buka').html('Jam Buka: ' + result.buka.slice(0, 5))
+      $('#tutup').html('Jam Tutup: ' + result.tutup.slice(0, 5))
+
       // list pengguna who booked that day
       data = result.data
-      $('#details').html('')
-      if (data === null) {
-        $('#details').html('Tidak ada yang daftar')
+      if (data === null || data.length === 0) {
+        $('#details').html('Belum ada yang daftar')
       }
       else {
+        $('#details').html('')
         $.each(data, function(index, value) {
           $('#details').append('<li>' + escapeHtml(value.nama_pendaftar) + '</li>')
         })
