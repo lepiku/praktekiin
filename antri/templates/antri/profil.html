@@ -1,4 +1,17 @@
 {% extends 'antri/base.html' %}
+{% block style %}
+<style>
+table {
+  border-collapse: collapse;
+}
+th, td {
+  padding: 8px;
+}
+tr:nth-child(even) {
+  background-color: #abdad5;
+}
+</style>
+{% endblock %}
 {% block content %}
 <div class="card">
   <table id="pengguna">
