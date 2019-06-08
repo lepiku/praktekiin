@@ -31,7 +31,7 @@ a {
 }
 #left {
   display: flex;
-  min-width: 291px;
+  white-space: nowrap;
 }
 #right {
   max-width: 720px;
@@ -63,7 +63,7 @@ a {
 .dropdown-content a:hover {background-color: #e3f2ee;}
 .dropdown:hover .dropdown-content {display: block;}
 .spacing {
-  max-width: 1366px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 .content {
@@ -77,7 +77,6 @@ a {
   border-radius: 10px;
   margin: 10px;
   padding: 15px;
-  width: 100%;
 }
 .button {
   font-family: 'Muli', sans-serif;
@@ -113,7 +112,7 @@ a {
           <div id="left">
             <a href="{% url 'antri:utama' %}">
               <div id="item">
-                <b>Halaman Utama</b>
+                <b>{% block utama %}Halaman Utama{% endblock %}</b>
               </div>
             </a>
             <a href="{% url 'antri:tentang' %}">

@@ -3,20 +3,16 @@
 <style>
 .flex {
   display: flex;
-  width: 100%
-}
-@media (max-width: 640px) {
-  .flex {
-    flex-direction: column;
-  }
+  width: 100%;
+  justify-content: center;
 }
 .calendar {
-  width: 640px;
+  margin: auto;
 }
 table {
   table-layout: fixed;
   border-radius: 10px;
-  width: 640px;
+  width: 630px;
 }
 th {
   font-weight: normal;
@@ -62,41 +58,104 @@ th {
   display: flex;
   justify-content: center;
 }
+.detail {
+  display: flex;
+  justify-content: space-between;
+}
+.card-detail {
+  width: 100%;
+}
+ol {
+  padding: 0 0 0 20px;
+}
+@media (max-width: 1200px) {
+  .detail {
+    flex-direction: column;
+  }
+}
+@media (max-width: 1000px) {
+  .flex {
+    flex-direction: column;
+  }
+  table {
+    margin: auto;
+  }
+  .card-detail {
+    width: auto;
+  }
+  .detail {
+    flex-direction: row;
+  }
+}
+@media (max-width: 720px) {
+  table {
+    width: 92vw;
+  }
+  .card {
+    margin: 10px 0;
+    border-radius: 0;
+  }
+  .content {
+    margin: 20px 0;
+  }
+  th .cell {
+    color: transparent;
+  }
+  th .cell:before { color: black; }
+  th.sun .cell:before { content: 'Mi'; }
+  th.mon .cell:before { content: 'Sn'; }
+  th.tue .cell:before { content: 'Sl'; }
+  th.wed .cell:before { content: 'Rb'; }
+  th.thu .cell:before { content: 'Km'; }
+  th.fri .cell:before { content: 'Jm'; }
+  th.sat .cell:before { content: 'Sb'; }
+}
+@media (max-width: 400px) {
+  .detail {
+    flex-direction: column;
+  }
+}
 </style>
 {% endblock %}
+{% block utama %}Hari Ini{% endblock %}
 {% block content %}
 <div class="flex">
-  <div class="card">
-    <div class="calendar">
-      {{ calendar }}
-      <div class="navigation">
-        <a class="button" href="{% url 'antri:utama_month' data.prev_year data.prev_month %}">Sebelum</a>
-        <a class="button" href="{% url 'antri:utama_month' data.next_year data.next_month %}">Setelah</a>
+  <div>
+    <div class="card">
+      <div class="calendar">
+        {{ calendar }}
+        <div class="navigation">
+          <a class="button" href="{% url 'antri:utama_month' data.prev_year data.prev_month %}">Sebelum</a>
+          <a class="button" href="{% url 'antri:utama_month' data.next_year data.next_month %}">Setelah</a>
+        </div>
       </div>
     </div>
   </div>
-  <div class="card">
-    <p>
-    <b>Tanggal:</b>
-    <span id="date">Klik sebuah tanggal</span>
-    </p>
-    <p>
-    <span id="buka">Jam Buka: -</span><br>
-    <span id="tutup">Jam Tutup: -</span>
-    </p>
-    <form id="form" method="POST">
-      {% csrf_token %}
-      <input type="hidden" name="tahun" id="tahun">
-      <input type="hidden" name="bulan" id="bulan">
-      <input type="hidden" name="hari" id="hari">
-      <input type="hidden" class="button" id="button" value="">
-    </form>
-    <div id="daftar"></div>
+  <div class="card card-detail">
+    <div class="detail">
+      <div>
+        <p>
+        <b>Tanggal:</b>
+        <span id="date">Klik sebuah tanggal</span>
+        </p>
+        <p>
+        <span id="buka">Jam Buka: -</span><br>
+        <span id="tutup">Jam Tutup: -</span>
+        </p>
+      </div>
+      <form id="form" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="tahun" id="tahun">
+        <input type="hidden" name="bulan" id="bulan">
+        <input type="hidden" name="hari" id="hari">
+        <input type="hidden" class="button" id="button" value="">
+      </form>
+    </div>
     <p>
     <b>Keterangan:</b>
     </p>
     <ol>
-      <div id="details">Nama-nama pendaftar</div>
+      <div id="names">Nama-nama pendaftar</div>
     </ol>
   </div>
 </div>
@@ -138,12 +197,12 @@ function render(d, m, y) {
       // list pengguna who booked that day
       data = result.data
       if (data === null || data.length === 0) {
-        $('#details').html('Belum ada yang daftar')
+        $('#names').html('Belum ada yang daftar')
       }
       else {
-        $('#details').html('')
+        $('#names').html('')
         $.each(data, function(index, value) {
-          $('#details').append('<li>' + escapeHtml(value.nama_pendaftar) + '</li>')
+          $('#names').append('<li>' + escapeHtml(value.nama_pendaftar) + '</li>')
         })
       }
     },
