@@ -46,6 +46,7 @@ a {
 .dropdown #item {
   cursor: default;
 }
+.dropdown:hover .dropdown-content {display: block;}
 .dropdown-content {
   display: none;
   position: absolute;
@@ -61,7 +62,6 @@ a {
   display: block;
 }
 .dropdown-content a:hover {background-color: #e3f2ee;}
-.dropdown:hover .dropdown-content {display: block;}
 .spacing {
   max-width: 1200px;
   margin: 0 auto;
@@ -102,6 +102,28 @@ a {
   color: red;
   font-size: 14px;
 }
+#bar {
+  display: none;
+}
+#bar div {
+  width: 28px;
+  height: 3px;
+  border-radius: 2px;
+}
+#bar1 {
+  background-color: white;
+}
+#bar2 {
+  height: 6px !important;
+}
+@media (max-width: 720px) {
+  #name {
+    display: none;
+  }
+  #bar {
+    display: block;
+  }
+}
     </style>
     {% block style %}{% endblock %}
   </head>
@@ -125,8 +147,15 @@ a {
           <div id="right">
             <div class="dropdown">
               <div id="item">
-                <div style="height: 25px; overflow: hidden">
+                <div id="name" style="height: 25px; overflow: hidden">
                   {{ request.user.pengguna.nama }}
+                </div>
+                <div id="bar">
+                  <div id="bar1"></div>
+                  <div id="bar2"></div>
+                  <div id="bar1"></div>
+                  <div id="bar2"></div>
+                  <div id="bar1"></div>
                 </div>
               </div>
               <div class="dropdown-content">

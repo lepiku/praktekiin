@@ -100,17 +100,21 @@ ol {
   }
   th .cell {
     color: transparent;
+    overflow: hidden;
   }
-  th .cell:before { color: black; }
-  th.sun .cell:before { content: 'Mi'; }
+  th .cell:before { color: black;}
+  th.sun .cell:before { content: 'Mn'; }
   th.mon .cell:before { content: 'Sn'; }
   th.tue .cell:before { content: 'Sl'; }
   th.wed .cell:before { content: 'Rb'; }
   th.thu .cell:before { content: 'Km'; }
   th.fri .cell:before { content: 'Jm'; }
   th.sat .cell:before { content: 'Sb'; }
+  .card-detail {
+    padding: 15px 24px;
+  }
 }
-@media (max-width: 400px) {
+@media (max-width: 420px) {
   .detail {
     flex-direction: column;
   }
