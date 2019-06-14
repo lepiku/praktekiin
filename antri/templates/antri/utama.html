@@ -1,18 +1,12 @@
 {% extends 'antri/base.html' %}
+
 {% block style %}
 <style>
-.flex {
-  display: flex;
-  width: 100%;
-  justify-content: center;
-}
-.calendar {
-  margin: auto;
-}
 table {
   table-layout: fixed;
-  border-radius: 10px;
-  width: 630px;
+  max-width: 720px;
+  width: 100%;
+  margin: auto;
 }
 th {
   font-weight: normal;
@@ -22,9 +16,6 @@ th {
   padding: 8px;
   background-color: #009688;
   color: #fff;
-}
-.margin {
-  margin: 4px;
 }
 .cell {
   cursor: pointer;
@@ -49,7 +40,7 @@ th {
   color: #009688;
   vertical-align: top;
 }
-.data {
+.amount {
   font-weight: bold;
   float: right;
   color: black;
@@ -62,80 +53,34 @@ th {
   display: flex;
   justify-content: space-between;
 }
-.card-detail {
-  width: 100%;
-}
-ol {
-  padding: 0 0 0 20px;
-}
-@media (max-width: 1200px) {
-  .detail {
-    flex-direction: column;
-  }
-}
-@media (max-width: 1000px) {
-  .flex {
-    flex-direction: column;
-  }
-  table {
-    margin: auto;
-  }
-  .card-detail {
-    width: auto;
-  }
-  .detail {
-    flex-direction: row;
-  }
-}
 @media (max-width: 720px) {
-  table {
-    width: 92vw;
-  }
-  .card {
-    margin: 10px 0;
-    border-radius: 0;
-  }
-  .content {
-    margin: 20px 0;
-  }
   th .cell {
     color: transparent;
     overflow: hidden;
   }
-  th .cell:before { color: black;}
-  th.sun .cell:before { content: 'Mn'; }
-  th.mon .cell:before { content: 'Sn'; }
-  th.tue .cell:before { content: 'Sl'; }
-  th.wed .cell:before { content: 'Rb'; }
-  th.thu .cell:before { content: 'Km'; }
-  th.fri .cell:before { content: 'Jm'; }
-  th.sat .cell:before { content: 'Sb'; }
-  .card-detail {
-    padding: 15px 24px;
-  }
-}
-@media (max-width: 420px) {
-  .detail {
-    flex-direction: column;
-  }
+  th .cell:before { color: black }
+  th.sun .cell:before { content: 'Mn' }
+  th.mon .cell:before { content: 'Sn' }
+  th.tue .cell:before { content: 'Sl' }
+  th.wed .cell:before { content: 'Rb' }
+  th.thu .cell:before { content: 'Km' }
+  th.fri .cell:before { content: 'Jm' }
+  th.sat .cell:before { content: 'Sb' }
 }
 </style>
 {% endblock %}
+
 {% block utama %}Hari Ini{% endblock %}
+
 {% block content %}
-<div class="flex">
-  <div>
-    <div class="card">
-      <div class="calendar">
-        {{ calendar }}
-        <div class="navigation">
-          <a class="button" href="{% url 'antri:utama_month' data.prev_year data.prev_month %}">Sebelum</a>
-          <a class="button" href="{% url 'antri:utama_month' data.next_year data.next_month %}">Setelah</a>
-        </div>
-      </div>
+  <div class="card">
+    {{ calendar }}
+    <div class="navigation">
+      <a class="button" href="{% url 'antri:utama_month' data.prev_year data.prev_month %}">Sebelum</a>
+      <a class="button" href="{% url 'antri:utama_month' data.next_year data.next_month %}">Setelah</a>
     </div>
   </div>
-  <div class="card card-detail">
+  <div class="card">
     <div class="detail">
       <div>
         <p>
@@ -162,7 +107,6 @@ ol {
       <div id="names">Nama-nama pendaftar</div>
     </ol>
   </div>
-</div>
 {% endblock %}
 
 {% block script %}
@@ -190,7 +134,7 @@ function render(d, m, y) {
       $('#bulan').val(m)
       $('#hari').val(d)
 
-      // change form and url if 
+      // change form and url
       $('#form').attr('action', result.url)
       $('#button').attr('type', 'submit')
       $('#button').val(result.booked)

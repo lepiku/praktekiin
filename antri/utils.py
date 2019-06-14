@@ -31,7 +31,7 @@ class Calendar(HTMLCalendar):
         else:
             data = ''
             if banyak > 0:
-                data = '<span class="data">%s</span>' % banyak
+                data = '<span class="amount">%s</span>' % banyak
 
             now = timezone.now()
             today = ""

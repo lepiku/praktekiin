@@ -45,14 +45,12 @@ def daftar(request):
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
         form_pengguna = DaftarPenggunaForm(request.POST)
-        print(request.POST)
 
         if form_pengguna.is_valid():
             nama_kk = form_pengguna.cleaned_data['nama_kk']
             kode = 1
             if not KepalaKeluarga.objects.filter(nama=nama_kk) \
-                    or 'new' in request.POST \
-                    or request.POST['kode'] == '1':
+                    or request.POST['kode'] != '0':
                 form_kk = DaftarKKForm(request.POST)
                 # TODO error still hidden
             else:
@@ -106,7 +104,7 @@ def details(request):
         day = int(request.GET.get('day'))
         month = int(request.GET.get('month'))
         year = int(request.GET.get('year'))
-        booked = 'Tambah'
+        booked = '+'
         url = reverse('antri:tambah')
 
         buka = '17.00'
@@ -124,7 +122,7 @@ def details(request):
                 pengguna = Pengguna.objects.get(id=data[i]['pengguna_id'])
                 data[i]['nama_pendaftar'] = pengguna.nama
                 if pengguna == request.user.pengguna:
-                    booked = 'Kurang'
+                    booked = '-'
                     url = reverse('antri:kurang')
                     print(url)
 

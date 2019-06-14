@@ -12,7 +12,7 @@ class KepalaKeluarga(models.Model):
     alamat = models.TextField()
 
     def __str__(self):
-        return "{} ({})".format(self.nama, self.pengguna_set.count())
+        return "{} ({})".format(self.nama, self.pengguna_set.first())
 
 class Pengguna(models.Model):
     nama = models.CharField(max_length=128)
