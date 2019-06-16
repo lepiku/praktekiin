@@ -96,6 +96,9 @@ def daftar(request):
             {'form': form_pengguna, 'kode': 0})
 
 def details(request):
+    """
+    Show the names who booked that day.
+    """
     nama_bulan = ("", "Januari", "Februari", "Maret", "April", "Mei",
             "Juni", "Juli", "Agustus", "September", "Oktober", "November",
             "Desember")
@@ -104,8 +107,8 @@ def details(request):
         day = int(request.GET.get('day'))
         month = int(request.GET.get('month'))
         year = int(request.GET.get('year'))
-        booked = '+'
-        url = reverse('antri:tambah')
+        # option = 'Tambah'
+        # url = reverse('antri:tambah')
 
         buka = '17.00'
         tutup = '20.00'
@@ -117,20 +120,24 @@ def details(request):
             data = None
 
         else:
-            data = list(hari.pendaftaran_set.all().values())
-            for i in range(len(data)):
-                pengguna = Pengguna.objects.get(id=data[i]['pengguna_id'])
-                data[i]['nama_pendaftar'] = pengguna.nama
-                if pengguna == request.user.pengguna:
-                    booked = '-'
-                    url = reverse('antri:kurang')
-                    print(url)
+            data = []
+            for q in hari.pendaftaran_set.all():
+                kk = KepalaKeluarga.objects.get(id=q.kepala_keluarga.id)
 
+                pendaftars = []
+                for p in q.pendaftar_set.all():
+                    pendaftars.append(p.nama)
+
+                data.append({
+                    'kepala_keluarga': kk.nama, 'pendaftars': pendaftars})
+
+            print(data)
             buka = hari.waktu_buka
             tutup = hari.waktu_tutup
 
         return JsonResponse({'data': data, 'month_name': nama_bulan[month],
-            'booked': booked, 'url': url, 'buka': buka, 'tutup': tutup})
+            # 'option': option, 'url': url, 'buka': buka, 'tutup': tutup})
+            'buka': buka, 'tutup': tutup})
 
     return HttpResponseRedirect(reverse('antri:404'))
 
@@ -200,40 +207,3 @@ def ubah_password(request):
         form = UbahPasswordForm(request.user)
     return render(request, 'antri/ubah_password.html', {'form': form})
 
-def tambah(request):
-    if request.method == 'POST':
-        tahun = int(request.POST['tahun'])
-        bulan = int(request.POST['bulan'])
-        hari = int(request.POST['hari'])
-
-        tanggal = date(year=tahun, month=bulan, day=hari)
-        if Hari.objects.filter(tanggal=tanggal):
-            hari = Hari.objects.get(tanggal=tanggal)
-        else:
-            hari = Hari.objects.create(tanggal=tanggal)
-            hari.save()
-
-        pengguna = request.user.pengguna
-        tambah = Pendaftaran.objects.create(pengguna=pengguna, hari=hari)
-        tambah.save()
-
-        return HttpResponseRedirect(reverse('antri:utama_month',
-            kwargs={'year':tahun, 'month':bulan}))
-    # return HttpResponseRedirect(reverse('antri:utama'))
-
-def kurang(request):
-    if request.method == 'POST':
-
-        tahun = int(request.POST['tahun'])
-        bulan = int(request.POST['bulan'])
-        hari = int(request.POST['hari'])
-
-        tanggal = date(year=tahun, month=bulan, day=hari)
-        hari = Hari.objects.get(tanggal=tanggal)
-        pengguna = request.user.pengguna
-
-        hari.pendaftaran_set.get(pengguna=pengguna).delete()
-
-        return HttpResponseRedirect(reverse('antri:utama_month',
-            kwargs={'year':tahun, 'month':bulan}))
-    # return HttpResponseRedirect(reverse('antri:utama'))

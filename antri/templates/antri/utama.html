@@ -2,7 +2,7 @@
 
 {% block style %}
 <style>
-table {
+.calendar {
   table-layout: fixed;
   max-width: 720px;
   width: 100%;
@@ -94,18 +94,16 @@ th {
       </div>
       <form id="form" method="POST">
         {% csrf_token %}
-        <input type="hidden" name="tahun" id="tahun">
-        <input type="hidden" name="bulan" id="bulan">
-        <input type="hidden" name="hari" id="hari">
         <input type="hidden" class="button" id="button" value="">
       </form>
     </div>
     <p>
     <b>Keterangan:</b>
     </p>
-    <ol>
-      <div id="names">Nama-nama pendaftar</div>
-    </ol>
+    <table>
+      <tbody id="names">
+      </tbody>
+    </table>
   </div>
 {% endblock %}
 
@@ -118,7 +116,7 @@ th {
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+        .replace(/'/g, "&#039;");
   }
 function render(d, m, y) {
   $.ajax({
@@ -135,23 +133,31 @@ function render(d, m, y) {
       $('#hari').val(d)
 
       // change form and url
-      $('#form').attr('action', result.url)
-      $('#button').attr('type', 'submit')
-      $('#button').val(result.booked)
+      //$('#form').attr('action', result.url)
+      //$('#button').attr('type', 'submit')
+      //$('#button').val(result.option)
 
       $('#buka').html('Jam Buka: ' + result.buka.slice(0, 5))
       $('#tutup').html('Jam Tutup: ' + result.tutup.slice(0, 5))
 
       // list pengguna who booked that day
-      data = result.data
+      var data = result.data
       if (data === null || data.length === 0) {
         $('#names').html('Belum ada yang daftar')
       }
       else {
-        $('#names').html('')
-        $.each(data, function(index, value) {
-          $('#names').append('<li>' + escapeHtml(value.nama_pendaftar) + '</li>')
-        })
+        var inner = '';
+        console.log(data.length)
+        for (var i = 0; i < data.length; i++) {
+          for (var j = 0; j < data[i].pendaftars.length; j++) {
+            inner += '<tr>'
+            if (j === 0) {
+              inner += '<td rowspan="' + data[i].pendaftars.length + '">' + data[i].kepala_keluarga + '</td>'
+            }
+            inner += '<td>' + data[i].pendaftars[j] + '</td></tr>'
+          }
+         }
+        $('#names').html(inner)
       }
     },
     error: function(a, b) {
@@ -167,6 +173,5 @@ function clicked() {
     return false;
   }
 }
-
 </script>
 {% endblock %}

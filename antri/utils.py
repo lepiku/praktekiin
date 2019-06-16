@@ -3,23 +3,23 @@ from .models import Hari
 from django.utils import timezone
 
 class Calendar(HTMLCalendar):
+    nama_bulan = ("", "Januari", "Februari", "Maret", "April", "Mei",
+       "Juni", "Juli", "Agustus", "September", "Oktober", "November",
+       "Desember")
+    nama_hari = ("Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu",
+       "Minggu")
+    cssclass_month = "calendar"
+
     def __init__(self, hari=Hari):
         super().__init__(firstweekday=6)
         self.hari = hari
-        self.nama_bulan = ("", "Januari", "Februari", "Maret", "April", "Mei",
-                "Juni", "Juli", "Agustus", "September", "Oktober", "November",
-                "Desember")
-        self.nama_hari = ("Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu",
-                "Minggu")
 
     def formatday(self, day, weekday):
         """Return a day as a table cell."""
-        if self.hari.objects.filter(tanggal__year=self.year,
-                tanggal__month=self.month, tanggal__day=day):
-            banyak = len(self.hari.objects.get(tanggal__year=self.year,
-                tanggal__month=self.month, tanggal__day=day)
-                    .pendaftaran_set.all())
-        else:
+        try:
+            banyak = self.hari.objects.get(tanggal__year=self.year,
+                tanggal__month=self.month, tanggal__day=day).jumlah_pendaftar()
+        except:
             banyak = 0
 
         # if day is not in the month

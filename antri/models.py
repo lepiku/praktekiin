@@ -39,7 +39,13 @@ class Hari(models.Model):
     waktu_tutup = models.TimeField(default='20:00:00')
 
     def __str__(self):
-        return '{} ({})'.format(self.tanggal, len(self.pendaftaran_set.all()))
+        return '{} ({})'.format(self.tanggal, self.jumlah_pendaftar())
+
+    def jumlah_pendaftar(self):
+        counter = 0
+        for p in self.pendaftaran_set.all():
+            counter += len(p.pendaftar_set.all())
+        return counter
 
 class Pendaftaran(models.Model):
     watu_daftar = models.DateTimeField(auto_now_add=True)
@@ -48,7 +54,7 @@ class Pendaftaran(models.Model):
     hari = models.ForeignKey(Hari, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.pengguna) + ": " + str(self.hari.tanggal)
+        return str(self.kepala_keluarga) + ": " + str(self.hari.tanggal)
 
 class Pendaftar(models.Model):
     pendaftaran = models.ForeignKey(Pendaftaran, on_delete=models.CASCADE)
