@@ -2,18 +2,20 @@ from django import forms
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm
-from .models import REGEX_TELP, JENIS_KELAMIN, KepalaKeluarga
+from .models import REGEX_TELP, JENIS_KELAMIN, NAME_LENGTH, KepalaKeluarga
 import re
-from django.contrib.auth import authenticate, get_user_model, password_validation
+from django.contrib.auth import authenticate, get_user_model, \
+        password_validation
 
 class DaftarPenggunaForm(forms.Form):
-    nama = forms.CharField(label='Nama Lengkap', max_length=128)
+    nama = forms.CharField(label='Nama Lengkap', max_length=NAME_LENGTH)
     tanggal_lahir = forms.DateField() # TODO error meesage still 'Enter a valid date'
     # TODO https://docs.djangoproject.com/en/2.1/ref/forms/fields/#datefield
     jenis_kelamin = forms.ChoiceField(choices=JENIS_KELAMIN)
     telp = forms.CharField(label='No. HP / Telp', validators=[REGEX_TELP],
             max_length=18)
-    nama_kk = forms.CharField(label='Nama Kepala Keluarga', max_length=128)
+    nama_kk = forms.CharField(label='Nama Kepala Keluarga',
+            max_length=NAME_LENGTH)
 
     username = forms.CharField(max_length=32)
     password = forms.CharField(widget=forms.PasswordInput())
@@ -63,7 +65,8 @@ class DaftarKKForm(forms.Form):
     password = forms.CharField(widget=forms.HiddenInput)
     ulangi_password = forms.CharField(widget=forms.HiddenInput)
 
-    nama_kk = forms.CharField(label='Nama Kepala Keluarga', max_length=128)
+    nama_kk = forms.CharField(label='Nama Kepala Keluarga',
+            max_length=NAME_LENGTH)
     alamat = forms.CharField(label='Alamat', max_length=256,
             widget=forms.Textarea)
 
@@ -98,6 +101,15 @@ class PilihKKForm(forms.Form):
         self.fields['kk'] = forms.ModelChoiceField(
                 KepalaKeluarga.objects.filter(nama=nama_kk),
                 label='Kepala Keluarga')
+
+class PendaftarForm(forms.Form):
+    pendaftar = forms.CharField()
+
+    def clean_pendaftar(self):
+        pendaftar = self.data.get('pendaftar')
+        if re.search(r'[`~!@#$%^&*()_+=\[\]{}\\|;:"<>/?\d]', pendaftar):
+            raise forms.ValidationError('Pendaftar tidak boleh mengandung karakter spesial kecuali \' dan -')
+        return str.title(pendaftar)
 
 class UbahPasswordForm(PasswordChangeForm):
     error_messages = {

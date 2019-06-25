@@ -1,24 +1,64 @@
+from django.contrib.auth import authenticate, login, logout, \
+        update_session_auth_hash
+from django.http import JsonResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect
-from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.contrib.auth import authenticate, login, logout
-from .models import Pengguna, User, KepalaKeluarga, Hari, Pendaftaran
-from .forms import DaftarPenggunaForm, DaftarKKForm, UbahPasswordForm, \
-        PilihKKForm
-from .utils import Calendar
 from django.utils.safestring import mark_safe
 from django.utils import timezone
-from django.http import JsonResponse
+from django.utils.html import escape
 from django.views.generic.edit import UpdateView
-# from django.contrib import messages
-from django.contrib.auth import update_session_auth_hash
-from datetime import date
+
+from .forms import DaftarPenggunaForm, DaftarKKForm, PilihKKForm, \
+        UbahPasswordForm, PendaftarForm
+from .models import Pengguna, User, KepalaKeluarga, Hari, Pendaftaran, \
+        Pendaftar
+from .utils import Calendar
 
 def utama(request):
     now = timezone.now()
     return utama_month(request, now.year, now.month)
 
 def utama_month(request, year, month):
+    if not request.user.is_authenticated:
+        return render(request, 'antri/bukan_utama.html')
+
+    print('here')
+    if request.method == 'POST':
+        print('it is post')
+        form = PendaftarForm(request.POST)
+        if form.is_valid():
+            pendaftar = form.cleaned_data['pendaftar']
+            pendaftars = pendaftar.split(',')
+            pendaftars = [' '.join(p.split()) for p in pendaftars]
+            print(pendaftars)
+            print(request.POST)
+
+            tanggal = timezone.datetime(int(request.POST['tahun']),
+                    int(request.POST['bulan']), int(request.POST['hari']))
+
+            kk = request.user.pengguna.kepala_keluarga
+            # create Hari if doesn't exist
+            if Hari.objects.filter(tanggal=tanggal):
+                hari = Hari.objects.get(tanggal=tanggal)
+            else:
+                hari = Hari.objects.create(tanggal=tanggal)
+                hari.save()
+
+            if kk.pendaftaran_set.filter(hari=hari):
+                kk.pendaftaran_set.get(hari=hari).delete()
+
+            pendaftaran = Pendaftaran.objects.create(kepala_keluarga=kk,
+                    hari=hari)
+            pendaftaran.save()
+            for p in pendaftars:
+                Pendaftar.objects.create(pendaftaran=pendaftaran, nama=p).save()
+
+        else:
+            # TODO give warning to user
+            'Nama tidak boleh mengandung simbol'
+            pass
+
+
     prev_month = month - 1
     next_month = month + 1
     prev_year = next_year = year
@@ -29,14 +69,13 @@ def utama_month(request, year, month):
         next_month = 1
         next_year = year + 1
 
-    data = {'prev_year': prev_year, 'prev_month': prev_month,
+    data = {'month': month, 'year': year,
+            'prev_year': prev_year, 'prev_month': prev_month,
             'next_year': next_year, 'next_month': next_month}
 
-    if request.user.is_authenticated:
-        calendar = Calendar().formatmonth(year, month)
-        return render(request, 'antri/utama.html', {'calendar': mark_safe(calendar),
-            'data': data})
-    return render(request, 'antri/bukan_utama.html')
+    calendar = Calendar().formatmonth(year, month)
+    return render(request, 'antri/utama.html',
+            {'calendar': mark_safe(calendar), 'data': data})
 
 def tentang(request):
     return render(request, 'antri/tentang.html')
@@ -107,7 +146,8 @@ def details(request):
         day = int(request.GET.get('day'))
         month = int(request.GET.get('month'))
         year = int(request.GET.get('year'))
-        # option = 'Tambah'
+        option = 'Tambah'
+        pendaftar = []
         # url = reverse('antri:tambah')
 
         buka = '17.00'
@@ -127,6 +167,11 @@ def details(request):
                 pendaftars = []
                 for p in q.pendaftar_set.all():
                     pendaftars.append(p.nama)
+                    if kk == request.user.pengguna.kepala_keluarga:
+                        pendaftar.append(p.nama)
+
+                if kk == request.user.pengguna.kepala_keluarga:
+                    option = 'Ubah'
 
                 data.append({
                     'kepala_keluarga': kk.nama, 'pendaftars': pendaftars})
@@ -136,15 +181,11 @@ def details(request):
             tutup = hari.waktu_tutup
 
         return JsonResponse({'data': data, 'month_name': nama_bulan[month],
-            # 'option': option, 'url': url, 'buka': buka, 'tutup': tutup})
-            'buka': buka, 'tutup': tutup})
+            'option': option, 'buka': buka, 'tutup': tutup, 'pendaftar': ', '.join(pendaftar)})
 
-    return HttpResponseRedirect(reverse('antri:404'))
+    raise Http404('no data on views.details')
 
 def profil(request):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('antri:utama'))
-
     user = request.user
     pengguna = user.pengguna
     kepala_keluarga = pengguna.kepala_keluarga
@@ -192,17 +233,13 @@ class KepalaKeluargaUpdate(UpdateView):
     def get_success_url(self):
         return reverse('antri:profil')
 
-
 def ubah_password(request):
     if request.method == 'POST':
         form = UbahPasswordForm(request.user, request.POST)
         if form.is_valid():
             user = form.save()
             update_session_auth_hash(request, user)  # Important!
-            # messages.success(request, 'Your password was successfully updated!')
             return HttpResponseRedirect(reverse('antri:profil'))
-        # else:
-            # messages.error(request, 'Please correct the error below.')
     else:
         form = UbahPasswordForm(request.user)
     return render(request, 'antri/ubah_password.html', {'form': form})

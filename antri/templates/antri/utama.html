@@ -24,16 +24,15 @@ th {
   background-color: #eff0ed;
   transition: background-color 0.2s ease-in-out;
 }
-.month th .cell {
+.cell.nohover {
   cursor: auto;
-  background-color: #abdad5;
 }
 .sun .cell { background-color: #fcd8e7; }
 .today.cell { background-color: yellow; }
-.cell:hover { background-color: #d4d4d4; }
-.cell:active {
-  background-color: #abdad5;
-  transition: background-color 0.01s ease-in-out;
+.cell:not(.nohover):hover { background-color: #d4d4d4; }
+.cell:not(.nohover):active {
+  background-color: #abdad5 !important;
+  transition: background-color 0s ease-in-out;
 }
 .date {
   font-size: 14px;
@@ -49,7 +48,7 @@ th {
   display: flex;
   justify-content: center;
 }
-.detail {
+.info {
   display: flex;
   justify-content: space-between;
 }
@@ -67,6 +66,27 @@ th {
   th.fri .cell:before { content: 'Jm' }
   th.sat .cell:before { content: 'Sb' }
 }
+.detail {
+  width: 100%;
+  border-spacing: 5px;
+}
+.detail th, .detail td {
+  padding: 3px;
+}
+.detail th {
+  color: #fff;
+  font-weight: bold;
+  background-color: #009688;
+}
+#kk {
+  width: 40%;
+}
+.detail tr:nth-child(odd) {
+  background-color: #eff0ed;
+}
+#nama {
+  width: 60%;
+}
 </style>
 {% endblock %}
 
@@ -74,6 +94,7 @@ th {
 
 {% block content %}
   <div class="card">
+    <h2 style="text-align: center">Kalender</h2>
     {{ calendar }}
     <div class="navigation">
       <a class="button" href="{% url 'antri:utama_month' data.prev_year data.prev_month %}">Sebelum</a>
@@ -81,7 +102,7 @@ th {
     </div>
   </div>
   <div class="card">
-    <div class="detail">
+    <div class="info">
       <div>
         <p>
         <b>Tanggal:</b>
@@ -92,15 +113,29 @@ th {
         <span id="tutup">Jam Tutup: -</span>
         </p>
       </div>
-      <form id="form" method="POST">
+  <form method="post">
+      <form id="form" action="{% url 'antri:utama_month' data.year data.month %}" method="POST">
         {% csrf_token %}
-        <input type="hidden" class="button" id="button" value="">
+        <input type="hidden" id="tahun" name="tahun">
+        <input type="hidden" id="bulan" name="bulan">
+        <input type="hidden" id="hari" name="hari">
+        <input type="hidden" id="real-pendaftar">
+        <input type="hidden" id="pendaftar" name="pendaftar">
+        <input type="hidden" onclick="pendaftaran()" class="button" id="button" value="">
+        <input type="hidden" onclick="view()" class="button" id="kembali" value="Gk jadi">
+        <input type="hidden" class="button" id="kirim" value="Simpan">
       </form>
     </div>
     <p>
     <b>Keterangan:</b>
     </p>
-    <table>
+    <table class="detail">
+      <thead>
+        <tr>
+          <th id="kk">Kepala Keluarga</th>
+          <th id="nama">Nama</th>
+        </tr>
+      </thead>
       <tbody id="names">
       </tbody>
     </table>
@@ -110,7 +145,7 @@ th {
 {% block script %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
-  function escapeHtml(unsafe) {
+  function escapeHTML(unsafe) {
     return unsafe
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
@@ -134,8 +169,9 @@ function render(d, m, y) {
 
       // change form and url
       //$('#form').attr('action', result.url)
-      //$('#button').attr('type', 'submit')
-      //$('#button').val(result.option)
+      $('#real-pendaftar').val(result.pendaftar)
+      $('#button').val(result.option)
+      view()
 
       $('#buka').html('Jam Buka: ' + result.buka.slice(0, 5))
       $('#tutup').html('Jam Tutup: ' + result.tutup.slice(0, 5))
@@ -147,14 +183,14 @@ function render(d, m, y) {
       }
       else {
         var inner = '';
-        console.log(data.length)
         for (var i = 0; i < data.length; i++) {
           for (var j = 0; j < data[i].pendaftars.length; j++) {
             inner += '<tr>'
             if (j === 0) {
-              inner += '<td rowspan="' + data[i].pendaftars.length + '">' + data[i].kepala_keluarga + '</td>'
+              inner += '<td id="kk" rowspan="' + data[i].pendaftars.length +
+                '">' + escapeHTML(data[i].kepala_keluarga) + '</td>'
             }
-            inner += '<td>' + data[i].pendaftars[j] + '</td></tr>'
+            inner += '<td id="nama">' + escapeHTML(data[i].pendaftars[j]) + '</td></tr>'
           }
          }
         $('#names').html(inner)
@@ -166,12 +202,20 @@ function render(d, m, y) {
     }
   })
 }
-function clicked() {
-  if (confirm('Do you want to book?')) {
-    alert('yes')
-  } else {
-    return false;
-  }
+function pendaftaran() {
+  console.log('pendaftaran!')
+  $('#pendaftar').attr('type', 'text')
+  $('#button').attr('type', 'hidden')
+  $('#kembali').attr('type', 'button')
+  $('#kirim').attr('type', 'submit')
+}
+function view() {
+  $('#pendaftar').val(document.getElementById('real-pendaftar').value)
+  $('#pendaftar').attr('type', 'hidden')
+  $('#button').attr('type', 'button')
+  $('#kembali').attr('type', 'hidden')
+  $('#kirim').attr('type', 'hidden')
+
 }
 </script>
 {% endblock %}

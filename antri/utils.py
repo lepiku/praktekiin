@@ -54,13 +54,14 @@ class Calendar(HTMLCalendar):
 
         # current month and year
         header_html = '''
-<tr><th colspan="7"><div class="bulan">%s %s</div></th></tr><tr>''' % (
+<tr><th colspan="7"><div class="bulan">%s %s</div></th></tr>
+<tr class="hari">''' % (
         self.nama_bulan[self.month], self.year)
 
         # name of days
         for x in range(7):
             num = (x + self.firstweekday) % 7
-            header_html += '<th class="%s"><div class="cell">%s</div></th>' % (
+            header_html += '<th class="%s"><div class="cell nohover">%s</div></th>' % (
                     self.cssclasses[num], self.nama_hari[num])
         return header_html + '</tr>'
 

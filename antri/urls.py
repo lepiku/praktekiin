@@ -2,6 +2,7 @@ from django.urls import path
 from . import views
 from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic.edit import UpdateView
+from django.contrib.auth.decorators import login_required
 
 app_name = 'antri'
 
@@ -13,11 +14,12 @@ urlpatterns = [
     path('daftar/', views.daftar, name='daftar'),
     path('tentang/', views.tentang, name='tentang'),
     path('data.json/', views.details, name='details'),
-    path('profil/', views.profil, name='profil'),
-    path('ubah/profil/', views.ProfilUpdate.as_view(), name='ubah_profil'),
-    path('ubah/kepala-keluarga/', views.KepalaKeluargaUpdate.as_view(), name='ubah_kk'),
-    path('ubah/password/', views.ubah_password, name='ubah_password'),
-    # path('tambah', views.tambah, name='tambah'),
-    # path('kurang', views.kurang, name='kurang'),
+    path('profil/', login_required(views.profil), name='profil'),
+    path('ubah/profil/',
+        login_required(views.ProfilUpdate.as_view()), name='ubah_profil'),
+    path('ubah/kepala-keluarga/',
+        login_required(views.KepalaKeluargaUpdate.as_view()), name='ubah_kk'),
+    path('ubah/password/',
+        login_required(views.ubah_password), name='ubah_password'),
 ]
 
