@@ -148,8 +148,8 @@ def details(request):
         pendaftar = []
         # url = reverse('antri:tambah')
 
-        buka = '17.00'
-        tutup = '20.00'
+        buka = '17:00'
+        tutup = '20:00'
         try:
             hari = Hari.objects.get(tanggal__day=day, tanggal__month=month,
                 tanggal__year=year)

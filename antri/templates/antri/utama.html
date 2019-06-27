@@ -71,7 +71,7 @@ th {
   border-spacing: 5px;
 }
 .detail th, .detail td {
-  padding: 6px, 12px;
+  padding: 6px 12px;
 }
 .detail th {
   color: #fff;
@@ -87,14 +87,55 @@ th {
 #nama {
   width: 60%;
 }
-textarea {
+#button {
   display: none;
-  margin: 10px 0 auto 0;
+}
+#pendaftaran{
+  display: none;
+  margin: 0 auto;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  background-color: #009688;
+  border-radius: 25px;
+}
+#pendaftaran:target, #pendaftaran:target + #cover {
+  display: block;
+}
+.cancel {
+  position: absolute;
+  padding-bottom: 10px;
+  height: 30px;
+  width: 35px;
+  top: 3px;
+  right: 5px;
+  color: white;
+  font-size: 30px;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+}
+#cover {
+  display: none;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  background: rgba(64, 64, 64, 0.4);
+}
+textarea {
   width: 360px;
   height: 120px;
   padding: 8px;
   font-family: 'Muli', sans-serif;
   font-size: 18px;
+  border-radius: 20px;
+  margin: 45px 15px 0px 15px;
+  border: none;
 }
 </style>
 {% endblock %}
@@ -102,53 +143,61 @@ textarea {
 {% block utama %}Hari Ini{% endblock %}
 
 {% block content %}
-  <div class="card">
-    <h2 style="text-align: center">Kalender</h2>
-    {{ calendar }}
-    <div class="navigation">
-      <a class="button" href="{% url 'antri:utama_month' data.prev_year data.prev_month %}">Sebelum</a>
-      <a class="button" href="{% url 'antri:utama_month' data.next_year data.next_month %}">Setelah</a>
+<div class="card">
+  <h2 style="text-align: center">Kalender</h2>
+  {{ calendar }}
+  <div class="navigation">
+    <a class="button" href="{% url 'antri:utama_month' data.prev_year data.prev_month %}">Sebelum</a>
+    <a class="button" href="{% url 'antri:utama_month' data.next_year data.next_month %}">Setelah</a>
+  </div>
+</div>
+<div class="card">
+  <div class="info">
+    <div>
+      <p>
+      <b>Tanggal:</b>
+      <span id="date">Klik sebuah tanggal</span>
+      </p>
+      <p>
+      <span id="buka">Jam Buka: -</span><br>
+      <span id="tutup">Jam Tutup: -</span>
+      </p>
+    </div>
+    <div>
+      <a type="hidden" onclick="viewCell(); popup()" class="button" id="button"></a>
     </div>
   </div>
-  <div class="card">
-    <div class="info">
-      <div>
-        <p>
-        <b>Tanggal:</b>
-        <span id="date">Klik sebuah tanggal</span>
-        </p>
-        <p>
-        <span id="buka">Jam Buka: -</span><br>
-        <span id="tutup">Jam Tutup: -</span>
-        </p>
-      </div>
-  <form method="post">
-      <form id="form" action="{% url 'antri:utama_month' data.year data.month %}" method="POST">
-        {% csrf_token %}
-        <input type="hidden" id="tahun" name="tahun">
-        <input type="hidden" id="bulan" name="bulan">
-        <input type="hidden" id="hari" name="hari">
-        <input type="hidden" id="real-pendaftar">
-        {{ form.pendaftar }}
-        <input type="hidden" onclick="pendaftaran()" class="button" id="button" value="">
-        <input type="hidden" onclick="viewCell()" class="button" id="kembali" value="Kembali">
-        <input type="hidden" class="button" id="kirim" value="Simpan">
-      </form>
+  <p>
+  <b>Keterangan:</b>
+  </p>
+  <table class="detail">
+    <thead>
+      <tr>
+        <th id="kk">Kepala Keluarga</th>
+        <th id="nama">Nama</th>
+      </tr>
+    </thead>
+    <tbody id="names">
+    </tbody>
+  </table>
+</div>
+<div id="pendaftaran">
+  <a onclick="cancel()" class="cancel">&times;</a>
+  <form id="form" action="{% url 'antri:utama_month' data.year data.month %}#button" method="POST">
+    {% csrf_token %}
+    <input type="hidden" id="tahun" name="tahun">
+    <input type="hidden" id="bulan" name="bulan">
+    <input type="hidden" id="hari" name="hari">
+    <input type="hidden" id="real-pendaftar">
+    <div>
+      {{ form.pendaftar }}
     </div>
-    <p>
-    <b>Keterangan:</b>
-    </p>
-    <table class="detail">
-      <thead>
-        <tr>
-          <th id="kk">Kepala Keluarga</th>
-          <th id="nama">Nama</th>
-        </tr>
-      </thead>
-      <tbody id="names">
-      </tbody>
-    </table>
-  </div>
+    <div>
+      <input type="submit" class="button" id="kirim" value="Simpan">
+    </div>
+  </form>
+</div>
+<div onclick="cancel()" id="cover"></div>
 {% endblock %}
 
 {% block script %}
@@ -177,9 +226,9 @@ function render(d, m, y) {
       $('#hari').val(d)
 
       // change form and url
-      //$('#form').attr('action', result.url)
       $('#real-pendaftar').val(result.pendaftar)
-      $('#button').val(result.option)
+      $('#button').html(result.option)
+      $('#button').css('display', 'block')
       viewCell()
 
       $('#buka').html('Jam Buka: ' + result.buka.slice(0, 5))
@@ -211,18 +260,16 @@ function render(d, m, y) {
     }
   })
 }
-function pendaftaran() {
-  $('#id_pendaftar').css('display', 'block')
-  $('#button').attr('type', 'hidden')
-  $('#kembali').attr('type', 'button')
-  $('#kirim').attr('type', 'submit')
-}
 function viewCell() {
-  $('#id_pendaftar').css('display', 'none')
   $('#id_pendaftar').val(document.getElementById('real-pendaftar').value)
-  $('#button').attr('type', 'button')
-  $('#kembali').attr('type', 'hidden')
-  $('#kirim').attr('type', 'hidden')
+}
+function popup() {
+  $('#pendaftaran').css('display', 'block')
+  $('#cover').css('display', 'block')
+}
+function cancel() {
+  $('#pendaftaran').css('display', 'none')
+  $('#cover').css('display', 'none')
 }
 {% if form.pendaftar.errors %}alert("{{ form.pendaftar.errors.0 }}"){% endif %}
 </script>

@@ -25,8 +25,7 @@ class Calendar(HTMLCalendar):
         # if day is not in the month
         if day == 0:
             return '''
-<td class="%s" />
-            ''' % (self.cssclasses[weekday])
+<td class="%s"></td>''' % (self.cssclasses[weekday])
         # if day is in the month
         else:
             data = ''
