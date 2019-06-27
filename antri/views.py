@@ -159,7 +159,7 @@ def details(request):
 
         else:
             data = []
-            for q in hari.pendaftaran_set.all():
+            for q in hari.pendaftaran_set.all().order_by('waktu_daftar'):
                 kk = KepalaKeluarga.objects.get(id=q.kepala_keluarga.id)
 
                 pendaftars = []
@@ -172,13 +172,18 @@ def details(request):
                     option = 'Ubah'
 
                 data.append({
-                    'kepala_keluarga': kk.nama, 'pendaftars': pendaftars})
+                    'kepala_keluarga': kk.nama,
+                    'pendaftars': pendaftars,
+                    'id': kk.id,
+                    })
 
             buka = hari.waktu_buka
             tutup = hari.waktu_tutup
 
-        return JsonResponse({'data': data, 'month_name': nama_bulan[month],
-            'option': option, 'buka': buka, 'tutup': tutup, 'pendaftar': '\n'.join(pendaftar)})
+        return JsonResponse({
+            'data': data, 'month_name': nama_bulan[month], 'option': option,
+            'buka': buka, 'tutup': tutup, 'pendaftar': '\n'.join(pendaftar)
+            })
 
     raise Http404('no data on views.details')
 
@@ -211,7 +216,8 @@ def profil(request):
 class ProfilUpdate(UpdateView):
     model = Pengguna
     fields = ['nama', 'tanggal_lahir', 'jenis_kelamin', 'telp']
-    template_name = 'antri/ubah_profil.html'
+    template_name = 'antri/ubah.html'
+    extra_context = {'button_label': 'Ubah Profil'}
 
     def get_object(self):
         return self.request.user.pengguna
@@ -219,16 +225,14 @@ class ProfilUpdate(UpdateView):
     def get_success_url(self):
         return reverse('antri:profil')
 
-class KepalaKeluargaUpdate(UpdateView):
+class KepalaKeluargaUpdate(ProfilUpdate):
     model = KepalaKeluarga
     fields = '__all__'
-    template_name = 'antri/ubah_kk.html'
+    template_name = 'antri/ubah.html'
+    extra_context = {'button_label': 'Ubah Kepala Keluarga'}
 
     def get_object(self):
         return self.request.user.pengguna.kepala_keluarga
-
-    def get_success_url(self):
-        return reverse('antri:profil')
 
 def ubah_password(request):
     if request.method == 'POST':
@@ -239,5 +243,5 @@ def ubah_password(request):
             return HttpResponseRedirect(reverse('antri:profil'))
     else:
         form = UbahPasswordForm(request.user)
-    return render(request, 'antri/ubah_password.html', {'form': form})
-
+    return render(request, 'antri/ubah.html',
+            {'form': form, 'button_label': 'Ubah Password'})

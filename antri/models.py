@@ -48,7 +48,7 @@ class Hari(models.Model):
         return counter
 
 class Pendaftaran(models.Model):
-    watu_daftar = models.DateTimeField(auto_now_add=True)
+    waktu_daftar = models.DateTimeField(auto_now_add=True)
     kepala_keluarga = models.ForeignKey(KepalaKeluarga,
             on_delete=models.CASCADE)
     hari = models.ForeignKey(Hari, on_delete=models.CASCADE)
