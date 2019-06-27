@@ -73,13 +73,15 @@ class DaftarKKForm(forms.Form):
     def clean_nama_kk(self):
         nama_kk = self.data.get('nama_kk')
         if re.search(r'[`~!@#$%^&*()_+=\[\]{}\\|;:",<>/?\d]', nama_kk):
-            raise forms.ValidationError('Nama Kepala Keluarga tidak boleh mengandung karakter spesial kecuali \' dan -')
+            raise forms.ValidationError(
+                    'Nama Kepala Keluarga tidak boleh mengandung simbol yang aneh')
         return str.title(nama_kk)
 
     def clean_alamat(self):
         alamat = self.data.get('alamat')
         if re.search(r'[`~!@#$%^&*()_+=\[\]{}\\|;:",<>/?]', alamat):
-            raise forms.ValidationError('Alamat tidak boleh mengandung karakter spesial')
+            raise forms.ValidationError(
+                    'Alamat tidak boleh mengandung simbol yang aneh')
         return alamat
 
 class PilihKKForm(forms.Form):
@@ -103,12 +105,13 @@ class PilihKKForm(forms.Form):
                 label='Kepala Keluarga')
 
 class PendaftarForm(forms.Form):
-    pendaftar = forms.CharField()
+    pendaftar = forms.CharField(required=False, widget=forms.Textarea)
 
     def clean_pendaftar(self):
         pendaftar = self.data.get('pendaftar')
-        if re.search(r'[`~!@#$%^&*()_+=\[\]{}\\|;:"<>/?\d]', pendaftar):
-            raise forms.ValidationError('Pendaftar tidak boleh mengandung karakter spesial kecuali \' dan -')
+        if re.search(r'[`~!@#$%^&*()_+=\[\]{}\\|;:",<>/?\d]', pendaftar):
+            raise forms.ValidationError(
+                    'Nama pendaftar tidak boleh mengandung simbol yang aneh!')
         return str.title(pendaftar)
 
 class UbahPasswordForm(PasswordChangeForm):

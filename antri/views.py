@@ -14,50 +14,48 @@ from .models import Pengguna, User, KepalaKeluarga, Hari, Pendaftaran, \
         Pendaftar
 from .utils import Calendar
 
-def utama(request):
-    now = timezone.now()
-    return utama_month(request, now.year, now.month)
-
-def utama_month(request, year, month):
+def utama(request, year=None, month=None):
     if not request.user.is_authenticated:
         return render(request, 'antri/bukan_utama.html')
 
-    print('here')
+    if year == None and month == None:
+        now = timezone.now()
+        year = now.year
+        month = now.month
+
     if request.method == 'POST':
-        print('it is post')
         form = PendaftarForm(request.POST)
+
+        # create Hari if doesn't exist
+        tanggal = timezone.datetime(int(request.POST['tahun']),
+                int(request.POST['bulan']), int(request.POST['hari']))
+        if Hari.objects.filter(tanggal=tanggal):
+            hari = Hari.objects.get(tanggal=tanggal)
+        else:
+            hari = Hari.objects.create(tanggal=tanggal)
+            hari.save()
+
+        kk = request.user.pengguna.kepala_keluarga
         if form.is_valid():
             pendaftar = form.cleaned_data['pendaftar']
-            pendaftars = pendaftar.split(',')
+            pendaftars = pendaftar.split('\n')
             pendaftars = [' '.join(p.split()) for p in pendaftars]
-            print(pendaftars)
-            print(request.POST)
-
-            tanggal = timezone.datetime(int(request.POST['tahun']),
-                    int(request.POST['bulan']), int(request.POST['hari']))
-
-            kk = request.user.pengguna.kepala_keluarga
-            # create Hari if doesn't exist
-            if Hari.objects.filter(tanggal=tanggal):
-                hari = Hari.objects.get(tanggal=tanggal)
-            else:
-                hari = Hari.objects.create(tanggal=tanggal)
-                hari.save()
+            pendaftars = [p for p in pendaftars if p != '']
 
             if kk.pendaftaran_set.filter(hari=hari):
                 kk.pendaftaran_set.get(hari=hari).delete()
 
-            pendaftaran = Pendaftaran.objects.create(kepala_keluarga=kk,
-                    hari=hari)
-            pendaftaran.save()
-            for p in pendaftars:
-                Pendaftar.objects.create(pendaftaran=pendaftaran, nama=p).save()
+            if pendaftars != []:
+                pendaftaran = Pendaftaran.objects.create(
+                        kepala_keluarga=kk, hari=hari)
+                pendaftaran.save()
 
-        else:
-            # TODO give warning to user
-            'Nama tidak boleh mengandung simbol'
-            pass
+                for p in pendaftars:
+                    Pendaftar.objects.create(
+                            pendaftaran=pendaftaran, nama=p).save()
 
+    else:
+        form = PendaftarForm()
 
     prev_month = month - 1
     next_month = month + 1
@@ -75,7 +73,7 @@ def utama_month(request, year, month):
 
     calendar = Calendar().formatmonth(year, month)
     return render(request, 'antri/utama.html',
-            {'calendar': mark_safe(calendar), 'data': data})
+            {'calendar': mark_safe(calendar), 'data': data, 'form': form})
 
 def tentang(request):
     return render(request, 'antri/tentang.html')
@@ -176,12 +174,11 @@ def details(request):
                 data.append({
                     'kepala_keluarga': kk.nama, 'pendaftars': pendaftars})
 
-            print(data)
             buka = hari.waktu_buka
             tutup = hari.waktu_tutup
 
         return JsonResponse({'data': data, 'month_name': nama_bulan[month],
-            'option': option, 'buka': buka, 'tutup': tutup, 'pendaftar': ', '.join(pendaftar)})
+            'option': option, 'buka': buka, 'tutup': tutup, 'pendaftar': '\n'.join(pendaftar)})
 
     raise Http404('no data on views.details')
 

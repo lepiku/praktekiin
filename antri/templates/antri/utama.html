@@ -71,7 +71,7 @@ th {
   border-spacing: 5px;
 }
 .detail th, .detail td {
-  padding: 3px;
+  padding: 6px, 12px;
 }
 .detail th {
   color: #fff;
@@ -86,6 +86,15 @@ th {
 }
 #nama {
   width: 60%;
+}
+textarea {
+  display: none;
+  margin: 10px 0 auto 0;
+  width: 360px;
+  height: 120px;
+  padding: 8px;
+  font-family: 'Muli', sans-serif;
+  font-size: 18px;
 }
 </style>
 {% endblock %}
@@ -120,9 +129,9 @@ th {
         <input type="hidden" id="bulan" name="bulan">
         <input type="hidden" id="hari" name="hari">
         <input type="hidden" id="real-pendaftar">
-        <input type="hidden" id="pendaftar" name="pendaftar">
+        {{ form.pendaftar }}
         <input type="hidden" onclick="pendaftaran()" class="button" id="button" value="">
-        <input type="hidden" onclick="view()" class="button" id="kembali" value="Gk jadi">
+        <input type="hidden" onclick="viewCell()" class="button" id="kembali" value="Kembali">
         <input type="hidden" class="button" id="kirim" value="Simpan">
       </form>
     </div>
@@ -171,7 +180,7 @@ function render(d, m, y) {
       //$('#form').attr('action', result.url)
       $('#real-pendaftar').val(result.pendaftar)
       $('#button').val(result.option)
-      view()
+      viewCell()
 
       $('#buka').html('Jam Buka: ' + result.buka.slice(0, 5))
       $('#tutup').html('Jam Tutup: ' + result.tutup.slice(0, 5))
@@ -192,7 +201,7 @@ function render(d, m, y) {
             }
             inner += '<td id="nama">' + escapeHTML(data[i].pendaftars[j]) + '</td></tr>'
           }
-         }
+        }
         $('#names').html(inner)
       }
     },
@@ -203,19 +212,18 @@ function render(d, m, y) {
   })
 }
 function pendaftaran() {
-  console.log('pendaftaran!')
-  $('#pendaftar').attr('type', 'text')
+  $('#id_pendaftar').css('display', 'block')
   $('#button').attr('type', 'hidden')
   $('#kembali').attr('type', 'button')
   $('#kirim').attr('type', 'submit')
 }
-function view() {
-  $('#pendaftar').val(document.getElementById('real-pendaftar').value)
-  $('#pendaftar').attr('type', 'hidden')
+function viewCell() {
+  $('#id_pendaftar').css('display', 'none')
+  $('#id_pendaftar').val(document.getElementById('real-pendaftar').value)
   $('#button').attr('type', 'button')
   $('#kembali').attr('type', 'hidden')
   $('#kirim').attr('type', 'hidden')
-
 }
+{% if form.pendaftar.errors %}alert("{{ form.pendaftar.errors.0 }}"){% endif %}
 </script>
 {% endblock %}
