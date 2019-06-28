@@ -81,18 +81,16 @@ def tentang(request):
 def daftar(request):
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
-        print(request.POST)
         form_pengguna = DaftarPenggunaForm(request.POST)
 
         if form_pengguna.is_valid():
             nama_kk = form_pengguna.cleaned_data['nama_kk']
-            kode = 1
-            if 'select' in request.POST:
-                form_kk = PilihKKForm(request.POST, nama_kk=nama_kk)
-            elif not KepalaKeluarga.objects.filter(nama=nama_kk) \
-                    or request.POST['kode'] != '0':
+
+            # TODO error still hidden
+            if not KepalaKeluarga.objects.filter(nama=nama_kk) \
+                    or 'new' in request.POST or 'alamat' in request.POST:
                 form_kk = DaftarKKForm(request.POST)
-                # TODO error still hidden
+                kode = 1
             else:
                 form_kk = PilihKKForm(request.POST, nama_kk=nama_kk)
                 kode = 2

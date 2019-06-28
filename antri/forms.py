@@ -71,8 +71,8 @@ class DaftarKKForm(forms.Form):
 
     nama_kk = forms.CharField(label='Nama Kepala Keluarga',
             max_length=NAME_LENGTH, validators=[REGEX_NAMA])
-    alamat = forms.CharField(label='Alamat', max_length=256,
-            widget=forms.Textarea, validators=[REGEX_ALAMAT])
+    alamat = forms.CharField(max_length=256, widget=forms.Textarea,
+            validators=[REGEX_ALAMAT])
 
     def clean_nama_kk(self):
         nama_kk = self.data.get('nama_kk')
@@ -94,9 +94,11 @@ class PilihKKForm(forms.Form):
         nama_kk = kwargs.pop('nama_kk', '')
         super().__init__(*args, **kwargs)
 
+        kk_query = KepalaKeluarga.objects.filter(nama=nama_kk)\
+                .order_by('waktu_daftar')
+
         self.fields['kk'] = forms.ModelChoiceField(
-                KepalaKeluarga.objects.filter(nama=nama_kk),
-                label='Kepala Keluarga')
+                kk_query, label='Kepala Keluarga', initial=kk_query.first())
 
 class PendaftarForm(forms.Form):
     pendaftar = forms.CharField(required=False, widget=forms.Textarea)
