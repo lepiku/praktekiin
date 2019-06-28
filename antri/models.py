@@ -2,15 +2,21 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 
-REGEX_TELP = RegexValidator(regex=r'^(\+62|0)\d{9,15}$', \
-        message="Nomor Handphone harus mengikuti format: \
-                '+628...' or '08...' maksimal 15 digit.")
-JENIS_KELAMIN = (('l', 'Laki-Laki'), ('p', 'Perempuan'))
+REGEX_TELP = RegexValidator(regex=r'^(\+62|0)\d{9,15}$',
+        message="Format nomor telepon: '+628...' atau '08...', \
+        maksimal 15 digit.")
+REGEX_NAMA = RegexValidator(regex=r'[`~!@#$%^&*()_+=\[\]{}\\|;:",<>/?\d]',
+        message="Nama tidak boleh mengandung simbol yang aneh.",
+        inverse_match=True)
+REGEX_ALAMAT = RegexValidator(regex=r'[`~!@#$%^&*()_+=\[\]{}\\|;:"<>/?\d]',
+        message="Alamat tidak boleh mengandung simbol yang aneh.",
+        inverse_match=True)
+JENIS_KELAMIN = (('Laki-Laki', 'Laki-Laki'), ('Perempuan', 'Perempuan'))
 NAME_LENGTH = 64
 
 class KepalaKeluarga(models.Model):
-    nama = models.CharField(max_length=NAME_LENGTH)
-    alamat = models.TextField()
+    nama = models.CharField(max_length=NAME_LENGTH, validators=[REGEX_NAMA])
+    alamat = models.TextField(validators=[REGEX_ALAMAT])
     waktu_daftar = models.DateTimeField(auto_now_add=True)
     waktu_ubah = models.DateTimeField(auto_now=True)
 
@@ -18,9 +24,9 @@ class KepalaKeluarga(models.Model):
         return "{} ({})".format(self.nama, self.pengguna_set.first())
 
 class Pengguna(models.Model):
-    nama = models.CharField(max_length=NAME_LENGTH)
+    nama = models.CharField(max_length=NAME_LENGTH, validators=[REGEX_NAMA])
     tanggal_lahir= models.DateField()
-    jenis_kelamin = models.CharField(max_length=1, choices=JENIS_KELAMIN)
+    jenis_kelamin = models.CharField(max_length=9, choices=JENIS_KELAMIN)
     telp = models.CharField(validators=[REGEX_TELP], max_length=18)
     kepala_keluarga = models.ForeignKey(KepalaKeluarga,
             on_delete=models.CASCADE)
@@ -57,7 +63,8 @@ class Pendaftaran(models.Model):
         return str(self.kepala_keluarga) + ": " + str(self.hari.tanggal)
 
 class Pendaftar(models.Model):
-    pendaftaran = models.ForeignKey(Pendaftaran, on_delete=models.CASCADE)
+    pendaftaran = models.ForeignKey(Pendaftaran, on_delete=models.CASCADE,
+            validators=[REGEX_NAMA])
     nama = models.CharField(max_length=NAME_LENGTH)
 
     def __str__(self):

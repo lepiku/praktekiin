@@ -2,20 +2,26 @@ from django import forms
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm
-from .models import REGEX_TELP, JENIS_KELAMIN, NAME_LENGTH, KepalaKeluarga
+from .models import REGEX_TELP, REGEX_NAMA, REGEX_ALAMAT, JENIS_KELAMIN, \
+        NAME_LENGTH, KepalaKeluarga
 import re
 from django.contrib.auth import authenticate, get_user_model, \
         password_validation
 
+class DateField(forms.DateField):
+    input_formats = ['%d/%m/%Y', '%d/%m/%y', '%d-%m-%Y', '%d-%m-%y']
+    error_messages = {'invalid': 'Format tanggal: dd/mm/yyyy'}
+
 class DaftarPenggunaForm(forms.Form):
-    nama = forms.CharField(label='Nama Lengkap', max_length=NAME_LENGTH)
-    tanggal_lahir = forms.DateField() # TODO error meesage still 'Enter a valid date'
-    # TODO https://docs.djangoproject.com/en/2.1/ref/forms/fields/#datefield
+    nama = forms.CharField(label='Nama Lengkap', max_length=NAME_LENGTH,
+            validators=[REGEX_NAMA])
+    tanggal_lahir = DateField()
+    # TODO error meesage still 'Enter a valid date'
     jenis_kelamin = forms.ChoiceField(choices=JENIS_KELAMIN)
     telp = forms.CharField(label='No. HP / Telp', validators=[REGEX_TELP],
             max_length=18)
     nama_kk = forms.CharField(label='Nama Kepala Keluarga',
-            max_length=NAME_LENGTH)
+            max_length=NAME_LENGTH, validators=[REGEX_NAMA])
 
     username = forms.CharField(max_length=32)
     password = forms.CharField(widget=forms.PasswordInput())
@@ -23,14 +29,10 @@ class DaftarPenggunaForm(forms.Form):
 
     def clean_nama(self):
         nama = self.data.get('nama')
-        if re.search(r'[`~!@#$%^&*()_+=\[\]{}\\|;:",<>/?\d]', nama):
-            raise forms.ValidationError('Nama tidak boleh mengandung karakter spesial kecuali \' dan -')
         return str.title(nama)
 
     def clean_nama_kk(self):
         nama_kk = self.data.get('nama_kk')
-        if re.search(r'[`~!@#$%^&*()_+=\[\]{}\\|;:",<>/?\d]', nama_kk):
-            raise forms.ValidationError('Nama Kepala Keluarga tidak boleh mengandung karakter spesial kecuali \' dan -')
         return str.title(nama_kk)
 
     # TODO cek kk udah ada apa blom? kalo udah, tanya itu sama gk?
@@ -46,6 +48,8 @@ class DaftarPenggunaForm(forms.Form):
         password = self.data.get('password')
         if len(password) < 6:
             raise forms.ValidationError('Password terlalu pendek. Minimal 6 karakter.')
+        elif password in ['123456'] or password == password[0] * len(password):
+            raise forms.ValidationError('Password terlalu mudah ditebak.')
         return password
 
     def clean_ulangi_password(self):
@@ -57,7 +61,7 @@ class DaftarPenggunaForm(forms.Form):
 
 class DaftarKKForm(forms.Form):
     nama = forms.CharField(widget=forms.HiddenInput)
-    tanggal_lahir = forms.DateField(widget=forms.HiddenInput)
+    tanggal_lahir = DateField(widget=forms.HiddenInput)
     jenis_kelamin = forms.ChoiceField(widget=forms.HiddenInput,
             choices=JENIS_KELAMIN)
     telp = forms.CharField(widget=forms.HiddenInput)
@@ -66,27 +70,17 @@ class DaftarKKForm(forms.Form):
     ulangi_password = forms.CharField(widget=forms.HiddenInput)
 
     nama_kk = forms.CharField(label='Nama Kepala Keluarga',
-            max_length=NAME_LENGTH)
+            max_length=NAME_LENGTH, validators=[REGEX_NAMA])
     alamat = forms.CharField(label='Alamat', max_length=256,
-            widget=forms.Textarea)
+            widget=forms.Textarea, validators=[REGEX_ALAMAT])
 
     def clean_nama_kk(self):
         nama_kk = self.data.get('nama_kk')
-        if re.search(r'[`~!@#$%^&*()_+=\[\]{}\\|;:",<>/?\d]', nama_kk):
-            raise forms.ValidationError(
-                    'Nama Kepala Keluarga tidak boleh mengandung simbol yang aneh')
         return str.title(nama_kk)
-
-    def clean_alamat(self):
-        alamat = self.data.get('alamat')
-        if re.search(r'[`~!@#$%^&*()_+=\[\]{}\\|;:",<>/?]', alamat):
-            raise forms.ValidationError(
-                    'Alamat tidak boleh mengandung simbol yang aneh')
-        return alamat
 
 class PilihKKForm(forms.Form):
     nama = forms.CharField(widget=forms.HiddenInput)
-    tanggal_lahir = forms.DateField(widget=forms.HiddenInput)
+    tanggal_lahir = DateField(widget=forms.HiddenInput)
     jenis_kelamin = forms.ChoiceField(widget=forms.HiddenInput,
             choices=JENIS_KELAMIN)
     telp = forms.CharField(widget=forms.HiddenInput)
@@ -109,9 +103,6 @@ class PendaftarForm(forms.Form):
 
     def clean_pendaftar(self):
         pendaftar = self.data.get('pendaftar')
-        if re.search(r'[`~!@#$%^&*()_+=\[\]{}\\|;:",<>/?\d]', pendaftar):
-            raise forms.ValidationError(
-                    'Nama pendaftar tidak boleh mengandung simbol yang aneh!')
         return str.title(pendaftar)
 
 class UbahPasswordForm(PasswordChangeForm):
@@ -136,13 +127,20 @@ class UbahPasswordForm(PasswordChangeForm):
             widget=forms.PasswordInput,
             )
 
+    def clean_new_password1(self):
+        password = self.data.get('new_password1')
+        if len(password) < 6:
+            raise forms.ValidationError('Password terlalu pendek. Minimal 6 karakter.')
+        elif password in ['123456'] or password == password[0:1] * len(password):
+            raise forms.ValidationError('Password terlalu mudah ditebak.')
+        return password
+
     def clean_new_password2(self):
         password1 = self.data.get('new_password1')
         password2 = self.data.get('new_password2')
-        if password1 and password2:
-            if password1 != password2:
-                raise forms.ValidationError(
-                    self.error_messages['password_mismatch'],
-                    code='password_mismatch',
-                )
+        if password1 != password2:
+            raise forms.ValidationError(
+                self.error_messages['password_mismatch'],
+                code='password_mismatch',
+            )
         return password2

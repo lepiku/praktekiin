@@ -2,13 +2,20 @@
 {% block style %}
 <style>
 table {
+  width: 100%;
   border-collapse: collapse;
 }
+th {
+  width: 35%;
+  vertical-align: top;
+  min-width: 144px;
+}
 th, td {
+  text-align: left;
   padding: 8px;
 }
-tr:nth-child(even) {
-  background-color: #abdad5;
+tr:nth-child(odd) {
+  background-color: #ceecee;
 }
 </style>
 {% endblock %}
@@ -17,7 +24,7 @@ tr:nth-child(even) {
   <table id="pengguna">
     {% for label, value in pengguna %}
     <tr>
-      <td id="label">{{ label }}</td>
+      <th id="label">{{ label }}</td>
       <td id="value">{{ value }}</td>
     </tr>
     {% endfor %}
@@ -27,7 +34,7 @@ tr:nth-child(even) {
   <table id="kepala_keluarga">
     {% for label, value in kepala_keluarga %}
     <tr>
-      <td id="label">{{ label }}</td>
+      <th id="label">{{ label }}</td>
       <td id="value">{{ value }}</td>
     </tr>
     {% endfor %}
@@ -37,7 +44,7 @@ tr:nth-child(even) {
   <table id="user">
     {% for label, value in user %}
     <tr>
-      <td id="label">{{ label }}</td>
+      <th id="label">{{ label }}</td>
       <td id="value">{{ value }}</td>
     </tr>
     {% endfor %}
