@@ -21,7 +21,11 @@ class KepalaKeluarga(models.Model):
     waktu_ubah = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return "{} ({})".format(self.nama, self.pengguna_set.first())
+        if len(self.nama) > 16:
+            nama = self.nama[:16] + '...'
+        else:
+            nama = self.nama
+        return "{} ({})".format(nama, self.pengguna_set.first())
 
 class Pengguna(models.Model):
     nama = models.CharField(max_length=NAME_LENGTH, validators=[REGEX_NAMA])
@@ -35,8 +39,8 @@ class Pengguna(models.Model):
     waktu_ubah = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        if len(self.nama) > 32:
-            return self.nama[:32] + '...'
+        if len(self.nama) > 16:
+            return self.nama[:16] + '...'
         return self.nama
 
 class Hari(models.Model):

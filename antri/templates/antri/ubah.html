@@ -1,25 +1,5 @@
-{% extends 'antri/base.html' %}
-{% block style %}
-<style>
-th {
-  width: 140px;
-  vertical-align: top;
-  text-align: left;
-  padding: 10px;
-}
-td input {
-  margin: 10px 0 auto 0;
-  height: 0;
-  width: 200px;
-}
-textarea {
-  margin: 10px 0 auto 0;
-  width: 360px;
-  height: 120px;
-  padding: 8px;
-}
-</style>
-{% endblock %}
+{% extends 'antri/daftar.html' %}
+
 {% block content %}
 <div class="card">
   <form method="post">{% csrf_token %}

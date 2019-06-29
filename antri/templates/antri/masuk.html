@@ -1,20 +1,4 @@
-{% extends 'antri/base.html' %}
-{% block style %}
-<style>
-.card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.errorlist {
-  display: none;
-}
-#error {
-  color: red;
-  font-size: 0.8em;
-}
-</style>
-{% endblock %}
+{% extends 'antri/daftar.html' %}
 
 {% block content %}
 <div class="card">
@@ -30,10 +14,10 @@
     <input type="hidden" name="next" value="{{ next }}">
     <input class="button" type="submit" value="Masuk">
   </form>
-  {{ message }}
-  {% endif %}
+  <p>Belum punya akun? <a href="{% url 'antri:daftar' %}">Buat Akun</a></p>
   {% comment %}<p><a href="{% url 'password_reset' %}">Lost password?</a></p>{% endcomment %}
   {% comment %}TODO reset password{% endcomment %}
+  {% endif %}
 </div>
 {% if form.errors %}
 <p id="error">Username atau Password salah.</p>
