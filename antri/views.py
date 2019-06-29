@@ -146,8 +146,7 @@ def details(request):
         day = int(request.GET.get('day'))
         month = int(request.GET.get('month'))
         year = int(request.GET.get('year'))
-        option = 'Tambah'
-        pendaftar = []
+        pendaftars_kk = []
         # url = reverse('antri:tambah')
 
         buka = '17:00'
@@ -163,28 +162,26 @@ def details(request):
             data = []
             for q in hari.pendaftaran_set.all().order_by('waktu_daftar'):
                 kk = KepalaKeluarga.objects.get(id=q.kepala_keluarga.id)
+                option = ''
 
-                pendaftars = []
-                for p in q.pendaftar_set.all():
-                    pendaftars.append(p.nama)
-                    if kk == request.user.pengguna.kepala_keluarga:
-                        pendaftar.append(p.nama)
+                pendaftars = [p.nama for p in q.pendaftar_set.all()]
 
                 if kk == request.user.pengguna.kepala_keluarga:
+                    pendaftars_kk = pendaftars
                     option = 'Ubah'
 
                 data.append({
                     'kepala_keluarga': kk.nama,
                     'pendaftars': pendaftars,
                     'id': kk.id,
-                    })
+                    'option': option})
 
             buka = hari.waktu_buka
             tutup = hari.waktu_tutup
 
         return JsonResponse({
-            'data': data, 'month_name': nama_bulan[month], 'option': option,
-            'buka': buka, 'tutup': tutup, 'pendaftar': '\n'.join(pendaftar)
+            'data': data, 'month_name': nama_bulan[month],
+            'buka': buka, 'tutup': tutup, 'pendaftar': '\n'.join(pendaftars_kk)
             })
 
     raise Http404('no data on views.details')
