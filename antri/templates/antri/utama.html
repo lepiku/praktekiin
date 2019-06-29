@@ -8,6 +8,9 @@
   width: 100%;
   margin: auto;
 }
+table {
+  font-size: 0.9em;
+}
 th {
   font-weight: normal;
 }
@@ -35,7 +38,7 @@ th {
   transition: background-color 0s ease-in-out;
 }
 .date {
-  font-size: 14px;
+  font-size: 0.8em;
   color: #009688;
   vertical-align: top;
 }
@@ -65,6 +68,16 @@ th {
   th.thu .cell:before { content: 'Km' }
   th.fri .cell:before { content: 'Jm' }
   th.sat .cell:before { content: 'Sb' }
+}
+@media (max-width: 600px) {
+  .cell {
+    margin: 2px;
+    padding: 5px;
+  }
+  .bulan {
+    margin: 2px;
+    padding: 5px;
+  }
 }
 .detail {
   width: 100%;
@@ -131,8 +144,6 @@ textarea {
   width: 360px;
   height: 120px;
   padding: 8px;
-  font-family: 'Muli', sans-serif;
-  font-size: 18px;
   border-radius: 20px;
   margin: 45px 15px 0px 15px;
   border: none;
@@ -237,7 +248,7 @@ function render(d, m, y) {
       // list pengguna who booked that day
       var data = result.data
       if (data === null || data.length === 0) {
-        $('#names').html('Belum ada yang daftar')
+        $('#names').html('<tr><td colspan="2">Belum ada yang daftar</td></tr>')
       }
       else {
         var inner = '';

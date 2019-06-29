@@ -8,7 +8,7 @@ REGEX_TELP = RegexValidator(regex=r'^(\+62|0)\d{9,15}$',
 REGEX_NAMA = RegexValidator(regex=r'[`~!@#$%^&*()_+=\[\]{}\\|;:",<>/?\d]',
         message="Nama tidak boleh mengandung simbol yang aneh.",
         inverse_match=True)
-REGEX_ALAMAT = RegexValidator(regex=r'[`~!@#$%^&*()_+=\[\]{}\\|;:"<>/?\d]',
+REGEX_ALAMAT = RegexValidator(regex=r'[`~!@#$%^&*()_+=\[\]{}\\|;:"<>/?]',
         message="Alamat tidak boleh mengandung simbol yang aneh.",
         inverse_match=True)
 JENIS_KELAMIN = (('Laki-Laki', 'Laki-Laki'), ('Perempuan', 'Perempuan'))
