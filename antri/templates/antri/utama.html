@@ -194,7 +194,7 @@ textarea {
 </div>
 <div id="pendaftaran">
   <a onclick="cancel()" class="cancel">&times;</a>
-  <form id="form" action="{% url 'antri:utama_month' data.year data.month %}#button" method="POST">
+  <form id="form" action="{% url 'antri:utama_month' data.year data.month %}" method="POST">
     {% csrf_token %}
     <input type="hidden" id="tahun" name="tahun">
     <input type="hidden" id="bulan" name="bulan">
@@ -283,5 +283,6 @@ function cancel() {
   $('#cover').css('display', 'none')
 }
 {% if form.pendaftar.errors %}alert("{{ form.pendaftar.errors.0 }}"){% endif %}
+{% if day %}render({{ day }}, {{ data.month }}, {{ data.year }}){% endif %}
 </script>
 {% endblock %}

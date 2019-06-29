@@ -14,7 +14,7 @@ from .models import Pengguna, User, KepalaKeluarga, Hari, Pendaftaran, \
         Pendaftar
 from .utils import Calendar
 
-def utama(request, year=None, month=None):
+def utama(request, year=None, month=None, day=None):
     if not request.user.is_authenticated:
         return render(request, 'antri/bukan_utama.html')
 
@@ -29,6 +29,7 @@ def utama(request, year=None, month=None):
         # create Hari if doesn't exist
         tanggal = timezone.datetime(int(request.POST['tahun']),
                 int(request.POST['bulan']), int(request.POST['hari']))
+        day = int(request.POST['hari'])
         if Hari.objects.filter(tanggal=tanggal):
             hari = Hari.objects.get(tanggal=tanggal)
         else:
@@ -73,7 +74,7 @@ def utama(request, year=None, month=None):
 
     calendar = Calendar().formatmonth(year, month)
     return render(request, 'antri/utama.html',
-            {'calendar': mark_safe(calendar), 'data': data, 'form': form})
+            {'calendar': mark_safe(calendar), 'data': data, 'form': form, 'day': day})
 
 def tentang(request):
     return render(request, 'antri/tentang.html')
