@@ -101,8 +101,8 @@ class PilihKKForm(forms.Form):
                 kk_query, label='Kepala Keluarga', initial=kk_query.first())
 
 class PendaftarForm(forms.Form):
-    pendaftar = forms.CharField(required=False, widget=forms.Textarea)
-
+    pendaftar = forms.CharField(required=False, widget=forms.Textarea,
+            validators=[REGEX_NAMA])
     def clean_pendaftar(self):
         pendaftar = self.data.get('pendaftar')
         return str.title(pendaftar)

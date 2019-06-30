@@ -74,9 +74,8 @@ class Pendaftaran(models.Model):
         return str(self.pengguna) + ": " + str(self.hari.tanggal)
 
 class Pendaftar(models.Model):
-    pendaftaran = models.ForeignKey(Pendaftaran, on_delete=models.CASCADE,
-            validators=[REGEX_NAMA])
-    nama = models.CharField(max_length=NAME_LENGTH)
+    pendaftaran = models.ForeignKey(Pendaftaran, on_delete=models.CASCADE)
+    nama = models.CharField(max_length=NAME_LENGTH, validators=[REGEX_NAMA])
 
     def __str__(self):
         return str(self.nama)

@@ -1,6 +1,7 @@
 {% extends 'antri/base.html' %}
 
 {% block style %}
+{% load static %}
 <style>
 .calendar {
   table-layout: fixed;
@@ -63,14 +64,33 @@ th {
   font-weight: bold;
   background-color: #009688;
 }
-#kk {
-  width: 40%;
-}
 .detail tr:nth-child(odd) {
   background-color: #ceecee;
 }
+#kk {
+  width: 40%;
+}
 #nama {
   width: 60%;
+}
+#split {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#button {
+  width: 2em;
+  height: 2em;
+  position: relative;
+  padding: 0;
+  margin: 0;
+  border-radius: 1em;
+}
+#button img {
+  position: absolute;
+  width: 1em;
+  top: 0.5em;
+  left: 0.5em;
 }
 #pendaftaran{
   display: none;
@@ -242,30 +262,39 @@ function render(d, m, y) {
       var data = result.data
       if (data === null || data.length === 0) {
         inner = '<tr><td colspan="2">Belum ada yang daftar</td></tr>'
-      }
-      else {
+      } else {
         var inner = '';
         for (var i = 0; i < data.length; i++) {
           for (var j = 0; j < data[i].pendaftars.length; j++) {
             inner += '<tr>'
+            // kepala keluarga
             if (j === 0) {
               inner += '<td id="kk" rowspan="' + data[i].pendaftars.length +
-                '">' + escapeHTML(data[i].kepala_keluarga)
+                '"><div id="split"><div><div>' + escapeHTML(data[i].kepala_keluarga)
+              // staff
               if (data[i].pengguna !== null) {
-                inner += ' <a href="' + {% url 'antri:profil' %} + data[i].pengguna_id + '/">(' + escapeHTML(data[i].pengguna) + ')</a>'
+                inner += '</div><div><a href="{% url 'antri:profil' %}' +
+                  data[i].pengguna_id + '/">(' + escapeHTML(data[i].pengguna) +
+                  ')</a>'
               }
+              inner += '</div></div>'
+              // can edit
               if (data[i].option !== null) {
-                inner += '<a type="hidden" onclick="viewCell(); popup()" class="button" id="button">Ubah</a>'
+                inner += '<div><a onclick="viewCell(); popup()" ' +
+                  'class="button" id="button"><img src="' +
+                  '{% static 'antri/media/pencil-white.svg' %}" alt="Ubah"></a></div>'
                 exist = true
               }
-              inner += '</td>'
+              inner += '</div></td>'
             }
-            inner += '<td id="nama">' + escapeHTML(data[i].pendaftars[j]) + '</td></tr>'
+            // nama
+            inner += '<td id="nama">' + escapeHTML(data[i].pendaftars[j]) +
+              '</td></tr>'
           }
         }
       }
       if (!exist) {
-        inner += '<td><a type="hidden" onclick="viewCell(); popup()" class="button" id="button">Tambah</a></td>'
+        inner += '<td><a onclick="viewCell(); popup()" class="button">tambah</a></td>'
       }
       $('#names').html(inner)
     },
