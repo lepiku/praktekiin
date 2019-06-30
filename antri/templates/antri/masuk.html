@@ -2,10 +2,13 @@
 
 {% block content %}
 <div class="card">
-  {% if user.is_authenticated %}
-  <p>Kamu sudah masuk sebagai pengguna,
-  <a href="{% url 'antri:keluar' %}">Keluar?</a></p>
+  {% if user.is_authenticated %}{% if next %}
+  <p>Kamu tidak bisa masuk ke halaman ini.
+  <a href="{% url 'antri:masuk' %}?next={{ next }}/">Ganti Akun?</a></p>
   {% else %}
+  <p>Kamu sudah masuk sebagai pengguna.
+  <a href="{% url 'antri:keluar' %}">Keluar?</a></p>
+  {% endif %}{% else %}
   <form method="post" action="{% url 'antri:masuk' %}">
     {% csrf_token %}
     <table>
@@ -15,7 +18,6 @@
     <input class="button" type="submit" value="Masuk">
   </form>
   <p>Belum punya akun? <a href="{% url 'antri:daftar' %}">Buat Akun</a></p>
-  {% comment %}<p><a href="{% url 'password_reset' %}">Lost password?</a></p>{% endcomment %}
   {% comment %}TODO reset password{% endcomment %}
   {% endif %}
 </div>

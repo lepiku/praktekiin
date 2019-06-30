@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login, logout, \
         update_session_auth_hash
-from django.http import JsonResponse, HttpResponseRedirect, Http404
+from django.http import JsonResponse, Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils.safestring import mark_safe
@@ -127,7 +127,7 @@ def daftar(request):
 
                 login(request, authenticate(request,
                         username=username, password=password))
-                return HttpResponseRedirect(reverse('antri:utama'))
+                return redirect(reverse('antri:utama'))
 
             return render(request, 'antri/daftar.html',
                     {'form': form_kk, 'kode': kode})
@@ -174,12 +174,12 @@ def details(request):
                     option = 1
 
                 if request.user.is_staff:
-                    pengguna = request.user.pengguna
-                    pengguna_id = pengguna.id
+                    pengguna = str(q.pengguna)
+                    pengguna_id = q.pengguna.id
 
                 data.append({
                     'kepala_keluarga': kk.nama,
-                    'pengguna': str(pengguna),
+                    'pengguna': pengguna,
                     'pengguna_id': pengguna_id,
                     'pendaftars': pendaftars,
                     'option': option})
@@ -246,12 +246,14 @@ def ubah_password(request):
         if form.is_valid():
             user = form.save()
             update_session_auth_hash(request, user)  # Important!
-            return HttpResponseRedirect(reverse('antri:profil'))
+            return redirect(reverse('antri:profil'))
     else:
         form = UbahPasswordForm(request.user)
     return render(request, 'antri/ubah.html',
             {'form': form, 'button_label': 'Ubah Password'})
 
-class ProfilDetail(DetailView):
-    model = Pengguna
-    template_name = 'antri/profil_detail.html'
+def profil_detail(request, pk):
+    if not request.user.is_staff:
+        return redirect('{}?next=/profil/{}/'.format(reverse('antri:masuk'), pk))
+    context = {'object': Pengguna.objects.get(pk=pk)}
+    return render(request, 'antri/profil_detail.html', context)
