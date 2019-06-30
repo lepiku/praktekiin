@@ -18,6 +18,7 @@ urlpatterns = [
     path('tentang/', views.tentang, name='tentang'),
     path('data.json/', views.details, name='details'),
     path('profil/', login_required(views.profil), name='profil'),
+    path('profil/<int:pk>/', login_required(views.ProfilDetail.as_view()), name='profil'),
     path('ubah/profil/',
         login_required(views.ProfilUpdate.as_view()), name='ubah_profil'),
     path('ubah/kepala-keluarga/',

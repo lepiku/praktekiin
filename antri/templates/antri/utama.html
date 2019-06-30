@@ -240,7 +240,10 @@ function render(d, m, y) {
             if (j === 0) {
               inner += '<td id="kk" rowspan="' + data[i].pendaftars.length +
                 '">' + escapeHTML(data[i].kepala_keluarga)
-              if (data[i].option === 'Ubah') {
+              if (data[i].pengguna !== null) {
+                inner += ' <a href="' + {% url 'antri:profil' %} + data[i].pengguna_id + '/">(' + escapeHTML(data[i].pengguna) + ')</a>'
+              }
+              if (data[i].option !== null) {
                 inner += '<a type="hidden" onclick="viewCell(); popup()" class="button" id="button">Ubah</a>'
                 exist = true
               }

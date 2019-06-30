@@ -7,6 +7,7 @@ from django.utils.safestring import mark_safe
 from django.utils import timezone
 from django.utils.html import escape
 from django.views.generic.edit import UpdateView
+from django.views.generic.detail import DetailView
 
 from .forms import DaftarPenggunaForm, DaftarKKForm, PilihKKForm, \
         UbahPasswordForm, PendaftarForm
@@ -164,27 +165,31 @@ def details(request):
             data = []
             for q in hari.pendaftaran_set.all().order_by('waktu_daftar'):
                 kk = q.pengguna.kepala_keluarga
-                option = ''
+                option = pengguna = pengguna_id = None
 
                 pendaftars = [p.nama for p in q.pendaftar_set.all()]
 
                 if kk == request.user.pengguna.kepala_keluarga:
                     pendaftars_kk = pendaftars
-                    option = 'Ubah'
+                    option = 1
+
+                if request.user.is_staff:
+                    pengguna = request.user.pengguna
+                    pengguna_id = pengguna.id
 
                 data.append({
                     'kepala_keluarga': kk.nama,
+                    'pengguna': str(pengguna),
+                    'pengguna_id': pengguna_id,
                     'pendaftars': pendaftars,
-                    'id': kk.id,
                     'option': option})
 
             buka = hari.waktu_buka
             tutup = hari.waktu_tutup
 
         return JsonResponse({
-            'data': data, 'month_name': nama_bulan[month],
-            'buka': buka, 'tutup': tutup, 'pendaftar': '\n'.join(pendaftars_kk)
-            })
+            'data': data, 'month_name': nama_bulan[month], 'buka': buka,
+            'tutup': tutup, 'pendaftar': '\n'.join(pendaftars_kk)})
 
     raise Http404('no data on views.details')
 
@@ -246,3 +251,7 @@ def ubah_password(request):
         form = UbahPasswordForm(request.user)
     return render(request, 'antri/ubah.html',
             {'form': form, 'button_label': 'Ubah Password'})
+
+class ProfilDetail(DetailView):
+    model = Pengguna
+    template_name = 'antri/profil_detail.html'

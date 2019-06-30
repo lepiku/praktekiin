@@ -18,15 +18,10 @@ td {
   flex-direction: row-reverse;
   justify-content: flex-end;
 }
-td input {
+td input, td select {
   height: 1.8em;
   margin: 4px 0;
-  width: 200px;
-}
-td select {
-  height: 1.8em;
-  margin: 4px 0;
-  width: 200px;
+  width: 220px;
 }
 textarea {
   margin: 10px 0 auto 0;
@@ -53,6 +48,9 @@ ul {
   th {
     display: table-row;
     padding: 8px 0;
+  }
+  td input, td select {
+    width: 200px;
   }
 }
 @media (max-width: 1000px) {
