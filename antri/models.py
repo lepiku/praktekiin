@@ -14,11 +14,17 @@ REGEX_ALAMAT = RegexValidator(regex=r'[`~!@#$%^&*()_+=\[\]{}\\|;:"<>/?]',
 JENIS_KELAMIN = (('Laki-Laki', 'Laki-Laki'), ('Perempuan', 'Perempuan'))
 NAME_LENGTH = 64
 
+def regex_no_id(nama, digit=16):
+    return RegexValidator(regex=r'^\d{' + str(digit) + r'}$',
+            message="{} harus memiliki {} digit.".format(nama, digit))
+
 class KepalaKeluarga(models.Model):
     nama = models.CharField(max_length=NAME_LENGTH, validators=[REGEX_NAMA])
     alamat = models.TextField(validators=[REGEX_ALAMAT])
     waktu_daftar = models.DateTimeField(auto_now_add=True)
     waktu_ubah = models.DateTimeField(auto_now=True)
+    no_kk = models.CharField(max_length=16, blank=True,
+            validators=[regex_no_id('Nomor Kepala Keluarga')])
 
     def __str__(self):
         if len(self.nama) > 16:
@@ -34,6 +40,8 @@ class Pengguna(models.Model):
     telp = models.CharField(validators=[REGEX_TELP], max_length=18)
     kepala_keluarga = models.ForeignKey(KepalaKeluarga,
             on_delete=models.CASCADE)
+    nik = models.CharField(max_length=16, blank=True,
+            validators=[regex_no_id('Nomor Induk Kependudukan')])
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     waktu_daftar = models.DateTimeField(auto_now_add=True)
     waktu_ubah = models.DateTimeField(auto_now=True)
@@ -58,13 +66,12 @@ class Hari(models.Model):
         return counter
 
 class Pendaftaran(models.Model):
-    waktu_daftar = models.DateTimeField(auto_now_add=True)
-    kepala_keluarga = models.ForeignKey(KepalaKeluarga,
-            on_delete=models.CASCADE)
+    pengguna = models.ForeignKey(Pengguna, on_delete=models.CASCADE)
     hari = models.ForeignKey(Hari, on_delete=models.CASCADE)
+    waktu_daftar = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return str(self.kepala_keluarga) + ": " + str(self.hari.tanggal)
+        return str(self.pengguna) + ": " + str(self.hari.tanggal)
 
 class Pendaftar(models.Model):
     pendaftaran = models.ForeignKey(Pendaftaran, on_delete=models.CASCADE,
@@ -73,3 +80,8 @@ class Pendaftar(models.Model):
 
     def __str__(self):
         return str(self.nama)
+
+class Pesan(models.Model):
+    pengguna = models.ForeignKey(Pengguna, on_delete=models.SET_NULL, null=True)
+    pesan = models.TextField()
+    waktu_buat = models.DateTimeField(auto_now_add=True)

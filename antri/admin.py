@@ -9,7 +9,7 @@ class PendaftarInline(admin.TabularInline):
     extra = 1
 
 class PendaftaranAdmin(admin.ModelAdmin):
-    list_display = ('kepala_keluarga', 'hari')
+    list_display = ('pengguna', 'hari')
     inlines = [PendaftarInline]
 
 # Register your models here.

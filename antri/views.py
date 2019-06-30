@@ -27,33 +27,34 @@ def utama(request, year=None, month=None, day=None):
         form = PendaftarForm(request.POST)
 
         # create Hari if doesn't exist
-        tanggal = timezone.datetime(int(request.POST['tahun']),
-                int(request.POST['bulan']), int(request.POST['hari']))
         day = int(request.POST['hari'])
-        if Hari.objects.filter(tanggal=tanggal):
+        tanggal = timezone.datetime(int(request.POST['tahun']),
+                int(request.POST['bulan']), day)
+        if Hari.objects.filter(tanggal=tanggal).exists():
             hari = Hari.objects.get(tanggal=tanggal)
         else:
             hari = Hari.objects.create(tanggal=tanggal)
             hari.save()
 
-        kk = request.user.pengguna.kepala_keluarga
         if form.is_valid():
             pendaftar = form.cleaned_data['pendaftar']
             pendaftars = pendaftar.split('\n')
             pendaftars = [' '.join(p.split()) for p in pendaftars]
             pendaftars = [p for p in pendaftars if p != '']
 
-            if kk.pendaftaran_set.filter(hari=hari):
-                kk.pendaftaran_set.get(hari=hari).delete()
+            pg = request.user.pengguna
+            pendaftaran_set = Pendaftaran.objects.filter(
+                    pengguna__kepala_keluarga=pg.kepala_keluarga, hari=hari)
+            if pendaftaran_set.exists():
+                pendaftaran_set.first().delete()
 
             if pendaftars != []:
-                pendaftaran = Pendaftaran.objects.create(
-                        kepala_keluarga=kk, hari=hari)
+                pendaftaran = Pendaftaran.objects.create(pengguna=pg, hari=hari)
                 pendaftaran.save()
 
                 for p in pendaftars:
-                    Pendaftar.objects.create(
-                            pendaftaran=pendaftaran, nama=p).save()
+                    Pendaftar.objects.create( pendaftaran=pendaftaran, nama=p)\
+                            .save()
 
     else:
         form = PendaftarForm()
@@ -74,7 +75,8 @@ def utama(request, year=None, month=None, day=None):
 
     calendar = Calendar().formatmonth(year, month)
     return render(request, 'antri/utama.html',
-            {'calendar': mark_safe(calendar), 'data': data, 'form': form, 'day': day})
+            {'calendar': mark_safe(calendar), 'data': data, 'form': form,
+                'day': day})
 
 def tentang(request):
     return render(request, 'antri/tentang.html')
@@ -88,7 +90,7 @@ def daftar(request):
             nama_kk = form_pengguna.cleaned_data['nama_kk']
 
             # TODO error still hidden
-            if not KepalaKeluarga.objects.filter(nama=nama_kk) \
+            if not KepalaKeluarga.objects.filter(nama=nama_kk).exists() \
                     or 'new' in request.POST or 'alamat' in request.POST:
                 form_kk = DaftarKKForm(request.POST)
                 kode = 1
@@ -96,7 +98,7 @@ def daftar(request):
                 form_kk = PilihKKForm(request.POST, nama_kk=nama_kk)
                 kode = 2
 
-            if form_kk.is_valid(): #.data.get('alamat'):
+            if form_kk.is_valid():
                 nama = form_pengguna.cleaned_data['nama']
                 tanggal_lahir = form_pengguna.cleaned_data['tanggal_lahir']
                 jenis_kelamin = form_pengguna.cleaned_data['jenis_kelamin']
@@ -161,7 +163,7 @@ def details(request):
         else:
             data = []
             for q in hari.pendaftaran_set.all().order_by('waktu_daftar'):
-                kk = KepalaKeluarga.objects.get(id=q.kepala_keluarga.id)
+                kk = q.pengguna.kepala_keluarga
                 option = ''
 
                 pendaftars = [p.nama for p in q.pendaftar_set.all()]
