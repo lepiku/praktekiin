@@ -33,15 +33,20 @@ class Calendar(HTMLCalendar):
                 data = '<span class="amount">%s</span>' % banyak
 
             now = timezone.now()
-            today = ""
+            cell = ""
             if now.year == self.year and now.month == self.month and \
                     now.day == day:
-                today = " today"
+                cell += " today"
+            if weekday == 6:
+                return '''
+<td class="{0}"><div class="cell nohover {3}"><span class="date">{1}</span>{2}
+</div></td>'''.format(self.cssclasses[weekday], day, data, cell)
+
             return '''
 <td class="{0}"><a onclick="render('{1}', '{2}', '{3}')" title="{1} {4} {3}">
 <div class="cell{6}"><span class="date">{1}</span>{5}</div></a></td>'''.format(
         self.cssclasses[weekday], day, self.month, self.year,
-        self.nama_bulan[self.month], data, today)
+        self.nama_bulan[self.month], data, cell)
 
     def formatweek(self, week):
         """Return a complete week as a table row."""
