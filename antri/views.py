@@ -20,7 +20,7 @@ def utama(request, year=None, month=None, day=None):
         return render(request, 'antri/bukan_utama.html')
 
     if year == None and month == None:
-        now = timezone.now()
+        now = timezone.localtime(timezone.now())
         year = now.year
         month = now.month
 

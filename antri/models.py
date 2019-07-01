@@ -3,8 +3,7 @@ from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 
 REGEX_TELP = RegexValidator(regex=r'^(\+62|0)\d{9,15}$',
-        message="Format nomor telepon: '+628...' atau '08...', \
-        maksimal 15 digit.")
+        message="Format nomor telepon: '+628...' atau '08...', 9-15 digit.")
 REGEX_NAMA = RegexValidator(regex=r'[`~!@#$%^&*()_+=\[\]{}\\|;:",<>/?\d]',
         message="Nama tidak boleh mengandung simbol yang aneh.",
         inverse_match=True)
