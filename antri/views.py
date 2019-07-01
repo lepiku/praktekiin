@@ -1,23 +1,26 @@
-from django.contrib.auth import authenticate, login, logout, \
-        update_session_auth_hash
-from django.http import JsonResponse, Http404
+from django.contrib.auth import authenticate, login # logout,
+from django.contrib.auth.forms import SetPasswordForm
+        # update_session_auth_hash
+# from django.http import JsonResponse, Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.utils.safestring import mark_safe
-from django.utils import timezone
-from django.utils.html import escape
-from django.views.generic.edit import UpdateView
-from django.views.generic.detail import DetailView
-
-from .forms import DaftarPenggunaForm, DaftarKKForm, PilihKKForm, \
-        UbahPasswordForm, PendaftarForm
-from .models import Pengguna, User, KepalaKeluarga, Hari, Pendaftaran, \
-        Pendaftar
-from .utils import Calendar
+# from django.utils.safestring import mark_safe
+# from django.utils import timezone
+# from django.utils.html import escape
+# from django.views.generic.edit import UpdateView
+# from django.views.generic.detail import DetailView
+# from .forms import DaftarPenggunaForm
+        # UbahPasswordForm, PendaftarForm
+from .forms import PenggunaForm, KepalaKeluargaForm, UserForm
+from .models import User, Pengguna, KepalaKeluarga, Hari
+# from .utils import Calendar
 
 def utama(request, year=None, month=None, day=None):
     if not request.user.is_authenticated:
         return render(request, 'antri/bukan_utama.html')
+
+    print('youre logged in')
+    return render(request, 'antri/bukan_utama.html')
 
     if year == None and month == None:
         now = timezone.localtime(timezone.now())
@@ -83,59 +86,77 @@ def tentang(request):
     return render(request, 'antri/tentang.html')
 
 def daftar(request):
-    # if this is a POST request we need to process the form data
     if request.method == 'POST':
-        form_pengguna = DaftarPenggunaForm(request.POST)
+        user = User()
+        kk = KepalaKeluarga()
+        pengguna = Pengguna()
 
-        if form_pengguna.is_valid():
-            nama_kk = form_pengguna.cleaned_data['nama_kk']
+        form_user = UserForm(request.POST, instance=user)
+        form_pengguna = PenggunaForm(request.POST, instance=pengguna)
+        form_kk = KepalaKeluargaForm(request.POST, instance=kk)
+        if form_pengguna.is_valid() and form_kk.is_valid() and form_user.is_valid():
+            form_user.full_clean()
+            form_user.save()
+            form_kk.save()
 
-            # TODO error still hidden
-            if not KepalaKeluarga.objects.filter(nama=nama_kk).exists() \
-                    or 'new' in request.POST or 'alamat' in request.POST:
-                form_kk = DaftarKKForm(request.POST)
-                kode = 1
-            else:
-                form_kk = PilihKKForm(request.POST, nama_kk=nama_kk)
-                kode = 2
+            pengguna.mrid = '000101'
+            pengguna.kepala_keluarga = kk
+            pengguna.user = user
+            form_pengguna.save()
 
-            if form_kk.is_valid():
-                nama = form_pengguna.cleaned_data['nama']
-                tanggal_lahir = form_pengguna.cleaned_data['tanggal_lahir']
-                jenis_kelamin = form_pengguna.cleaned_data['jenis_kelamin']
-                telp = form_pengguna.cleaned_data['telp']
-                nama_kk = form_kk.cleaned_data['nama_kk']
-                kk = request.POST.get('kk', 0)
-
-                username = form_pengguna.cleaned_data['username']
-                password = form_pengguna.cleaned_data['password']
-
-                if not kk:
-                    alamat = form_kk.cleaned_data['alamat']
-                    kk = KepalaKeluarga(nama=nama_kk, alamat=alamat)
-                    kk.save()
-                else:
-                    kk = KepalaKeluarga.objects.get(id=kk)
-
-                user = User.objects.create_user(username, '', password)
-                user.save()
-
-                pengguna = Pengguna(nama=nama, tanggal_lahir=tanggal_lahir,
-                        jenis_kelamin=jenis_kelamin, telp=telp,
-                        kepala_keluarga=kk, user=user)
-                pengguna.save()
-
-                login(request, authenticate(request,
-                        username=username, password=password))
-                return redirect(reverse('antri:utama'))
-
-            return render(request, 'antri/daftar.html',
-                    {'form': form_kk, 'kode': kode})
+            login(request, user)
+            return redirect(reverse('antri:utama'))
     else:
-        form_pengguna = DaftarPenggunaForm()
+        form_pengguna = PenggunaForm()
+        form_kk = KepalaKeluargaForm()
+        form_user = UserForm()
 
-    return render(request, 'antri/daftar.html',
-            {'form': form_pengguna, 'kode': 0})
+    return render(request, 'antri/daftar_new.html', {
+        'form_pengguna': form_pengguna,
+        'form_kk': form_kk,
+        'form_user': form_user})
+
+# def daftar(request):
+#     # if this is a POST request we need to process the form data
+#     if request.method == 'POST':
+#         form_pengguna = DaftarPenggunaForm(request.POST)
+
+#         if form_pengguna.is_valid():
+#             data = form_pengguna.cleaned_data
+
+#             nama = data['nama']
+#             tanggal_lahir = data['tanggal_lahir']
+#             jenis_kelamin = data['jenis_kelamin']
+#             email = data['email']
+#             telp = data['telp']
+#             nik = data['nik']
+#             nama_kk = data['nama_kk']
+#             alamat = data['alamat']
+#             no_kk = data['no_kk']
+
+#             username = data['username']
+#             password = data['password']
+
+#             kepala_keluarga = KepalaKeluarga(nama=nama_kk, alamat=alamat,
+#                     no_kk=no_kk)
+#             kepala_keluarga.save()
+
+#             pengguna = Pengguna(first_name=nama, tanggal_lahir=tanggal_lahir,
+#                     jenis_kelamin=jenis_kelamin, email=email, telp=telp,
+#                     nik=nik, kepala_keluarga=kepala_keluarga, mrid=1,
+#                     username=username, password=password)
+#             # TODO generate MRID
+#             pengguna.save()
+
+#             login(request, authenticate(request,
+#                     username=username, password=password))
+
+#             return redirect(reverse('antri:utama'))
+
+#     else:
+#         form_pengguna = DaftarPenggunaForm()
+
+#     return render(request, 'antri/daftar.html', {'form': form_pengguna})
 
 def details(request):
     """
@@ -203,14 +224,16 @@ def profil(request):
             ('Tanggal Lahir', pengguna.tanggal_lahir),
             ('Jenis Kelamin', pengguna.jenis_kelamin),
             ('No. HP / Telp', pengguna.telp),
-            ]
+            ('NIK', pengguna.nik),
+            ('MRID', pengguna.mrid)]
 
     data_kepala_keluarga = [
-            ('Nama Kepala Keluarga', kepala_keluarga.nama),
-            ('Alamat', kepala_keluarga.alamat),
-            ]
+            ('Nama Kepala Keluarga', kepala_keluarga.nama_kk),
+            ('Alamat', kepala_keluarga.alamat_kk),
+            ('No. KK', kepala_keluarga.no_kk)]
 
     data_user = [
+            ('Email', user.email),
             ('Username', user.username),
             ]
 
@@ -219,41 +242,41 @@ def profil(request):
 
     return render(request, 'antri/profil.html', data)
 
-class ProfilUpdate(UpdateView):
-    model = Pengguna
-    fields = ['nama', 'tanggal_lahir', 'jenis_kelamin', 'telp']
-    template_name = 'antri/ubah.html'
-    extra_context = {'button_label': 'Ubah Profil'}
+# class ProfilUpdate(UpdateView):
+#     model = Pengguna
+#     fields = ['nama', 'tanggal_lahir', 'jenis_kelamin', 'telp']
+#     template_name = 'antri/ubah.html'
+#     extra_context = {'button_label': 'Ubah Profil'}
 
-    def get_object(self):
-        return self.request.user.pengguna
+#     def get_object(self):
+#         return self.request.user.pengguna
 
-    def get_success_url(self):
-        return reverse('antri:profil')
+#     def get_success_url(self):
+#         return reverse('antri:profil')
 
-class KepalaKeluargaUpdate(ProfilUpdate):
-    model = KepalaKeluarga
-    fields = '__all__'
-    template_name = 'antri/ubah.html'
-    extra_context = {'button_label': 'Ubah Kepala Keluarga'}
+# class KepalaKeluargaUpdate(ProfilUpdate):
+#     model = KepalaKeluarga
+#     fields = '__all__'
+#     template_name = 'antri/ubah.html'
+#     extra_context = {'button_label': 'Ubah Kepala Keluarga'}
 
-    def get_object(self):
-        return self.request.user.pengguna.kepala_keluarga
+#     def get_object(self):
+#         return self.request.user.pengguna.kepala_keluarga
 
-def ubah_password(request):
-    if request.method == 'POST':
-        form = UbahPasswordForm(request.user, request.POST)
-        if form.is_valid():
-            user = form.save()
-            update_session_auth_hash(request, user)  # Important!
-            return redirect(reverse('antri:profil'))
-    else:
-        form = UbahPasswordForm(request.user)
-    return render(request, 'antri/ubah.html',
-            {'form': form, 'button_label': 'Ubah Password'})
+# def ubah_password(request):
+#     if request.method == 'POST':
+#         form = UbahPasswordForm(request.user, request.POST)
+#         if form.is_valid():
+#             user = form.save()
+#             update_session_auth_hash(request, user)  # Important!
+#             return redirect(reverse('antri:profil'))
+#     else:
+#         form = UbahPasswordForm(request.user)
+#     return render(request, 'antri/ubah.html',
+#             {'form': form, 'button_label': 'Ubah Password'})
 
-def profil_detail(request, pk):
-    if not request.user.is_staff:
-        return redirect('{}?next=/profil/{}/'.format(reverse('antri:masuk'), pk))
-    context = {'object': Pengguna.objects.get(pk=pk)}
-    return render(request, 'antri/profil_detail.html', context)
+# def profil_detail(request, pk):
+#     if not request.user.is_staff:
+#         return redirect('{}?next=/profil/{}/'.format(reverse('antri:masuk'), pk))
+#     context = {'object': Pengguna.objects.get(pk=pk)}
+#     return render(request, 'antri/profil_detail.html', context)

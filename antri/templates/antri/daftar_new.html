@@ -1,0 +1,75 @@
+{% extends 'antri/base.html' %}
+
+{% block style %}
+<style>
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+th {
+  width: 224px;
+  vertical-align: top;
+  text-align: left;
+  padding: 10px;
+}
+td {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
+td input, td select {
+  height: 1.8em;
+  margin: 4px 0;
+  width: 220px;
+}
+textarea {
+  margin: 10px 0 auto 0;
+  width: 360px;
+  height: 120px;
+  padding: 8px;
+}
+ul {
+  list-style: none;
+  padding-left: 18px;
+}
+#error {
+  /* salah masuk.html */
+  color: red;
+  font-size: 0.8em;
+}
+@media (max-width: 600px) {
+  th {
+    display: table-row;
+    padding: 8px 0;
+  }
+  td input, td select {
+    width: 200px;
+  }
+}
+@media (max-width: 1000px) {
+  td {
+    flex-direction: column-reverse;
+  }
+  .errorlist {
+    margin-top: 0;
+    padding: 0;
+  }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+  <form method="post">
+    {% csrf_token %}
+    {% comment %}TODO https://stackoverflow.com/questions/51369757/mark-the-label-of-required-fields-when-using-django-modelform{% endcomment %}
+    <table>
+      {{ form_pengguna.as_table }}
+      {{ form_kk.as_table }}
+      {{ form_user.as_table }}
+    </table>
+    <input class="button" type="submit" name="create" value="Buat Akun">
+  </form>
+</div>
+{% endblock %}

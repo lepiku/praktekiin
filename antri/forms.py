@@ -1,9 +1,8 @@
 from django import forms
-from django.core.validators import RegexValidator
+from django.contrib.auth.forms import PasswordChangeForm, UserCreationForm
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import PasswordChangeForm
 from .models import REGEX_TELP, REGEX_NAMA, REGEX_ALAMAT, JENIS_KELAMIN, \
-        NAME_LENGTH, KepalaKeluarga
+        NAME_LENGTH, Pengguna, KepalaKeluarga
 import re
 from django.contrib.auth import authenticate, get_user_model, \
         password_validation
@@ -12,33 +11,54 @@ class DateField(forms.DateField):
     input_formats = ['%d/%m/%Y', '%d/%m/%y', '%d-%m-%Y', '%d-%m-%y']
     error_messages = {'invalid': 'Format tanggal: dd/mm/yyyy'}
 
+class PenggunaForm(forms.ModelForm):
+    class Meta:
+        model = Pengguna
+        fields = ('nama', 'tanggal_lahir', 'jenis_kelamin', 'telp', 'nik')
+
+class KepalaKeluargaForm(forms.ModelForm):
+    class Meta:
+        model = KepalaKeluarga
+        fields = ('nama_kk', 'alamat_kk', 'no_kk')
+
+class UserForm(UserCreationForm):
+    password1 = forms.CharField(
+        label='Password',
+        strip=False,
+        widget=forms.PasswordInput,
+        help_text='Password jangan terlalu gampang',
+    )
+    password2 = forms.CharField(
+        label='Konfirmasi Password',
+        strip=False,
+        widget=forms.PasswordInput,
+        help_text='Enter the same password as before, for verification.',
+    )
+
+    # disable password verification
+    def _post_clean(self):
+        super(forms.ModelForm, self)._post_clean()
+
 class DaftarPenggunaForm(forms.Form):
-    nama = forms.CharField(label='Nama Lengkap', max_length=NAME_LENGTH,
-            validators=[REGEX_NAMA])
+    nama = forms.CharField(label='Nama Lengkap', max_length=NAME_LENGTH)
     tanggal_lahir = DateField()
-    # TODO error meesage still 'Enter a valid date'
     jenis_kelamin = forms.ChoiceField(choices=JENIS_KELAMIN)
-    telp = forms.CharField(label='No. HP / Telp', validators=[REGEX_TELP],
-            max_length=18)
+    email = forms.CharField(required=False)
+    telp = forms.CharField(label='No. HP / Telp', max_length=18, required=False)
+    nik = forms.CharField(label='NIK', max_length=16, required=False)
     nama_kk = forms.CharField(label='Nama Kepala Keluarga',
-            max_length=NAME_LENGTH, validators=[REGEX_NAMA])
+            max_length=NAME_LENGTH, required=False)
+    alamat = forms.CharField(required=False)
+    no_kk = forms.CharField(label='No. Kepala Keluarga', max_length=16,
+            required=False)
 
     username = forms.CharField(max_length=32)
     password = forms.CharField(widget=forms.PasswordInput())
     ulangi_password = forms.CharField(widget=forms.PasswordInput())
 
-    def clean_nama(self):
-        nama = self.data.get('nama')
-        return str.title(nama)
-
-    def clean_nama_kk(self):
-        nama_kk = self.data.get('nama_kk')
-        return str.title(nama_kk)
-
-    # TODO cek kk udah ada apa blom? kalo udah, tanya itu sama gk?
     def clean_username(self):
         username = self.data.get('username')
-        if User.objects.filter(username=username): # if username already exist
+        if Pengguna.objects.filter(username=username): # if username already exist
             raise forms.ValidationError('Username sudah dipakai.')
         elif len(username) < 3:
             raise forms.ValidationError('Username terlalu pendek. Minimal 3 karakter')
@@ -48,7 +68,9 @@ class DaftarPenggunaForm(forms.Form):
         password = self.data.get('password')
         if len(password) < 6:
             raise forms.ValidationError('Password terlalu pendek. Minimal 6 karakter.')
-        elif password in ['123456'] or password == password[0] * len(password):
+        elif password.isdigit():
+            raise forms.ValidationError('Password tidak boleh angka semua.')
+        elif password == password[0] * len(password):
             raise forms.ValidationError('Password terlalu mudah ditebak.')
         return password
 
@@ -59,53 +81,12 @@ class DaftarPenggunaForm(forms.Form):
             raise forms.ValidationError('Password tidak sama.')
         return ulangi_password
 
-class DaftarKKForm(forms.Form):
-    nama = forms.CharField(widget=forms.HiddenInput)
-    tanggal_lahir = DateField(widget=forms.HiddenInput)
-    jenis_kelamin = forms.ChoiceField(widget=forms.HiddenInput,
-            choices=JENIS_KELAMIN)
-    telp = forms.CharField(widget=forms.HiddenInput)
-    username = forms.CharField(widget=forms.HiddenInput)
-    password = forms.CharField(widget=forms.HiddenInput)
-    ulangi_password = forms.CharField(widget=forms.HiddenInput)
-
-    nama_kk = forms.CharField(label='Nama Kepala Keluarga',
-            max_length=NAME_LENGTH, validators=[REGEX_NAMA])
-    alamat = forms.CharField(max_length=256, widget=forms.Textarea,
-            validators=[REGEX_ALAMAT])
-
-    def clean_nama_kk(self):
-        nama_kk = self.data.get('nama_kk')
-        return str.title(nama_kk)
-
-class PilihKKForm(forms.Form):
-    nama = forms.CharField(widget=forms.HiddenInput)
-    tanggal_lahir = DateField(widget=forms.HiddenInput)
-    jenis_kelamin = forms.ChoiceField(widget=forms.HiddenInput,
-            choices=JENIS_KELAMIN)
-    telp = forms.CharField(widget=forms.HiddenInput)
-    username = forms.CharField(widget=forms.HiddenInput)
-    password = forms.CharField(widget=forms.HiddenInput)
-    ulangi_password = forms.CharField(widget=forms.HiddenInput)
-    nama_kk = forms.CharField(widget=forms.HiddenInput)
-
-    # TODO get data from last post
-    def __init__(self, *args, **kwargs):
-        nama_kk = kwargs.pop('nama_kk', '')
-        super().__init__(*args, **kwargs)
-
-        kk_query = KepalaKeluarga.objects.filter(nama=nama_kk)\
-                .order_by('waktu_daftar')
-
-        self.fields['kk'] = forms.ModelChoiceField(
-                kk_query, label='Kepala Keluarga', initial=kk_query.first())
-
-class PendaftarForm(forms.Form):
-    pendaftar = forms.CharField(required=False, widget=forms.Textarea,
-            validators=[REGEX_NAMA])
-    def clean_pendaftar(self):
-        pendaftar = self.data.get('pendaftar')
-        return str.title(pendaftar)
+# class PendaftarForm(forms.Form):
+#     pendaftar = forms.CharField(required=False, widget=forms.Textarea,
+#             validators=[REGEX_NAMA])
+#     def clean_pendaftar(self):
+#         pendaftar = self.data.get('pendaftar')
+#         return str.title(pendaftar)
 
 class UbahPasswordForm(PasswordChangeForm):
     error_messages = {
