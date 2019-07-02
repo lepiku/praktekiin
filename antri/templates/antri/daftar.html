@@ -8,15 +8,13 @@
   align-items: center;
 }
 th {
-  width: 224px;
+  width: 205px;
   vertical-align: top;
   text-align: left;
   padding: 10px;
 }
 td {
   display: flex;
-  flex-direction: row-reverse;
-  justify-content: flex-end;
 }
 td input, td select {
   height: 1.8em;
@@ -30,20 +28,40 @@ textarea {
   padding: 8px;
 }
 ul {
+  padding-left: 0;
+  margin: 0;
   list-style: none;
-  padding-left: 18px;
+}
+.required:after {
+  content: "*";
+}
+.not-required {
+  font-weight: normal;
+}
+.info {
+  margin: 0.7em 0 0.7em 1em;
+}
+.helptext {
+  color: #888;
+  font-size: 0.8em;
 }
 #error {
   /* salah masuk.html */
   color: red;
   font-size: 0.8em;
 }
-{% if kode > 0 %}
-.errorlist {
-  /* TODO */
-  display: none;
+@media (max-width: 1000px) {
+  td {
+    flex-direction: column;
+  }
+  textarea {
+    width: 310px;
+  }
+  .info {
+    margin-top: 0;
+    margin-left: 0;
+  }
 }
-{% endif %}
 @media (max-width: 600px) {
   th {
     display: table-row;
@@ -52,14 +70,9 @@ ul {
   td input, td select {
     width: 200px;
   }
-}
-@media (max-width: 1000px) {
-  td {
-    flex-direction: column-reverse;
-  }
-  .errorlist {
-    margin-top: 0;
-    padding: 0;
+  textarea {
+    width: 200px;
+    height: 90px;
   }
 }
 </style>
@@ -67,22 +80,32 @@ ul {
 
 {% block content %}
 <div class="card">
-  <form action="{% url 'antri:daftar' %}" method="post">
+  <form method="post">
     {% csrf_token %}
+    {% comment %}TODO https://stackoverflow.com/questions/51369757/mark-the-label-of-required-fields-when-using-django-modelform{% endcomment %}
     <table>
-      {{ form.as_table }}
+      {% for form in forms %}
+      {% for field in form %}
+      <tr>
+        <th>
+          <label class="{% if field.field.required %}required{% else %}not-required{% endif %}" for="id_{{ field.name }}">{{ field.label }}</label>
+        </th>
+        <td>
+          <div>
+            {{ field }}
+          </div>
+          <div class="info">
+            {% if field.errors %}<ul class="errorlist">
+              {% for error in field.errors %}<li>{{ error }}</li>{% endfor %}
+            </ul>{% endif %}
+            {% if field.help_text %}<span class="helptext">{{ field.help_text|safe }}</span>{% endif %}
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+      {% endfor %}
     </table>
-    <input type="hidden" name="kode" value="{{ kode }}">
     <input class="button" type="submit" name="create" value="Buat Akun">
-    {% if kode == 2 %}
-    <input class="button" type="submit" name="new" value="Buat KK Baru">
-    {% endif %}
   </form>
 </div>
-{% endblock %}
-
-{% block script %}
-{% if kode == 2 %}
-<script>alert("Ditemukan Kepala Keluarga dengan nama yang sama.")</script>
-{% endif %}
 {% endblock %}

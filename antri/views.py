@@ -95,7 +95,6 @@ def daftar(request):
         form_pengguna = PenggunaForm(request.POST, instance=pengguna)
         form_kk = KepalaKeluargaForm(request.POST, instance=kk)
         if form_pengguna.is_valid() and form_kk.is_valid() and form_user.is_valid():
-            form_user.full_clean()
             form_user.save()
             form_kk.save()
 
@@ -111,52 +110,9 @@ def daftar(request):
         form_kk = KepalaKeluargaForm()
         form_user = UserForm()
 
-    return render(request, 'antri/daftar_new.html', {
-        'form_pengguna': form_pengguna,
-        'form_kk': form_kk,
-        'form_user': form_user})
+    forms = [form_pengguna, form_kk, form_user]
 
-# def daftar(request):
-#     # if this is a POST request we need to process the form data
-#     if request.method == 'POST':
-#         form_pengguna = DaftarPenggunaForm(request.POST)
-
-#         if form_pengguna.is_valid():
-#             data = form_pengguna.cleaned_data
-
-#             nama = data['nama']
-#             tanggal_lahir = data['tanggal_lahir']
-#             jenis_kelamin = data['jenis_kelamin']
-#             email = data['email']
-#             telp = data['telp']
-#             nik = data['nik']
-#             nama_kk = data['nama_kk']
-#             alamat = data['alamat']
-#             no_kk = data['no_kk']
-
-#             username = data['username']
-#             password = data['password']
-
-#             kepala_keluarga = KepalaKeluarga(nama=nama_kk, alamat=alamat,
-#                     no_kk=no_kk)
-#             kepala_keluarga.save()
-
-#             pengguna = Pengguna(first_name=nama, tanggal_lahir=tanggal_lahir,
-#                     jenis_kelamin=jenis_kelamin, email=email, telp=telp,
-#                     nik=nik, kepala_keluarga=kepala_keluarga, mrid=1,
-#                     username=username, password=password)
-#             # TODO generate MRID
-#             pengguna.save()
-
-#             login(request, authenticate(request,
-#                     username=username, password=password))
-
-#             return redirect(reverse('antri:utama'))
-
-#     else:
-#         form_pengguna = DaftarPenggunaForm()
-
-#     return render(request, 'antri/daftar.html', {'form': form_pengguna})
+    return render(request, 'antri/daftar.html', {'forms': forms})
 
 def details(request):
     """
@@ -233,8 +189,8 @@ def profil(request):
             ('No. KK', kepala_keluarga.no_kk)]
 
     data_user = [
-            ('Email', user.email),
             ('Username', user.username),
+            ('Email', user.email),
             ]
 
     data = {'pengguna': data_pengguna, 'user': data_user,
