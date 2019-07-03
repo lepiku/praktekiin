@@ -14,7 +14,6 @@ from .models import User, Pengguna, Keluarga, Pasien
 def utama(request, year=None, month=None, day=None):
     if not request.user.is_authenticated:
         return render(request, 'antri/bukan_utama.html')
-    print('youre logged in')
 
     if year == None and month == None:
         now = timezone.localtime(timezone.now())
@@ -59,7 +58,7 @@ def daftar(request):
         form_user = UserForm()
 
     return render(request, 'antri/daftar.html',
-            {'form': form_user, 'button_label': 'Buat Akun'})
+            {'form': form_user, 'button': 'Buat Akun'})
 
 def details(request):
     """
@@ -133,7 +132,7 @@ def profil(request):
     else:
         data_pengguna = []
 
-    data_pasien = [p.nama for p in keluarga.pasien_set.all()]
+    data_pasien = [{'nama': p.nama, 'pk': p.pk} for p in keluarga.pasien_set.all()]
 
     data_user = [
             ('Username', user.username),
@@ -149,12 +148,12 @@ def ubah_profil(request):
     if request.method == 'POST':
         form = PasienForm(request.POST, instance=request.user.pengguna.pasien)
         if form.is_valid():
-            user = form.save()
+            form.save()
             return redirect(reverse('antri:profil'))
     else:
         form = PasienForm(instance=request.user.pengguna.pasien)
     return render(request, 'antri/daftar.html',
-            {'form': form, 'button_label': 'Ubah Profil'})
+            {'form': form, 'button': 'Ubah Profil'})
 
 def ubah_password(request):
     if request.method == 'POST':
@@ -166,7 +165,21 @@ def ubah_password(request):
     else:
         form = UbahPasswordForm(request.user)
     return render(request, 'antri/daftar.html',
-            {'form': form, 'button_label': 'Ubah Password'})
+            {'form': form, 'button': 'Ubah Password'})
+
+def pasien_daftar(request):
+    if request.method == 'POST':
+        pasien = Pasien()
+        form = PasienForm(request.POST, instance=pasien)
+        if form.is_valid():
+            pasien.mrid = '000102' # TODO generate mrid
+            pasien.keluarga = request.user.pengguna.keluarga
+            form.save()
+            return redirect(reverse('antri:profil'))
+    else:
+        form = PasienForm()
+    return render(request, 'antri/daftar.html',
+            {'form': form, 'button': 'Buat Pasien'})
 
 def pasien_detail(request, pk):
     if not request.user.is_staff:

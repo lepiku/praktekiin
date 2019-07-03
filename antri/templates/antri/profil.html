@@ -44,8 +44,9 @@ tr:nth-child(odd) {
   <a class="button" href="{% url 'antri:ubah_password' %}">Ubah Password</a>
   <hr>
   <p>Nama-nama pasien satu keluarga</p>
+  <a href="{% url 'antri:pasien_daftar' %}">Daftar Pasien Baru</a>
   {% if pasien %}<ul>
-    {% for p in pasien %}<li>{{ p }}</li>{% endfor %}
+    {% for p in pasien %}<li><a href="{% url 'antri:pasien_detail' p.pk %}">{{ p.nama }}</a></li>{% endfor %}
   </ul>{% endif %}
 </div>
 {% endblock %}

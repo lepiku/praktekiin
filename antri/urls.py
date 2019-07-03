@@ -17,6 +17,7 @@ urlpatterns = [
     path('profil/', login_required(views.profil), name='profil'),
     path('ubah/profil/', login_required(views.ubah_profil), name='ubah_profil'),
     path('ubah/password/', login_required(views.ubah_password), name='ubah_password'),
+    path('pasien/daftar/', login_required(views.pasien_daftar), name='pasien_daftar'),
     path('pasien/<int:pk>/', login_required(views.pasien_detail),
         name='pasien_detail'),
 ]
