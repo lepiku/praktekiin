@@ -171,7 +171,7 @@ a {
           <div id="left">
             <a href="{% url 'antri:utama' %}">
               <div id="item">
-                <b>{% block utama %}Halaman Utama{% endblock %}</b>
+                <b>Beranda</b>
               </div>
             </a>
             <a href="{% url 'antri:tentang' %}">
@@ -185,7 +185,11 @@ a {
             <div class="dropdown">
               <div id="item">
                 <div id="name" style="height: 25px; overflow: hidden">
-                  {{ request.user.pengguna.nama }}
+                  {% if request.user.pengguna.pasien %}
+                  {{ request.user.pengguna.pasien.nama }}
+                  {% else %}
+                  {{ request.user.username }}
+                  {% endif %}
                 </div>
                 <div id="bar">
                   <div id="bar1"></div>

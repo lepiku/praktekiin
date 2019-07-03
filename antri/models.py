@@ -17,42 +17,25 @@ def regex_no_id(nama, digit=16):
     return RegexValidator(regex=r'^\d{' + str(digit) + r'}$',
             message="{} harus memiliki {} digit.".format(nama, digit))
 
-class KepalaKeluarga(models.Model):
-    nama_kk = models.CharField(max_length=NAME_LENGTH, blank=True,
-            validators=[REGEX_NAMA])
-    alamat_kk = models.TextField(blank=True, validators=[REGEX_ALAMAT])
-    no_kk = models.CharField(max_length=16, blank=True,
-            validators=[regex_no_id('Nomor Kepala Keluarga')])
 
+class Keluarga(models.Model):
     waktu_buat = models.DateTimeField(auto_now_add=True)
     waktu_ubah = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        if len(self.nama_kk) > 16:
-            nama = self.nama_kk[:16] + '...'
-        else:
-            nama = self.nama_kk
-        return "{} ({})".format(nama, self.pengguna_set.first())
+        return 'Keluarga ' + str(self.pengguna_set.first())
 
-    def clean_nama(self):
-        return str.title(self.nama)
-
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        super().save(*args, **kwargs)
-
-class Pengguna(models.Model):
+class Pasien(models.Model):
+    # wajib
     nama = models.CharField(max_length=NAME_LENGTH, validators=[REGEX_NAMA])
-    tanggal_lahir= models.DateField()
+    tanggal_lahir = models.DateField()
     jenis_kelamin = models.CharField(max_length=9, choices=JENIS_KELAMIN)
+    mrid = models.CharField(max_length=6)
+    keluarga = models.ForeignKey(Keluarga, on_delete=models.CASCADE)
+    # gak wajib
     telp = models.CharField(max_length=18, blank=True, validators=[REGEX_TELP])
     nik = models.CharField(max_length=16, blank=True,
             validators=[regex_no_id('Nomor Induk Kependudukan')])
-    mrid = models.CharField(max_length=6)
-
-    kepala_keluarga = models.ForeignKey(KepalaKeluarga,
-            on_delete=models.CASCADE)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     waktu_buat = models.DateTimeField(auto_now_add=True)
     waktu_ubah = models.DateTimeField(auto_now=True)
@@ -63,16 +46,26 @@ class Pengguna(models.Model):
     def clean_first_name(self):
         return str.title(self.nama)
 
-    # def short_nama(self):
-    #     if len(self.nama) > 16:
-    #         return self.nama[:16] + '...'
-    #     return self.nama
-
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
 
 # https://simpleisbetterthancomplex.com/tutorial/2016/07/22/how-to-extend-django-user-model.html
+
+class Pengguna(models.Model):
+    # wajib ada
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    keluarga = models.ForeignKey(Keluarga, on_delete=models.CASCADE)
+    # gak wajib
+    pasien = models.OneToOneField(Pasien, on_delete=models.SET_NULL, null=True)
+
+    waktu_buat = models.DateTimeField(auto_now_add=True)
+    waktu_ubah = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        if self.pasien:
+            return self.pasien.nama
+        return user.username
 
 class Hari(models.Model):
     tanggal = models.DateField()

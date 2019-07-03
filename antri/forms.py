@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import PasswordChangeForm, UserCreationForm
 from django.contrib.auth.models import User
 from .models import REGEX_TELP, REGEX_NAMA, REGEX_ALAMAT, JENIS_KELAMIN, \
-        NAME_LENGTH, Pengguna, KepalaKeluarga
+        NAME_LENGTH, Pasien
 import re
 from django.contrib.auth import authenticate, get_user_model, \
         password_validation
@@ -11,11 +11,12 @@ class DateField(forms.DateField):
     input_formats = ['%d/%m/%Y', '%d/%m/%y', '%d-%m-%Y', '%d-%m-%y']
     error_messages = {'invalid': 'Format tanggal: dd/mm/yyyy'}
 
-class PenggunaForm(forms.ModelForm):
+class PasienForm(forms.ModelForm):
     class Meta:
-        model = Pengguna
-        fields = ('nama', 'tanggal_lahir', 'jenis_kelamin', 'telp', 'nik')
+        model = Pasien
+        exclude = ('keluarga',)
         labels = {
+                'nama': 'Nama Lengkap',
                 'telp': 'No. Telp / HP',
                 'nik': 'NIK',
                 }
@@ -27,16 +28,6 @@ class PenggunaForm(forms.ModelForm):
                 ]
         self.fields['tanggal_lahir'].error_messages = {
                 'invalid': 'Format tanggal: dd/mm/yyyy'}
-
-class KepalaKeluargaForm(forms.ModelForm):
-    class Meta:
-        model = KepalaKeluarga
-        fields = ('nama_kk', 'alamat_kk', 'no_kk')
-        labels = {
-                'nama_kk': 'Nama Kepala Keluarga',
-                'alamat_kk': 'Alamat',
-                'no_kk': 'No. Kartu Keluarga'
-                }
 
 class UserForm(UserCreationForm):
     error_messages = {

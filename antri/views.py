@@ -1,18 +1,15 @@
 from django.contrib.auth import authenticate, login # logout,
-from django.contrib.auth.forms import SetPasswordForm
         # update_session_auth_hash
 # from django.http import JsonResponse, Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse
 # from django.utils.safestring import mark_safe
-# from django.utils import timezone
+from django.utils import timezone
 # from django.utils.html import escape
 # from django.views.generic.edit import UpdateView
 # from django.views.generic.detail import DetailView
-# from .forms import DaftarPenggunaForm
-        # UbahPasswordForm, PendaftarForm
-from .forms import PenggunaForm, KepalaKeluargaForm, UserForm
-from .models import User, Pengguna, KepalaKeluarga, Hari
+from .forms import UserForm
+from .models import User, Pengguna, Keluarga
 # from .utils import Calendar
 
 def utama(request, year=None, month=None, day=None):
@@ -20,48 +17,46 @@ def utama(request, year=None, month=None, day=None):
         return render(request, 'antri/bukan_utama.html')
 
     print('youre logged in')
-    return render(request, 'antri/bukan_utama.html')
 
     if year == None and month == None:
         now = timezone.localtime(timezone.now())
         year = now.year
         month = now.month
 
-    if request.method == 'POST':
-        form = PendaftarForm(request.POST)
+    # if request.method == 'POST':
+    #     form = PendaftarForm(request.POST)
 
-        # create Hari if doesn't exist
-        day = int(request.POST['hari'])
-        tanggal = timezone.datetime(int(request.POST['tahun']),
-                int(request.POST['bulan']), day)
-        if Hari.objects.filter(tanggal=tanggal).exists():
-            hari = Hari.objects.get(tanggal=tanggal)
-        else:
-            hari = Hari.objects.create(tanggal=tanggal)
-            hari.save()
+    #     # create Hari if doesn't exist
+    #     day = int(request.POST['hari'])
+    #     tanggal = timezone.datetime(int(request.POST['tahun']),
+    #             int(request.POST['bulan']), day)
+    #     if Hari.objects.filter(tanggal=tanggal).exists():
+    #         hari = Hari.objects.get(tanggal=tanggal)
+    #     else:
+    #         hari = Hari.objects.create(tanggal=tanggal)
+    #         hari.save()
 
-        if form.is_valid():
-            pendaftar = form.cleaned_data['pendaftar']
-            pendaftars = pendaftar.split('\n')
-            pendaftars = [' '.join(p.split()) for p in pendaftars]
-            pendaftars = [p for p in pendaftars if p != '']
+    #     if form.is_valid():
+    #         pendaftar = form.cleaned_data['pendaftar']
+    #         pendaftars = pendaftar.split('\n')
+    #         pendaftars = [' '.join(p.split()) for p in pendaftars]
+    #         pendaftars = [p for p in pendaftars if p != '']
 
-            pg = request.user.pengguna
-            pendaftaran_set = Pendaftaran.objects.filter(
-                    pengguna__kepala_keluarga=pg.kepala_keluarga, hari=hari)
-            if pendaftaran_set.exists():
-                pendaftaran_set.first().delete()
+    #         pg = request.user.pengguna
+    #         pendaftaran_set = Pendaftaran.objects.filter(
+    #                 pengguna__kepala_keluarga=pg.kepala_keluarga, hari=hari)
+    #         if pendaftaran_set.exists():
+    #             pendaftaran_set.first().delete()
 
-            if pendaftars != []:
-                pendaftaran = Pendaftaran.objects.create(pengguna=pg, hari=hari)
-                pendaftaran.save()
+    #         if pendaftars != []:
+    #             pendaftaran = Pendaftaran.objects.create(pengguna=pg, hari=hari)
+    #             pendaftaran.save()
 
-                for p in pendaftars:
-                    Pendaftar.objects.create( pendaftaran=pendaftaran, nama=p)\
-                            .save()
+    #             for p in pendaftars:
+    #                 Pendaftar(pendaftaran=pendaftaran, nama=p).save()
 
-    else:
-        form = PendaftarForm()
+    # else:
+    #     form = PendaftarForm()
 
     prev_month = month - 1
     next_month = month + 1
@@ -77,10 +72,11 @@ def utama(request, year=None, month=None, day=None):
             'prev_year': prev_year, 'prev_month': prev_month,
             'next_year': next_year, 'next_month': next_month}
 
-    calendar = Calendar().formatmonth(year, month)
-    return render(request, 'antri/utama.html',
-            {'calendar': mark_safe(calendar), 'data': data, 'form': form,
-                'day': day})
+    # calendar = Calendar().formatmonth(year, month)
+    return render(request, 'antri/utama.html', {'data': data, 'day': day})
+    # return render(request, 'antri/utama.html',
+    #         {'calendar': mark_safe(calendar), 'data': data, 'form': form,
+    #             'day': day})
 
 def tentang(request):
     return render(request, 'antri/tentang.html')
@@ -88,31 +84,18 @@ def tentang(request):
 def daftar(request):
     if request.method == 'POST':
         user = User()
-        kk = KepalaKeluarga()
-        pengguna = Pengguna()
 
         form_user = UserForm(request.POST, instance=user)
-        form_pengguna = PenggunaForm(request.POST, instance=pengguna)
-        form_kk = KepalaKeluargaForm(request.POST, instance=kk)
-        if form_pengguna.is_valid() and form_kk.is_valid() and form_user.is_valid():
+        if form_user.is_valid():
+            user.keluarga = Keluarga()
             form_user.save()
-            form_kk.save()
-
-            pengguna.mrid = '000101'
-            pengguna.kepala_keluarga = kk
-            pengguna.user = user
-            form_pengguna.save()
 
             login(request, user)
             return redirect(reverse('antri:utama'))
     else:
-        form_pengguna = PenggunaForm()
-        form_kk = KepalaKeluargaForm()
         form_user = UserForm()
 
-    forms = [form_pengguna, form_kk, form_user]
-
-    return render(request, 'antri/daftar.html', {'forms': forms})
+    return render(request, 'antri/daftar.html', {'form': form_user})
 
 def details(request):
     """

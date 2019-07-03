@@ -22,7 +22,7 @@ td input, td select {
   width: 220px;
 }
 textarea {
-  margin: 10px 0 auto 0;
+  margin: 4px 0;
   width: 360px;
   height: 120px;
   padding: 8px;
@@ -36,10 +36,11 @@ ul {
   content: "*";
 }
 .not-required {
+  color: #888;
   font-weight: normal;
 }
 .info {
-  margin: 0.7em 0 0.7em 1em;
+  margin: 0.5em 0 0.6em 1em;
 }
 .helptext {
   color: #888;
@@ -84,7 +85,6 @@ ul {
     {% csrf_token %}
     {% comment %}TODO https://stackoverflow.com/questions/51369757/mark-the-label-of-required-fields-when-using-django-modelform{% endcomment %}
     <table>
-      {% for form in forms %}
       {% for field in form %}
       <tr>
         <th>
@@ -102,7 +102,6 @@ ul {
           </div>
         </td>
       </tr>
-      {% endfor %}
       {% endfor %}
     </table>
     <input class="button" type="submit" name="create" value="Buat Akun">
