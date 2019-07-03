@@ -35,33 +35,34 @@ a {
 }
 #left {
   display: flex;
-  white-space: nowrap;
+  justify-content: flex-start;
 }
-#right {
-  max-width: 720px;
-  text-align: right;
+#item {
+  padding: 20px 14px;
+  height: 24px;
 }
-#item { padding: 20px 10px; }
-#item:hover { background-color: #39b0a3; }
+#item:hover {
+  background-color: #39b0a3;
+}
 .dropdown {
   position: relative;
 }
 .dropdown #item {
   cursor: default;
 }
-.dropdown:hover .dropdown-content {display: block;}
+.dropdown:hover .dropdown-content {
+  display: block;
+}
 .dropdown-content {
   display: none;
   position: absolute;
   background-color: #d3e9e4;
   width: 240px;
   z-index: 1;
-  right: 0px;
 }
 .dropdown-content a {
   color: #009688;
   padding: 12px 16px;
-  text-decoration: none;
   display: block;
 }
 .dropdown-content a:hover {background-color: #e3f2ee;}
@@ -109,11 +110,8 @@ a {
   color: red;
   font-size: 0.8em;
 }
-#bar {
-  display: none;
-}
 #bar div {
-  width: 30px;
+  width: 26px;
   height: 3px;
   border-radius: 2px;
 }
@@ -121,10 +119,9 @@ a {
   background-color: white;
 }
 #bar2 {
-  height: 8px !important;
+  height: 7px !important;
 }
 #mobile-name {
-  display: none;
   margin: 12px 16px;
   color: #000;
   overflow: hidden;
@@ -137,17 +134,23 @@ a {
   body {
     font-size: 15px;
   }
+  #item {
+    padding: 20px 12px;
+    height: 20px;
+  }
   input, select, textarea {
     font-size: 15px;
-  }
-  #name {
-    display: none;
   }
   #bar {
     display: block;
   }
-  #mobile-name {
-    display: block;
+  #bar div {
+    width: 24px;
+    height: 3px;
+    border-radius: 2px;
+  }
+  #bar2 {
+    height: 5px !important;
   }
   .spacing {
     padding: 0 12px;
@@ -169,6 +172,30 @@ a {
       <div class="spacing">
         <div class="navbar">
           <div id="left">
+            {% if request.user.is_authenticated %}
+            <div class="dropdown">
+              <div id="item">
+                <div id="bar">
+                  <div id="bar1"></div>
+                  <div id="bar2"></div>
+                  <div id="bar1"></div>
+                  <div id="bar2"></div>
+                  <div id="bar1"></div>
+                </div>
+              </div>
+              <div class="dropdown-content">
+                <div id="mobile-name">
+                  {% if request.user.pengguna.pasien != None %}
+                  <p>{{ request.user.pengguna.pasien.nama }}</p>
+                  {% else %}
+                  <p>{{ request.user.username }}</p>
+                  {% endif %}
+                </div>
+                <a href="{% url 'antri:profil' %}">Profil</a>
+                <a href="{% url 'antri:keluar' %}">Keluar</a>
+              </div>
+            </div>
+            {% endif %}
             <a href="{% url 'antri:utama' %}">
               <div id="item">
                 <b>Beranda</b>
@@ -180,34 +207,6 @@ a {
               </div>
             </a>
           </div>
-          {% if request.user.is_authenticated %}
-          <div id="right">
-            <div class="dropdown">
-              <div id="item">
-                <div id="name" style="height: 25px; overflow: hidden">
-                  {% if request.user.pengguna.pasien %}
-                  {{ request.user.pengguna.pasien.nama }}
-                  {% else %}
-                  {{ request.user.username }}
-                  {% endif %}
-                </div>
-                <div id="bar">
-                  <div id="bar1"></div>
-                  <div id="bar2"></div>
-                  <div id="bar1"></div>
-                  <div id="bar2"></div>
-                  <div id="bar1"></div>
-                </div>
-              </div>
-              <div class="dropdown-content">
-                <div id="mobile-name">
-                  <p>{{ request.user.pengguna.nama }}</p>
-                </div>
-                <a href="{% url 'antri:profil' %}">Profil</a>
-                <a href="{% url 'antri:keluar' %}">Keluar</a>
-              </div>
-            </div>
-          </div>{% endif %}
         </div>
       </div>
     </div>
