@@ -1,61 +1,25 @@
 from django.contrib.auth import authenticate, login, update_session_auth_hash
-# from django.http import JsonResponse, Http404
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-# from django.utils.safestring import mark_safe
 from django.utils import timezone
-# from django.utils.html import escape
 from django.views.generic.edit import UpdateView
-# from django.views.generic.detail import DetailView
 from .forms import UserForm, UbahPasswordForm, PasienForm
 from .models import User, Pengguna, Keluarga, Pasien
+# from django.http import JsonResponse, Http404
+# from django.utils.safestring import mark_safe
+# from django.utils.html import escape
+# from django.views.generic.detail import DetailView
 # from .utils import Calendar
 
 def utama(request, year=None, month=None, day=None):
     if not request.user.is_authenticated:
         return render(request, 'antri/bukan_utama.html')
-
     print('youre logged in')
 
     if year == None and month == None:
         now = timezone.localtime(timezone.now())
         year = now.year
         month = now.month
-
-    # if request.method == 'POST':
-    #     form = PendaftarForm(request.POST)
-
-    #     # create Hari if doesn't exist
-    #     day = int(request.POST['hari'])
-    #     tanggal = timezone.datetime(int(request.POST['tahun']),
-    #             int(request.POST['bulan']), day)
-    #     if Hari.objects.filter(tanggal=tanggal).exists():
-    #         hari = Hari.objects.get(tanggal=tanggal)
-    #     else:
-    #         hari = Hari.objects.create(tanggal=tanggal)
-    #         hari.save()
-
-    #     if form.is_valid():
-    #         pendaftar = form.cleaned_data['pendaftar']
-    #         pendaftars = pendaftar.split('\n')
-    #         pendaftars = [' '.join(p.split()) for p in pendaftars]
-    #         pendaftars = [p for p in pendaftars if p != '']
-
-    #         pg = request.user.pengguna
-    #         pendaftaran_set = Pendaftaran.objects.filter(
-    #                 pengguna__kepala_keluarga=pg.kepala_keluarga, hari=hari)
-    #         if pendaftaran_set.exists():
-    #             pendaftaran_set.first().delete()
-
-    #         if pendaftars != []:
-    #             pendaftaran = Pendaftaran.objects.create(pengguna=pg, hari=hari)
-    #             pendaftaran.save()
-
-    #             for p in pendaftars:
-    #                 Pendaftar(pendaftaran=pendaftaran, nama=p).save()
-
-    # else:
-    #     form = PendaftarForm()
 
     prev_month = month - 1
     next_month = month + 1
@@ -204,8 +168,8 @@ def ubah_password(request):
     return render(request, 'antri/daftar.html',
             {'form': form, 'button_label': 'Ubah Password'})
 
-# def profil_detail(request, pk):
-#     if not request.user.is_staff:
-#         return redirect('{}?next=/profil/{}/'.format(reverse('antri:masuk'), pk))
-#     context = {'object': Pengguna.objects.get(pk=pk)}
-#     return render(request, 'antri/profil_detail.html', context)
+def pasien_detail(request, pk):
+    if not request.user.is_staff:
+        return redirect('{}?next=/profil/{}/'.format(reverse('antri:masuk'), pk))
+    return render(request, 'antri/pasien_detail.html',
+            {'pasien': get_object_or_404(Pasien, pk=pk)})

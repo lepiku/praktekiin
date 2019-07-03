@@ -8,23 +8,15 @@ app_name = 'antri'
 
 urlpatterns = [
     path('', views.utama, name='utama'),
+    path('tentang/', views.tentang, name='tentang'),
+    path('daftar/', views.daftar, name='daftar'),
     path('masuk/', LoginView.as_view(template_name='antri/masuk.html'),
         name='masuk'),
     path('keluar/', LogoutView.as_view(template_name='antri/keluar.html'),
         name='keluar'),
-    path('daftar/', views.daftar, name='daftar'),
-    path('tentang/', views.tentang, name='tentang'),
-    # path('data.json/', views.details, name='details'),
     path('profil/', login_required(views.profil), name='profil'),
-    # path('profil/<int:pk>/', login_required(views.profil_detail),
-        # name='profil_detail'),
-    # path('ubah/profil/',
-        # login_required(views.ProfilUpdate.as_view()), name='ubah_profil'),
-    # path('ubah/kepala-keluarga/',
-        # login_required(views.KepalaKeluargaUpdate.as_view()), name='ubah_kk'),
-    # path('ubah/password/',
-        # login_required(views.ubah_password), name='ubah_password'),
     path('ubah/profil/', login_required(views.ubah_profil), name='ubah_profil'),
     path('ubah/password/', login_required(views.ubah_password), name='ubah_password'),
+    path('pasien/<int:pk>/', login_required(views.pasien_detail),
+        name='pasien_detail'),
 ]
-
