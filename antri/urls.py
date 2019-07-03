@@ -8,8 +8,6 @@ app_name = 'antri'
 
 urlpatterns = [
     path('', views.utama, name='utama'),
-    # path('<int:year>/<int:month>/', views.utama, name='utama_month'),
-    # path('<int:year>/<int:month>/<int:day>/', views.utama, name='utama_day'),
     path('masuk/', LoginView.as_view(template_name='antri/masuk.html'),
         name='masuk'),
     path('keluar/', LogoutView.as_view(template_name='antri/keluar.html'),
@@ -26,8 +24,7 @@ urlpatterns = [
         # login_required(views.KepalaKeluargaUpdate.as_view()), name='ubah_kk'),
     # path('ubah/password/',
         # login_required(views.ubah_password), name='ubah_password'),
-    path('ubah/profil/', login_required(views.profil), name='ubah_profil'),
-    path('ubah/kepala-keluarga/', login_required(views.profil), name='ubah_kk'),
-    path('ubah/password/', login_required(views.profil), name='ubah_password'),
+    path('ubah/profil/', login_required(views.ubah_profil), name='ubah_profil'),
+    path('ubah/password/', login_required(views.ubah_password), name='ubah_password'),
 ]
 

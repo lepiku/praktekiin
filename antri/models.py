@@ -67,35 +67,6 @@ class Pengguna(models.Model):
             return self.pasien.nama
         return user.username
 
-class Hari(models.Model):
-    tanggal = models.DateField()
-    waktu_buka = models.TimeField(default='17:00:00')
-    waktu_tutup = models.TimeField(default='20:00:00')
-
-    # def __str__(self):
-    #     return '{} ({})'.format(self.tanggal, self.jumlah_pendaftar())
-
-    # def jumlah_pendaftar(self):
-    #     counter = 0
-    #     for p in self.pendaftaran_set.all():
-    #         counter += len(p.pendaftar_set.all())
-    #     return counter
-
-# class Pendaftaran(models.Model):
-#     pengguna = models.ForeignKey(Pengguna, on_delete=models.CASCADE)
-#     hari = models.ForeignKey(Hari, on_delete=models.CASCADE)
-#     waktu_buat = models.DateTimeField(auto_now_add=True)
-
-#     def __str__(self):
-#         return str(self.pengguna) + ": " + str(self.hari.tanggal)
-
-# class Pendaftar(models.Model):
-#     pendaftaran = models.ForeignKey(Pendaftaran, on_delete=models.CASCADE)
-#     nama = models.CharField(max_length=NAME_LENGTH, validators=[REGEX_NAMA])
-
-#     def __str__(self):
-#         return str(self.nama)
-
 class Pesan(models.Model):
     pengguna = models.ForeignKey(Pengguna, on_delete=models.SET_NULL, null=True)
     pesan = models.TextField()

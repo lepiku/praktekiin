@@ -1,15 +1,14 @@
-from django.contrib.auth import authenticate, login # logout,
-        # update_session_auth_hash
+from django.contrib.auth import authenticate, login, update_session_auth_hash
 # from django.http import JsonResponse, Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse
 # from django.utils.safestring import mark_safe
 from django.utils import timezone
 # from django.utils.html import escape
-# from django.views.generic.edit import UpdateView
+from django.views.generic.edit import UpdateView
 # from django.views.generic.detail import DetailView
-from .forms import UserForm
-from .models import User, Pengguna, Keluarga
+from .forms import UserForm, UbahPasswordForm, PasienForm
+from .models import User, Pengguna, Keluarga, Pasien
 # from .utils import Calendar
 
 def utama(request, year=None, month=None, day=None):
@@ -95,7 +94,8 @@ def daftar(request):
     else:
         form_user = UserForm()
 
-    return render(request, 'antri/daftar.html', {'form': form_user})
+    return render(request, 'antri/daftar.html',
+            {'form': form_user, 'button_label': 'Buat Akun'})
 
 def details(request):
     """
@@ -156,20 +156,20 @@ def details(request):
 def profil(request):
     user = request.user
     pengguna = user.pengguna
-    kepala_keluarga = pengguna.kepala_keluarga
+    keluarga = pengguna.keluarga
 
-    data_pengguna = [
-            ('Nama Lengkap', pengguna.nama),
-            ('Tanggal Lahir', pengguna.tanggal_lahir),
-            ('Jenis Kelamin', pengguna.jenis_kelamin),
-            ('No. HP / Telp', pengguna.telp),
-            ('NIK', pengguna.nik),
-            ('MRID', pengguna.mrid)]
+    if pengguna.pasien != None:
+        data_pengguna = [
+                ('Nama Lengkap', pengguna.pasien.nama),
+                ('Tanggal Lahir', pengguna.pasien.tanggal_lahir),
+                ('Jenis Kelamin', pengguna.pasien.jenis_kelamin),
+                ('No. HP / Telp', pengguna.pasien.telp),
+                ('NIK', pengguna.pasien.nik),
+                ('MRID', pengguna.pasien.mrid)]
+    else:
+        data_pengguna = []
 
-    data_kepala_keluarga = [
-            ('Nama Kepala Keluarga', kepala_keluarga.nama_kk),
-            ('Alamat', kepala_keluarga.alamat_kk),
-            ('No. KK', kepala_keluarga.no_kk)]
+    data_pasien = [p.nama for p in keluarga.pasien_set.all()]
 
     data_user = [
             ('Username', user.username),
@@ -177,42 +177,32 @@ def profil(request):
             ]
 
     data = {'pengguna': data_pengguna, 'user': data_user,
-            'kepala_keluarga': data_kepala_keluarga}
+            'pasien': data_pasien}
 
     return render(request, 'antri/profil.html', data)
 
-# class ProfilUpdate(UpdateView):
-#     model = Pengguna
-#     fields = ['nama', 'tanggal_lahir', 'jenis_kelamin', 'telp']
-#     template_name = 'antri/ubah.html'
-#     extra_context = {'button_label': 'Ubah Profil'}
+def ubah_profil(request):
+    if request.method == 'POST':
+        form = PasienForm(request.POST, instance=request.user.pengguna.pasien)
+        if form.is_valid():
+            user = form.save()
+            return redirect(reverse('antri:profil'))
+    else:
+        form = PasienForm(instance=request.user.pengguna.pasien)
+    return render(request, 'antri/daftar.html',
+            {'form': form, 'button_label': 'Ubah Profil'})
 
-#     def get_object(self):
-#         return self.request.user.pengguna
-
-#     def get_success_url(self):
-#         return reverse('antri:profil')
-
-# class KepalaKeluargaUpdate(ProfilUpdate):
-#     model = KepalaKeluarga
-#     fields = '__all__'
-#     template_name = 'antri/ubah.html'
-#     extra_context = {'button_label': 'Ubah Kepala Keluarga'}
-
-#     def get_object(self):
-#         return self.request.user.pengguna.kepala_keluarga
-
-# def ubah_password(request):
-#     if request.method == 'POST':
-#         form = UbahPasswordForm(request.user, request.POST)
-#         if form.is_valid():
-#             user = form.save()
-#             update_session_auth_hash(request, user)  # Important!
-#             return redirect(reverse('antri:profil'))
-#     else:
-#         form = UbahPasswordForm(request.user)
-#     return render(request, 'antri/ubah.html',
-#             {'form': form, 'button_label': 'Ubah Password'})
+def ubah_password(request):
+    if request.method == 'POST':
+        form = UbahPasswordForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            return redirect(reverse('antri:profil'))
+    else:
+        form = UbahPasswordForm(request.user)
+    return render(request, 'antri/daftar.html',
+            {'form': form, 'button_label': 'Ubah Password'})
 
 # def profil_detail(request, pk):
 #     if not request.user.is_staff:

@@ -1,4 +1,5 @@
 {% extends 'antri/base.html' %}
+
 {% block style %}
 <style>
 table {
@@ -19,6 +20,7 @@ tr:nth-child(odd) {
 }
 </style>
 {% endblock %}
+
 {% block content %}
 <div class="card">
   <table id="pengguna">
@@ -29,17 +31,7 @@ tr:nth-child(odd) {
     </tr>
     {% endfor %}
   </table>
-  <a class="button" href="{% url 'antri:ubah_profil' %}">Ubah Profil</a>
-  <hr>
-  <table id="kepala_keluarga">
-    {% for label, value in kepala_keluarga %}
-    <tr>
-      <th id="label">{{ label }}</td>
-      <td id="value">{{ value }}</td>
-    </tr>
-    {% endfor %}
-  </table>
-  <a class="button" href="{% url 'antri:ubah_kk' %}">Ubah Kepala Keluarga</a>
+   <a class="button" href="{% url 'antri:ubah_profil' %}">Ubah Profil</a> 
   <hr>
   <table id="user">
     {% for label, value in user %}
@@ -50,5 +42,10 @@ tr:nth-child(odd) {
     {% endfor %}
   </table>
   <a class="button" href="{% url 'antri:ubah_password' %}">Ubah Password</a>
+  <hr>
+  <p>Nama-nama pasien satu keluarga</p>
+  {% if pasien %}<ul>
+    {% for p in pasien %}<li>{{ p }}</li>{% endfor %}
+  </ul>{% endif %}
 </div>
 {% endblock %}

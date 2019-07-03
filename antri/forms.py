@@ -14,7 +14,7 @@ class DateField(forms.DateField):
 class PasienForm(forms.ModelForm):
     class Meta:
         model = Pasien
-        exclude = ('keluarga',)
+        exclude = ('mrid', 'keluarga')
         labels = {
                 'nama': 'Nama Lengkap',
                 'telp': 'No. Telp / HP',
@@ -31,6 +31,7 @@ class PasienForm(forms.ModelForm):
 
 class UserForm(UserCreationForm):
     error_messages = {
+        **UserCreationForm.error_messages,
         'password_mismatch': "Konfirmasi Password tidak sama.",
     }
 
@@ -42,10 +43,10 @@ class UserForm(UserCreationForm):
                 'unique': 'Username sudah dipakai',
                 'invalid': 'Username hanya boleh mengandung huruf, angka, dan @/./+/-/_ saja.'
                 }
+        self.fields['password2'].label = 'Konfirmasi Password'
         self.fields['username'].help_text = 'hanya mengandung huruf, angka, dan @/./+/-/_ saja.'
         self.fields['password1'].help_text = 'Panjang minimal 6 karakter.'
         self.fields['password2'].help_text = 'Ulangi password, untuk konfirmasi.'
-        self.fields['password2'].label = 'Konfirmasi Password'
         self.error_messages['password_mismatch'] = "Konfirmasi password tidak sama."
 
     def clean_password1(self):
@@ -63,40 +64,29 @@ class UserForm(UserCreationForm):
     def _post_clean(self):
         super(forms.ModelForm, self)._post_clean()
 
-# class PendaftarForm(forms.Form):
-#     pendaftar = forms.CharField(required=False, widget=forms.Textarea,
-#             validators=[REGEX_NAMA])
-#     def clean_pendaftar(self):
-#         pendaftar = self.data.get('pendaftar')
-#         return str.title(pendaftar)
-
 class UbahPasswordForm(PasswordChangeForm):
     error_messages = {
         **PasswordChangeForm.error_messages,
         'password_incorrect': "Password lama salah",
+        'password_mismatch': "Konfirmasi Password Baru tidak sama.",
     }
 
-    old_password = forms.CharField(
-            label="Password Lama",
-            strip=False,
-            widget=forms.PasswordInput(attrs={'autofocus': True}),
-            )
-    new_password1 = forms.CharField(
-            label="Password Baru",
-            widget=forms.PasswordInput,
-            strip=False,
-            )
-    new_password2 = forms.CharField(
-            label="Ulangi Password Baru",
-            strip=False,
-            widget=forms.PasswordInput,
-            )
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['old_password'].label = 'Password Lama'
+        self.fields['new_password1'].label = 'Password Baru'
+        self.fields['new_password2'].label = 'Konfirmasi Password Baru'
+        self.fields['new_password1'].help_text = 'Panjang minimal 6 karakter.'
+        self.fields['new_password2'].help_text = 'Ulangi password, untuk konfirmasi.'
 
     def clean_new_password1(self):
         password = self.data.get('new_password1')
         if len(password) < 6:
-            raise forms.ValidationError('Password terlalu pendek. Minimal 6 karakter.')
-        elif password in ['123456'] or password == password[0:1] * len(password):
+            raise forms.ValidationError('Password terlalu pendek.')
+        elif str(password).isdigit():
+            raise forms.ValidationError('Password tidak boleh angka semua.')
+        elif password in 'qwertyuiopasdfghjklzxcvbnm'\
+                or password == password[0:1] * len(password):
             raise forms.ValidationError('Password terlalu mudah ditebak.')
         return password
 
