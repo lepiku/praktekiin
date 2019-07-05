@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic.edit import UpdateView
-from .forms import UserForm, UbahPasswordForm, PasienForm
+from .forms import UserForm, UbahPasswordForm, PasienForm, PendaftaranForm
 from .models import User, Pengguna, Keluarga, Pasien
 # from django.http import JsonResponse, Http404
 # from django.utils.safestring import mark_safe
@@ -30,12 +30,20 @@ def utama(request, year=None, month=None, day=None):
         next_month = 1
         next_year = year + 1
 
-    data = {'month': month, 'year': year,
+    pasien_set = request.user.pengguna.keluarga.pasien_set.all()
+    if request.method == 'POST':
+        form = PendaftaranForm(request.POST, pasien_set=pasien_set)
+        if form.is_valid():
+            print(SUCCESS)
+    else:
+        form = PendaftaranForm(pasien_set=pasien_set)
+
+    date = {'day': day, 'month': month, 'year': year,
             'prev_year': prev_year, 'prev_month': prev_month,
             'next_year': next_year, 'next_month': next_month}
 
     # calendar = Calendar().formatmonth(year, month)
-    return render(request, 'antri/utama.html', {'data': data, 'day': day})
+    return render(request, 'antri/utama.html', {'date': date, 'form': form})
     # return render(request, 'antri/utama.html',
     #         {'calendar': mark_safe(calendar), 'data': data, 'form': form,
     #             'day': day})

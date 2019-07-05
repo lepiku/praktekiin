@@ -6,7 +6,15 @@
 {% block content %}
 <div class="card">
   <h2>Beranda</h2>
-  <p>Hari ini: {{ day }}/{{ data.month }}/{{ data.year }}</p>
+  <a class="button" href="{% url 'antri:pasien-daftar' %}">Daftar Pasien Baru</a>
+</div>
+<div class="card pesan">
+
+  <form method="POST" href="{% url 'antri:utama' %}">
+    <h2>Daftar Antri</h2>
+    {{ form.as_p }}
+    {% comment %}Calendar here{% endcomment %}
+  </form>
 </div>
 {% endblock %}
 

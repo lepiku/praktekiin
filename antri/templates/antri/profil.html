@@ -31,7 +31,7 @@ tr:nth-child(odd) {
     </tr>
     {% endfor %}
   </table>
-   <a class="button" href="{% url 'antri:ubah_profil' %}">Ubah Profil</a> 
+   <a class="button" href="{% url 'antri:ubah-profil' %}">Ubah Profil</a> 
   <hr>
   <table id="user">
     {% for label, value in user %}
@@ -41,12 +41,12 @@ tr:nth-child(odd) {
     </tr>
     {% endfor %}
   </table>
-  <a class="button" href="{% url 'antri:ubah_password' %}">Ubah Password</a>
+  <a class="button" href="{% url 'antri:ubah-password' %}">Ubah Password</a>
   <hr>
   <p>Nama-nama pasien satu keluarga</p>
-  <a href="{% url 'antri:pasien_daftar' %}">Daftar Pasien Baru</a>
+  <a href="{% url 'antri:pasien-daftar' %}">Daftar Pasien Baru</a>
   {% if pasien %}<ul>
-    {% for p in pasien %}<li><a href="{% url 'antri:pasien_detail' p.pk %}">{{ p.nama }}</a></li>{% endfor %}
+    {% for p in pasien %}<li><a href="{% url 'antri:pasien-detail' p.pk %}">{{ p.nama }}</a></li>{% endfor %}
   </ul>{% endif %}
 </div>
 {% endblock %}

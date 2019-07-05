@@ -1,5 +1,5 @@
 from django.contrib import admin
-from antri.models import Pengguna, Keluarga, Pasien
+from antri.models import Pengguna, Keluarga, Pasien, Tempat
 
 # class PenggunaAdmin(admin.ModelAdmin):
 #     list_display = ('__str__', 'kepala_keluarga', 'user')
@@ -13,7 +13,7 @@ from antri.models import Pengguna, Keluarga, Pasien
 #     inlines = [PendaftarInline]
 
 # Register your models here.
-admin.site.register([Pengguna, Keluarga, Pasien])
+admin.site.register([Pengguna, Keluarga, Pasien, Tempat])
 # admin.site.register(Pengguna, PenggunaAdmin)
 # admin.site.register(Pendaftaran, PendaftaranAdmin)
 

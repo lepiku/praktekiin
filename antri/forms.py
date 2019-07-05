@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import PasswordChangeForm, UserCreationForm
 from django.contrib.auth.models import User
 from .models import REGEX_TELP, REGEX_NAMA, REGEX_ALAMAT, JENIS_KELAMIN, \
-        NAME_LENGTH, Pasien
+        NAME_LENGTH, Pasien, Tempat
 import re
 from django.contrib.auth import authenticate, get_user_model, \
         password_validation
@@ -99,3 +99,13 @@ class UbahPasswordForm(PasswordChangeForm):
                 code='password_mismatch',
             )
         return password2
+
+class PendaftaranForm(forms.Form):
+    tempat = forms.ModelChoiceField(Tempat.objects.all())
+
+    def __init__(self, *args, **kwargs):
+        print(args)
+        query = kwargs.pop('pasien_set', Pasien.objects.none())
+        super().__init__(*args, **kwargs)
+
+        self.fields['pasien_set'] = forms.ModelMultipleChoiceField(query)

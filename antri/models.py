@@ -67,6 +67,17 @@ class Pengguna(models.Model):
             return self.pasien.nama
         return user.username
 
+class Tempat(models.Model):
+    """
+    Tempat Praktek
+    """
+    nama_tempat = models.CharField(max_length=NAME_LENGTH,
+            validators=[REGEX_ALAMAT])
+    alamat_tempat = models.TextField(validators=[REGEX_ALAMAT])
+
+    def __str__(self):
+        return self.nama_tempat
+
 class Pesan(models.Model):
     pengguna = models.ForeignKey(Pengguna, on_delete=models.SET_NULL, null=True)
     pesan = models.TextField()
