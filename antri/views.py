@@ -34,7 +34,7 @@ def utama(request, year=None, month=None, day=None):
     if request.method == 'POST':
         form = PendaftaranForm(request.POST, pasien_set=pasien_set)
         if form.is_valid():
-            print(SUCCESS)
+            print('SUCCESS')
     else:
         form = PendaftaranForm(pasien_set=pasien_set)
 

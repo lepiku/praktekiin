@@ -12,8 +12,10 @@
 
   <form method="POST" href="{% url 'antri:utama' %}">
     <h2>Daftar Antri</h2>
+    {% csrf_token %}
     {{ form.as_p }}
     {% comment %}Calendar here{% endcomment %}
+    <input class="button" type="submit" value="Pesan">
   </form>
 </div>
 {% endblock %}
