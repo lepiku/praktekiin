@@ -87,6 +87,9 @@ class Hari(models.Model):
     waktu_mulai = models.TimeField()
     waktu_selesai = models.TimeField()
 
+    def __str__(self):
+        return str(self.tanggal) + ': ' + self.waktu
+
 
 class Pendaftaran(models.Model):
     keluarga = models.ForeignKey(Keluarga, on_delete=models.CASCADE)
@@ -94,6 +97,9 @@ class Pendaftaran(models.Model):
     tempat = models.ForeignKey(Tempat, on_delete=models.CASCADE)
     pasien_set = models.ManyToManyField(Pasien)
     waktu_buat = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.keluarga) + ': ' + str(self.hari)
 
 
 class Pesan(models.Model):

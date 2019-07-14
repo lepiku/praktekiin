@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from antri.models import Pengguna, Keluarga, Pasien, Tempat
 
-user = User(username='dimas')
+user = User(username='dimas', is_staff=True, is_superuser=True)
 user.set_password('okto')
 user.save()
 
