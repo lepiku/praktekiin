@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import PasswordChangeForm, UserCreationForm
 from django.contrib.auth.models import User
 from .models import REGEX_TELP, REGEX_NAMA, REGEX_ALAMAT, NAME_LENGTH, \
-        Pasien, Tempat
+        WAKTU_CHOICES, Pasien, Tempat
 import re
 from django.contrib.auth import authenticate, get_user_model, \
         password_validation
@@ -102,10 +102,11 @@ class UbahPasswordForm(PasswordChangeForm):
 
 class PendaftaranForm(forms.Form):
     tempat = forms.ModelChoiceField(Tempat.objects.all())
+    waktu = forms.ChoiceField(choices=WAKTU_CHOICES)
 
     def __init__(self, *args, **kwargs):
-        print(args)
         query = kwargs.pop('pasien_set', Pasien.objects.none())
         super().__init__(*args, **kwargs)
 
-        self.fields['pasien_set'] = forms.ModelMultipleChoiceField(query)
+        self.fields['pasien_set'] = forms.ModelMultipleChoiceField(query,
+                widget=forms.CheckboxSelectMultiple)

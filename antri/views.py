@@ -4,12 +4,19 @@ from django.urls import reverse
 from django.utils import timezone
 from django.views.generic.edit import UpdateView
 from .forms import UserForm, UbahPasswordForm, PasienForm, PendaftaranForm
-from .models import User, Pengguna, Keluarga, Pasien
+from .models import User, Pengguna, Keluarga, Pasien, Pendaftaran, Tempat, \
+        WAKTU_CHOICES, Hari
 # from django.http import JsonResponse, Http404
 # from django.utils.safestring import mark_safe
 # from django.utils.html import escape
 # from django.views.generic.detail import DetailView
 # from .utils import Calendar
+
+DEFAULT_WAKTU = {
+        'PG': ('08:00', '12:00'),
+        'SG': ('13:00', '16:00'),
+        'SR': ('16:00', '20:00'),
+        }
 
 def utama(request, year=None, month=None, day=None):
     if not request.user.is_authenticated:
@@ -34,6 +41,29 @@ def utama(request, year=None, month=None, day=None):
     if request.method == 'POST':
         form = PendaftaranForm(request.POST, pasien_set=pasien_set)
         if form.is_valid():
+            print(form.data)
+            #test
+            tanggal = timezone.now().date()
+            waktu = form.cleaned_data['waktu']
+            if Hari.objects.filter(tanggal=tanggal, waktu=waktu).exists():
+                hari = Hari.objects.get(tanggal=tanggal, waktu=waktu)
+            else:
+                waktu_mulai, waktu_selesai = DEFAULT_WAKTU[waktu]
+                hari = Hari(tanggal=tanggal, waktu=waktu,
+                        waktu_mulai=waktu_mulai, waktu_selesai=waktu_selesai)
+                hari.save()
+
+            keluarga = request.user.pengguna.keluarga
+            tempat = form.cleaned_data['tempat']
+            pasien_set = form.cleaned_data['pasien_set']
+            p = Pendaftaran(
+                    keluarga=keluarga,
+                    hari=hari,
+                    tempat=tempat,
+                    )
+            p.save()
+            p.pasien_set.set(pasien_set)
+            # p.save()
             print('SUCCESS')
     else:
         form = PendaftaranForm(pasien_set=pasien_set)

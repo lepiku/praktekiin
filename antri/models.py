@@ -57,7 +57,8 @@ class Pasien(models.Model):
 class Pengguna(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     keluarga = models.ForeignKey(Keluarga, on_delete=models.CASCADE)
-    pasien = models.OneToOneField(Pasien, on_delete=models.SET_NULL, null=True)
+    pasien = models.OneToOneField(Pasien, on_delete=models.SET_NULL, blank=True,
+            null=True)
 
     waktu_buat = models.DateTimeField(auto_now_add=True)
     waktu_ubah = models.DateTimeField(auto_now=True)
@@ -65,7 +66,7 @@ class Pengguna(models.Model):
     def __str__(self):
         if self.pasien:
             return self.pasien.nama
-        return user.username
+        return self.user.username
 
 
 class Tempat(models.Model):
@@ -83,11 +84,12 @@ class Tempat(models.Model):
 class Hari(models.Model):
     tanggal = models.DateField()
     waktu = models.CharField(max_length=2, choices=WAKTU_CHOICES)
-    waktu_buka = models.TimeField()
-    waktu_tutup = models.TimeField()
+    waktu_mulai = models.TimeField()
+    waktu_selesai = models.TimeField()
 
 
 class Pendaftaran(models.Model):
+    keluarga = models.ForeignKey(Keluarga, on_delete=models.CASCADE)
     hari = models.ForeignKey(Hari, on_delete=models.CASCADE)
     tempat = models.ForeignKey(Tempat, on_delete=models.CASCADE)
     pasien_set = models.ManyToManyField(Pasien)
