@@ -6,7 +6,7 @@ from django.views.generic.edit import UpdateView
 from .forms import UserForm, UbahPasswordForm, PasienForm, PendaftaranForm
 from .models import User, Pengguna, Keluarga, Pasien, Pendaftaran, Tempat, \
         WAKTU_CHOICES, Hari
-# from django.http import JsonResponse, Http404
+from django.http import JsonResponse, Http404
 # from django.utils.safestring import mark_safe
 # from django.utils.html import escape
 # from django.views.generic.detail import DetailView
@@ -97,6 +97,50 @@ def daftar(request):
 
     return render(request, 'antri/daftar.html',
             {'form': form_user, 'button': 'Buat Akun'})
+
+
+def get_time(request):
+    '''
+    return hour and day of the week of the place.
+    '''
+    if request.is_ajax():
+        id_tempat = request.GET.get('id_tempat')
+        if id_tempat != '':
+            print(id_tempat)
+            nama_hari = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+
+            tempat = Tempat.objects.get(id=id_tempat)
+            id_hari = []
+            total_hari = []
+            total_jadwal = {}
+
+            for x in range(6):
+                if tempat.jadwal_set.filter(hari=x).exists():
+                    total_hari.append(nama_hari[x])
+                    id_hari.append(x)
+
+            for waktu, nama_waktu in WAKTU_CHOICES:
+                if tempat.jadwal_set.filter(waktu=waktu).exists():
+                    total_jadwal[nama_waktu] = []
+
+                    for h in id_hari:
+                        query = tempat.jadwal_set.filter(waktu=waktu, hari=h)
+
+                        if query.exists():
+                            jadwal = query.first()
+                            total_jadwal[nama_waktu].append(jadwal.get_waktu_ms())
+
+
+            print(total_jadwal)
+
+            return JsonResponse({'hari': total_hari, 'jadwal': total_jadwal})
+        return JsonResponse({})
+
+
+def get_date(request):
+    if request.is_ajax():
+        return JsonResponse({})
+
 
 def details(request):
     """

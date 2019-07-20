@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 REGEX_TELP = RegexValidator(regex=r'^(\+62|0)\d{9,15}$',
         message="Format nomor telepon: '+628...' atau '08...', 9-15 digit.")
@@ -81,14 +82,32 @@ class Tempat(models.Model):
         return self.nama_tempat
 
 
-class Hari(models.Model):
-    tanggal = models.DateField()
+class Jadwal(models.Model):
+    tempat = models.ForeignKey(Tempat, on_delete=models.CASCADE)
+    hari = models.IntegerField(validators=[
+        MinValueValidator(0),
+        MaxValueValidator(6)])
     waktu = models.CharField(max_length=2, choices=WAKTU_CHOICES)
     waktu_mulai = models.TimeField()
     waktu_selesai = models.TimeField()
 
     def __str__(self):
-        return str(self.tanggal) + ': ' + self.waktu
+        nama_hari = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        return str(self.tempat) + ': ' + nama_hari[self.hari] + ' ' + self.waktu
+
+    def get_waktu_ms(self):
+        mulai = str(self.waktu_mulai)[:5]
+        selesai = str(self.waktu_selesai)[:5]
+        return mulai + '-' + selesai
+
+
+class Hari(models.Model):
+    jadwal = models.ForeignKey(Jadwal, related_name='hari_set',
+            on_delete=models.CASCADE)
+    tanggal = models.DateField()
+
+    def __str__(self):
+        return str(self.tanggal) + ': ' + str(self.jadwal.waktu)
 
 
 class Pendaftaran(models.Model):
