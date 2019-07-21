@@ -22,61 +22,15 @@ def utama(request, year=None, month=None, day=None):
     if not request.user.is_authenticated:
         return render(request, 'antri/bukan_utama.html')
 
-    if year == None and month == None:
-        now = timezone.localtime(timezone.now())
-        year = now.year
-        month = now.month
-
-    prev_month = month - 1
-    next_month = month + 1
-    prev_year = next_year = year
-    if month == 1:
-        prev_month = 12
-        prev_year = year - 1
-    elif month == 12:
-        next_month = 1
-        next_year = year + 1
-
     pasien_set = request.user.pengguna.keluarga.pasien_set.all()
     if request.method == 'POST':
         form = PendaftaranForm(request.POST, pasien_set=pasien_set)
-        if form.is_valid():
-            print(form.data)
-            #test
-            tanggal = timezone.now().date()
-            waktu = form.cleaned_data['waktu']
-            if Hari.objects.filter(tanggal=tanggal, waktu=waktu).exists():
-                hari = Hari.objects.get(tanggal=tanggal, waktu=waktu)
-            else:
-                waktu_mulai, waktu_selesai = DEFAULT_WAKTU[waktu]
-                hari = Hari(tanggal=tanggal, waktu=waktu,
-                        waktu_mulai=waktu_mulai, waktu_selesai=waktu_selesai)
-                hari.save()
-
-            keluarga = request.user.pengguna.keluarga
-            tempat = form.cleaned_data['tempat']
-            pasien_set = form.cleaned_data['pasien_set']
-            p = Pendaftaran(
-                    keluarga=keluarga,
-                    hari=hari,
-                    tempat=tempat,
-                    )
-            p.save()
-            p.pasien_set.set(pasien_set)
-            # p.save()
-            print('SUCCESS')
     else:
         form = PendaftaranForm(pasien_set=pasien_set)
 
-    date = {'day': day, 'month': month, 'year': year,
-            'prev_year': prev_year, 'prev_month': prev_month,
-            'next_year': next_year, 'next_month': next_month}
+    context = {'form': form}
 
-    # calendar = Calendar().formatmonth(year, month)
-    return render(request, 'antri/utama.html', {'date': date, 'form': form})
-    # return render(request, 'antri/utama.html',
-    #         {'calendar': mark_safe(calendar), 'data': data, 'form': form,
-    #             'day': day})
+    return render(request, 'antri/utama.html', context)
 
 def tentang(request):
     return render(request, 'antri/tentang.html')
@@ -134,7 +88,7 @@ def get_time(request):
             print(total_jadwal)
 
             return JsonResponse({'hari': total_hari, 'jadwal': total_jadwal})
-        return JsonResponse({})
+        return JsonResponse({'hari': None})
 
 
 def get_date(request):

@@ -1,6 +1,11 @@
 {% extends 'antri/base.html' %}
 
 {% block style %}
+<style>
+#tr-waktu, #tr-tanggal, #tr-pasien {
+  display: none;
+}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -13,7 +18,26 @@
   <form method="POST" href="{% url 'antri:utama' %}">
     <h2>Daftar Antri</h2>
     {% csrf_token %}
-    {{ form.as_p }}
+    <table>
+      <tbody>
+        <tr>
+          <th>Tempat:</th>
+          <td>{{ form.tempat }}</td>
+        </tr>
+        <tr id="tr-waktu">
+          <th>Waktu:</th>
+          <td id="td-waktu"></td>
+        </tr>
+        <tr id="tr-tanggal">
+          <th>Tanggal:</th>
+          <td id="td-tanggal"></td>
+        </tr>
+        <tr id="tr-pasien">
+          <th>Pasien:</th>
+          <td id="td-pasien">{{ form.pasien_set }}</td>
+        </tr>
+      </tbody>
+    </table>
     {% comment %}Calendar here{% endcomment %}
     <input class="button" type="submit" value="Pesan">
   </form>
@@ -32,15 +56,53 @@
         .replace(/'/g, "&#039;");
   }
 
+  function hide(name) {
+    switch (name) {
+      case 'waktu':
+        $('#tr-waktu').css('display', 'none')
+      case 'tanggal':
+        $('#tr-tanggal').css('display', 'none')
+      case 'pasien':
+        $('#tr-pasien').css('display', 'none')
+    }
+  }
+
   var tempat = document.getElementById('id_tempat')
 
-  tempat.onchange = function render(d, m, y) {
+  tempat.onchange = function get_time() {
     $.ajax({
       url: '{% url 'antri:get-time' %}',
       method: 'GET',
       data: {'id_tempat': tempat.value},
       success: function(result) {
         console.log(result)
+        if (result.hari !== null) {
+          var waktu_table = '<table><tbody><tr><td></td>'
+
+          for (var x = 0; x < result.hari.length; x++) {
+            waktu_table += '<td>' + result.hari[x] + '</td>'
+          }
+          waktu_table += '</tr>'
+
+          for (var key in result.jadwal) {
+            waktu_table += '<tr><th>' + key + '</th>'
+            for (var x in result.jadwal[key]) {
+              waktu_table += '<td>' + result.jadwal[key][x] + '</td>'
+            }
+            waktu_table += '</tr>'
+          }
+
+
+          waktu_table += '</tbody></table>'
+          $('#td-waktu').html(waktu_table)
+          $('#tr-waktu').css('display', 'contents')
+          hide('tanggal')
+
+        } else {
+          hide('waktu')
+        }
+
+
       },
       error: function(a, b) {
         console.log(a)

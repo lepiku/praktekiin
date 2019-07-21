@@ -102,7 +102,7 @@ class UbahPasswordForm(PasswordChangeForm):
 
 class PendaftaranForm(forms.Form):
     tempat = forms.ModelChoiceField(Tempat.objects.all())
-    waktu = forms.ChoiceField(choices=WAKTU_CHOICES)
+    waktu = forms.ChoiceField(choices=WAKTU_CHOICES, widget=forms.HiddenInput)
 
     def __init__(self, *args, **kwargs):
         query = kwargs.pop('pasien_set', Pasien.objects.none())
