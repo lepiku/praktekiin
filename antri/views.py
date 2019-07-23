@@ -106,8 +106,8 @@ def get_dates(request):
             next_date = jadwal.get_next_date()
             for num in range(6):
                 total_tanggal.append({
-                    'date': next_date + timezone.timedelta(days=num * 7),
-                    'amount': 0,
+                    'tanggal': next_date + timezone.timedelta(days=num * 7),
+                    'jumlah': 0,
                     })
             return JsonResponse({'tanggal': total_tanggal})
 

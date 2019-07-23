@@ -5,6 +5,9 @@
 #tr-waktu, #tr-tanggal, #tr-pasien {
   display: none;
 }
+.cell {
+  background-color: #39B0A3;
+}
 </style>
 {% endblock %}
 
@@ -88,15 +91,14 @@
             waktu_table += '<tr><th>' + key + '</th>'
             var j = result.jadwal[key]
             for (var x in j) {
-              waktu_table += '<td onclick="get_dates(' + j[x]['id'] + ')">' + j[x]['jam'] + '</td>'
+              waktu_table += '<td class="cell" onclick="get_dates(' + j[x]['id'] + ')">' + j[x]['jam'] + '</td>'
             }
             waktu_table += '</tr>'
           }
 
-
           waktu_table += '</tbody></table>'
           $('#td-waktu').html(waktu_table)
-          $('#tr-waktu').css('display', 'contents')
+          $('#tr-waktu').css('display', 'table-row')
           hide('tanggal')
 
         } else {
@@ -120,12 +122,24 @@
       data: {'id_jadwal': id_jadwal},
       success: function(result) {
         console.log(result)
+        var tanggal_table = '<table><tbody><tr>'
+        for (var tanggal in result.tanggal) {
+          tanggal_table += '<td class="cell" onclick="show_pasien()">' + result.tanggal[tanggal]['tanggal'] + '</td>'
+        }
+        tanggal_table += '</tr></tbody></table>'
+        $('#td-tanggal').html(tanggal_table)
+        $('#tr-tanggal').css('display', 'table-row')
+        hide('pasien')
       },
       error: function(a, b) {
         console.log(a)
         console.log(b)
       }
     })
+  }
+
+  function show_pasien() {
+    $('#tr-pasien').css('display', 'table-row')
   }
 
 </script>
