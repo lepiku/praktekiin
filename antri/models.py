@@ -1,7 +1,8 @@
-from django.db import models
 from django.contrib.auth.models import User
-from django.core.validators import RegexValidator
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import RegexValidator
+from django.db import models
+from django.utils import timezone
 
 REGEX_TELP = RegexValidator(regex=r'^(\+62|0)\d{9,15}$',
         message="Format nomor telepon: '+628...' atau '08...', 9-15 digit.")
@@ -99,6 +100,10 @@ class Jadwal(models.Model):
         mulai = str(self.waktu_mulai)[:5]
         selesai = str(self.waktu_selesai)[:5]
         return mulai + '-' + selesai
+
+    def get_next_date(self):
+        delta = (self.hari - timezone.datetime.today().weekday()) % 7
+        return timezone.localtime(timezone.now() + timezone.timedelta(days=delta)).date()
 
 
 class Hari(models.Model):

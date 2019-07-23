@@ -71,7 +71,7 @@
 
   tempat.onchange = function get_time() {
     $.ajax({
-      url: '{% url 'antri:get-time' %}',
+      url: '{% url 'antri:get-times' %}',
       method: 'GET',
       data: {'id_tempat': tempat.value},
       success: function(result) {
@@ -86,8 +86,9 @@
 
           for (var key in result.jadwal) {
             waktu_table += '<tr><th>' + key + '</th>'
-            for (var x in result.jadwal[key]) {
-              waktu_table += '<td>' + result.jadwal[key][x] + '</td>'
+            var j = result.jadwal[key]
+            for (var x in j) {
+              waktu_table += '<td onclick="get_dates(' + j[x]['id'] + ')">' + j[x]['jam'] + '</td>'
             }
             waktu_table += '</tr>'
           }
@@ -110,6 +111,23 @@
       }
     })
   }
+
+  function get_dates(id_jadwal) {
+    console.log(id_jadwal)
+    $.ajax({
+      url: '{% url 'antri:get-dates' %}',
+      method: 'GET',
+      data: {'id_jadwal': id_jadwal},
+      success: function(result) {
+        console.log(result)
+      },
+      error: function(a, b) {
+        console.log(a)
+        console.log(b)
+      }
+    })
+  }
+
 </script>
 {% endblock %}
 

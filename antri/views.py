@@ -1,12 +1,12 @@
 from django.contrib.auth import authenticate, login, update_session_auth_hash
-from django.shortcuts import render, redirect, get_object_or_404
+from django.http import Http404, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
-from django.views.generic.edit import UpdateView
-from .forms import UserForm, UbahPasswordForm, PasienForm, PendaftaranForm
-from .models import User, Pengguna, Keluarga, Pasien, Pendaftaran, Tempat, \
-        WAKTU_CHOICES, Hari
-from django.http import JsonResponse, Http404
+
+from .forms import PasienForm, PendaftaranForm, UbahPasswordForm, UserForm
+from .models import WAKTU_CHOICES, Hari, Jadwal, Keluarga, Pasien, Tempat, User
+
 # from django.utils.safestring import mark_safe
 # from django.utils.html import escape
 # from django.views.generic.detail import DetailView
@@ -50,10 +50,10 @@ def daftar(request):
         form_user = UserForm()
 
     return render(request, 'antri/daftar.html',
-            {'form': form_user, 'button': 'Buat Akun'})
+                  {'form': form_user, 'button': 'Buat Akun'})
 
 
-def get_time(request):
+def get_times(request):
     '''
     return hour and day of the week of the place.
     '''
@@ -77,23 +77,42 @@ def get_time(request):
                 if tempat.jadwal_set.filter(waktu=waktu).exists():
                     total_jadwal[nama_waktu] = []
 
-                    for h in id_hari:
-                        query = tempat.jadwal_set.filter(waktu=waktu, hari=h)
+                    for ha in id_hari:
+                        query = tempat.jadwal_set.filter(waktu=waktu, hari=ha)
 
                         if query.exists():
                             jadwal = query.first()
-                            total_jadwal[nama_waktu].append(jadwal.get_waktu_ms())
+                            data = {
+                                'id': jadwal.id,
+                                'jam': jadwal.get_waktu_ms(),
+                                }
+                            total_jadwal[nama_waktu].append(data)
 
 
             print(total_jadwal)
 
             return JsonResponse({'hari': total_hari, 'jadwal': total_jadwal})
         return JsonResponse({'hari': None})
+    return None
 
 
-def get_date(request):
+def get_dates(request):
     if request.is_ajax():
-        return JsonResponse({})
+        id_jadwal = request.GET.get('id_jadwal')
+        jadwal = Jadwal.objects.filter(id=id_jadwal)
+        if jadwal.exists():
+            jadwal = jadwal.first()
+            total_tanggal = []
+            next_date = jadwal.get_next_date()
+            for num in range(6):
+                total_tanggal.append({
+                    'date': next_date + timezone.timedelta(days=num * 7),
+                    'amount': 0,
+                    })
+            return JsonResponse({'tanggal': total_tanggal})
+
+        return JsonResponse({'tanggal': None})
+    return None
 
 
 def details(request):
@@ -101,8 +120,8 @@ def details(request):
     Show the names who booked that day.
     """
     nama_bulan = ("", "Januari", "Februari", "Maret", "April", "Mei",
-            "Juni", "Juli", "Agustus", "September", "Oktober", "November",
-            "Desember")
+                  "Juni", "Juli", "Agustus", "September", "Oktober", "November",
+                  "Desember")
 
     if request.is_ajax():
         day = int(request.GET.get('day'))
@@ -115,7 +134,7 @@ def details(request):
         tutup = '20:00'
         try:
             hari = Hari.objects.get(tanggal__day=day, tanggal__month=month,
-                tanggal__year=year)
+                                    tanggal__year=year)
 
         except Hari.DoesNotExist as e:
             data = None
@@ -159,21 +178,21 @@ def profil(request):
 
     if pengguna.pasien != None:
         data_pengguna = [
-                ('Nama Lengkap', pengguna.pasien.nama),
-                ('Tanggal Lahir', pengguna.pasien.tanggal_lahir),
-                ('Jenis Kelamin', pengguna.pasien.jenis_kelamin),
-                ('No. HP / Telp', pengguna.pasien.telp),
-                ('NIK', pengguna.pasien.nik),
-                ('MRID', pengguna.pasien.mrid)]
+            ('Nama Lengkap', pengguna.pasien.nama),
+            ('Tanggal Lahir', pengguna.pasien.tanggal_lahir),
+            ('Jenis Kelamin', pengguna.pasien.jenis_kelamin),
+            ('No. HP / Telp', pengguna.pasien.telp),
+            ('NIK', pengguna.pasien.nik),
+            ('MRID', pengguna.pasien.mrid)]
     else:
         data_pengguna = []
 
     data_pasien = [{'nama': p.nama, 'pk': p.pk} for p in keluarga.pasien_set.all()]
 
     data_user = [
-            ('Username', user.username),
-            ('Email', user.email),
-            ]
+        ('Username', user.username),
+        ('Email', user.email),
+        ]
 
     data = {'pengguna': data_pengguna, 'user': data_user,
             'pasien': data_pasien}
@@ -189,7 +208,7 @@ def ubah_profil(request):
     else:
         form = PasienForm(instance=request.user.pengguna.pasien)
     return render(request, 'antri/daftar.html',
-            {'form': form, 'button': 'Ubah Profil'})
+                  {'form': form, 'button': 'Ubah Profil'})
 
 def ubah_password(request):
     if request.method == 'POST':
@@ -201,7 +220,7 @@ def ubah_password(request):
     else:
         form = UbahPasswordForm(request.user)
     return render(request, 'antri/daftar.html',
-            {'form': form, 'button': 'Ubah Password'})
+                  {'form': form, 'button': 'Ubah Password'})
 
 def pasien_daftar(request):
     if request.method == 'POST':
@@ -215,7 +234,7 @@ def pasien_daftar(request):
     else:
         form = PasienForm()
     return render(request, 'antri/daftar.html',
-            {'form': form, 'button': 'Buat Pasien'})
+                  {'form': form, 'button': 'Buat Pasien'})
 
 def pasien_detail(request, pk):
     if not request.user.is_staff:
