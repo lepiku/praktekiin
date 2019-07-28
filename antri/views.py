@@ -6,7 +6,8 @@ from django.urls import reverse
 from django.utils import timezone
 
 from .forms import PasienForm, PendaftaranForm, UbahPasswordForm, UserForm
-from .models import WAKTU_CHOICES, Hari, Jadwal, Keluarga, Pasien, Tempat, User
+from .models import (WAKTU_CHOICES, Hari, Jadwal, Keluarga, Pasien, Tempat,
+                     User, Pendaftaran)
 
 # from django.utils.safestring import mark_safe
 # from django.utils.html import escape
@@ -42,8 +43,11 @@ def beranda(request, year=None, month=None, day=None):
 
 def get_antri(request):
     if request.is_ajax():
-        date = timezone.localtime(timezone.now()).date()
-        hari = Hari.objects.filter(tanggal=date)
+        date = timezone.localtime(timezone.now())
+        if date.weekday() == 6:
+            date += timezone.timedelta(days=1)
+
+        hari = Hari.objects.filter(tanggal=date.date())
 
         if not hari.exists():
             return JsonResponse({'data': None})
@@ -57,10 +61,33 @@ def get_antri(request):
 
 @login_required
 def daftar_antri(request):
-
     pasien_set = request.user.pengguna.keluarga.pasien_set.all()
     if request.method == 'POST':
         form = PendaftaranForm(request.POST, pasien_set=pasien_set)
+        if form.is_valid():
+            print('VALID')
+            print(request.POST)
+            form.cleaned_data['tempat']
+
+            jadwal = Jadwal.objects.get(
+                tempat=form.cleaned_data['tempat'],
+                waktu=form.cleaned_data['waktu'],
+                hari=form.cleaned_data['hari'])
+
+            hari, _ = Hari.objects.get_or_create(
+                jadwal=jadwal,
+                tanggal=form.cleaned_data['tanggal'])
+
+            pendaftaran = Pendaftaran(
+                user=request.user,
+                hari=hari)
+            pendaftaran.save()
+            pendaftaran.pasien_set.set(form.cleaned_data['pasien_set'])
+
+            return redirect('antri:beranda')
+        else:
+            print('NOT VALID')
+            print(form.errors)
     else:
         form = PendaftaranForm(pasien_set=pasien_set)
 
@@ -123,7 +150,6 @@ def get_times(request):
                                 'jam': jadwal.get_waktu_ms(),
                                 }
                             total_jadwal[nama_waktu].append(data)
-
 
             print(total_jadwal)
 

@@ -26,10 +26,13 @@
         <tr id="tr-waktu">
           <th>Waktu:</th>
           <td id="td-waktu"></td>
+          {{ form.waktu }}
+          {{ form.hari }}
         </tr>
         <tr id="tr-tanggal">
           <th>Tanggal:</th>
           <td id="td-tanggal"></td>
+          {{ form.tanggal }}
         </tr>
         <tr id="tr-pasien">
           <th>Pasien:</th>
@@ -37,6 +40,7 @@
         </tr>
       </tbody>
     </table>
+    {{ form.errors }}
     {% comment %}Calendar here{% endcomment %}
     <input class="button" type="submit" value="Pesan">
   </form>
@@ -67,7 +71,6 @@
   }
 
   var tempat = document.getElementById('id_tempat')
-
   tempat.onchange = function get_time() {
     $.ajax({
       url: '{% url 'antri:get-times' %}',
@@ -87,7 +90,8 @@
             waktu_table += '<tr><th>' + key + '</th>'
             var j = result.jadwal[key]
             for (var x in j) {
-              waktu_table += '<td class="cell" onclick="get_dates(' + j[x]['id'] + ')">' + j[x]['jam'] + '</td>'
+              var fx = "get_dates(" + j[x]['id'] + ", '" + key + "')"
+              waktu_table += '<td class="cell" onclick="' + fx + '">' + j[x]['jam'] + '</td>'
             }
             waktu_table += '</tr>'
           }
@@ -110,18 +114,28 @@
     })
   }
 
-  function get_dates(id_jadwal) {
-    console.log(id_jadwal)
+  function get_dates(id_jadwal, waktu) {
     $.ajax({
       url: '{% url 'antri:get-dates' %}',
       method: 'GET',
       data: {'id_jadwal': id_jadwal},
       success: function(result) {
         console.log(result)
+        var id_waktu = '2'
+        switch (waktu) {
+          case 'Pagi': id_waktu = 'PG'; break;
+          case 'Siang': id_waktu = 'SG'; break;
+          case 'Sore': id_waktu = 'SR'; break;
+        }
+        $('#id_waktu').val(id_waktu)
+        $('#id_hari').val(id_jadwal)
+
         var tanggal_table = '<table><tbody><tr>'
         for (var tanggal in result.tanggal) {
-          tanggal_table += '<td class="cell" onclick="show_pasien()">' + result.tanggal[tanggal]['tanggal'] + '</td>'
+          var fx = "show_pasien('" + result.tanggal[tanggal]['tanggal'] + "')"
+          tanggal_table += '<td class="cell" onclick=' + fx + '>' + result.tanggal[tanggal]['tanggal'] + '</td>'
         }
+
         tanggal_table += '</tr></tbody></table>'
         $('#td-tanggal').html(tanggal_table)
         $('#tr-tanggal').css('display', 'table-row')
@@ -134,10 +148,10 @@
     })
   }
 
-  function show_pasien() {
+  function show_pasien(tanggal) {
+    $('#id_tanggal').val(tanggal)
     $('#tr-pasien').css('display', 'table-row')
   }
-
 </script>
 {% endblock %}
 

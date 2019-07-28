@@ -109,7 +109,7 @@ class Jadwal(models.Model):
 
 class Hari(models.Model):
     jadwal = models.ForeignKey(Jadwal, related_name='hari_set',
-            on_delete=models.CASCADE)
+                               on_delete=models.CASCADE)
     tanggal = models.DateField()
 
     def __str__(self):
@@ -117,14 +117,14 @@ class Hari(models.Model):
 
 
 class Pendaftaran(models.Model):
-    keluarga = models.ForeignKey(Keluarga, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     hari = models.ForeignKey(Hari, on_delete=models.CASCADE)
-    tempat = models.ForeignKey(Tempat, on_delete=models.CASCADE)
     pasien_set = models.ManyToManyField(Pasien)
     waktu_buat = models.DateTimeField(auto_now_add=True)
+    waktu_ubah = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return str(self.keluarga) + ': ' + str(self.hari)
+        return str(self.user) + ': ' + str(self.hari)
 
 
 class Pesan(models.Model):

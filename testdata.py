@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from antri.models import Pengguna, Keluarga, Pasien, Tempat
+from antri.models import Pengguna, Keluarga, Pasien, Tempat, Jadwal
 
 user = User(username='dimas', is_staff=True, is_superuser=True)
 user.set_password('okto')
@@ -31,12 +31,25 @@ Pengguna(
         pasien=p,
         ).save()
 
-Tempat(
-        nama_tempat="Rumah",
-        alamat_tempat="Depok Maharaja Blok O4",
-        ).save()
-Tempat(
-        nama_tempat="Ruko",
-        alamat_tempat="Jl. Raya Sawangan",
-        ).save()
+rumah = Tempat(nama_tempat="Rumah",
+               alamat_tempat="Depok Maharaja Blok O4")
+rumah.save()
+
+ruko = Tempat(nama_tempat="Ruko",
+              alamat_tempat="Jl. Raya Sawangan")
+ruko.save()
+
+for hari in range(5):
+    Jadwal(tempat=rumah,
+           hari=hari,
+           waktu='SR',
+           waktu_mulai='17:30:00',
+           waktu_selesai='20:00:00').save()
+
+Jadwal(tempat=ruko,
+       hari=5,
+       waktu='SR',
+       waktu_mulai='17:00:00',
+       waktu_selesai='20:30:00').save()
+
 
