@@ -1,0 +1,36 @@
+{% extends 'antri/base.html' %}
+{% load static %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+{% include 'antri/name-card.html' %}
+<div class="card">
+  <p>{{ date }}</p>
+  <table id="antri"></table>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+function antri() {
+  $.ajax({
+    url: '{% url 'antri:get-antri' %}',
+    method: 'GET',
+    data: {},
+    success: function(result) {
+      console.log(result)
+      $('#antri').html(result.data)
+    },
+    error: function(a, b) {
+      console.log(a)
+      console.log(b)
+    }
+  })
+}
+
+antri()
+</script>
+{% endblock %}

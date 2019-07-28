@@ -103,7 +103,8 @@ class Jadwal(models.Model):
 
     def get_next_date(self):
         delta = (self.hari - timezone.datetime.today().weekday()) % 7
-        return timezone.localtime(timezone.now() + timezone.timedelta(days=delta)).date()
+        return timezone.localtime(
+            timezone.now() + timezone.timedelta(days=delta)).date()
 
 
 class Hari(models.Model):

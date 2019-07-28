@@ -17,6 +17,42 @@ DEFAULT_WAKTU = {
         'SG': ('13:00', '16:00'),
         'SR': ('16:00', '20:00'),
         }
+nama_bulan = ("", "Januari", "Februari", "Maret", "April", "Mei",
+              "Juni", "Juli", "Agustus", "September", "Oktober",
+              "November", "Desember")
+
+
+def beranda(request, year=None, month=None, day=None):
+    """Homepage."""
+    if not request.user.is_authenticated:
+        return render(request, 'antri/bukan_utama.html')
+
+    date = timezone.localtime(timezone.now())
+
+    context = {
+        'date': '{} {} {}'.format(
+            date.day,
+            nama_bulan[date.month],
+            date.year),
+        }
+
+    return render(request, 'antri/beranda.html', context)
+
+
+def get_antri(request):
+    if request.is_ajax():
+        date = timezone.localtime(timezone.now()).date()
+        hari = Hari.objects.filter(tanggal=date)
+
+        if not hari.exists():
+            return JsonResponse({'data': None})
+        hari = hari.first()
+
+        return JsonResponse({
+            'data': 1,
+            })
+    return None
+
 
 def utama(request, year=None, month=None, day=None):
     if not request.user.is_authenticated:
@@ -120,8 +156,8 @@ def details(request):
     Show the names who booked that day.
     """
     nama_bulan = ("", "Januari", "Februari", "Maret", "April", "Mei",
-                  "Juni", "Juli", "Agustus", "September", "Oktober", "November",
-                  "Desember")
+                  "Juni", "Juli", "Agustus", "September", "Oktober",
+                  "November", "Desember")
 
     if request.is_ajax():
         day = int(request.GET.get('day'))

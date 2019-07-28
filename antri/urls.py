@@ -1,21 +1,21 @@
-from django.urls import path
-from . import views
-from django.contrib.auth.views import LoginView, LogoutView
-from django.views.generic.edit import UpdateView
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import LoginView, LogoutView
+from django.urls import path
+
+from . import views
 
 app_name = 'antri'
-
 urlpatterns = [
-    path('', views.utama, name='utama'),
+    path('', views.beranda, name='beranda'),
     path('tentang/', views.tentang, name='tentang'),
     path('daftar/', views.daftar, name='daftar'),
+    path('antri.json', views.get_antri, name='get-antri'),
     path('times.json', views.get_times, name='get-times'),
     path('dates.json', views.get_dates, name='get-dates'),
     path('masuk/', LoginView.as_view(template_name='antri/masuk.html'),
-        name='masuk'),
+         name='masuk'),
     path('keluar/', LogoutView.as_view(template_name='antri/keluar.html'),
-        name='keluar'),
+         name='keluar'),
     path('profil/', login_required(views.profil), name='profil'),
     path('ubah/profil/', login_required(views.ubah_profil), name='ubah-profil'),
     path('ubah/password/', login_required(views.ubah_password), name='ubah-password'),
