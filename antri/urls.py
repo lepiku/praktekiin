@@ -9,6 +9,7 @@ urlpatterns = [
     path('', views.beranda, name='beranda'),
     path('tentang/', views.tentang, name='tentang'),
     path('daftar/', views.daftar, name='daftar'),
+    path('daftar-antri/', views.daftar_antri, name='daftar-antri'),
     path('antri.json', views.get_antri, name='get-antri'),
     path('times.json', views.get_times, name='get-times'),
     path('dates.json', views.get_dates, name='get-dates'),

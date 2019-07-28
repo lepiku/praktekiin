@@ -1,4 +1,5 @@
-from django.contrib.auth import authenticate, login, update_session_auth_hash
+from django.contrib.auth import login, update_session_auth_hash
+from django.contrib.auth.decorators import login_required
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -54,9 +55,8 @@ def get_antri(request):
     return None
 
 
-def utama(request, year=None, month=None, day=None):
-    if not request.user.is_authenticated:
-        return render(request, 'antri/bukan_utama.html')
+@login_required
+def daftar_antri(request):
 
     pasien_set = request.user.pengguna.keluarga.pasien_set.all()
     if request.method == 'POST':
@@ -66,7 +66,7 @@ def utama(request, year=None, month=None, day=None):
 
     context = {'form': form}
 
-    return render(request, 'antri/utama.html', context)
+    return render(request, 'antri/daftar-antri.html', context)
 
 def tentang(request):
     return render(request, 'antri/tentang.html')

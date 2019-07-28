@@ -12,13 +12,9 @@
 {% endblock %}
 
 {% block content %}
-<div class="card">
-  <h2>Beranda</h2>
-  <a class="button" href="{% url 'antri:pasien-daftar' %}">Daftar Pasien Baru</a>
-</div>
 <div class="card pesan">
-
-  <form method="POST" href="{% url 'antri:utama' %}">
+  <a class="button" href="{% url 'antri:pasien-daftar' %}">Daftar Pasien Baru</a>
+  <form method="POST" href="{% url 'antri:daftar-antri' %}">
     <h2>Daftar Antri</h2>
     {% csrf_token %}
     <table>
