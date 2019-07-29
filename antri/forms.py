@@ -1,11 +1,13 @@
 from django import forms
 from django.contrib.auth.forms import PasswordChangeForm, UserCreationForm
-from django.contrib.auth.models import User
-from .models import REGEX_TELP, REGEX_NAMA, REGEX_ALAMAT, NAME_LENGTH, \
-        WAKTU_CHOICES, Pasien, Tempat
-import re
-from django.contrib.auth import authenticate, get_user_model, \
-        password_validation
+from django.utils import timezone
+
+from .models import WAKTU_CHOICES, Pasien, Tempat
+
+NAMA_BULAN = {1: "Januari", 2: "Februari", 3: "Maret", 4: "April", 5: "Mei",
+              6: "Juni", 7: "Juli", 8: "Agustus", 9: "September", 10: "Oktober",
+              11: "November", 12: "Desember"}
+
 
 class DateField(forms.DateField):
     input_formats = ['%d/%m/%Y', '%d/%m/%y', '%d-%m-%Y', '%d-%m-%y']
@@ -23,11 +25,15 @@ class PasienForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['tanggal_lahir'].input_formats = [
-                '%d/%m/%Y', '%d/%m/%y', '%d-%m-%Y', '%d-%m-%y',
-                ]
-        self.fields['tanggal_lahir'].error_messages = {
+        tanggal_lahir = self.fields['tanggal_lahir']
+        tanggal_lahir.error_messages = {
                 'invalid': 'Format tanggal: dd/mm/yyyy'}
+
+        year = timezone.localtime(timezone.now()).year
+        tanggal_lahir.widget = forms.SelectDateWidget(
+            years=[y for y in range(year, year - 100, -1)],
+            months=NAMA_BULAN)
+
 
 class UserForm(UserCreationForm):
     error_messages = {

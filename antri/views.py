@@ -5,7 +5,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 
-from .forms import PasienForm, PendaftaranForm, UbahPasswordForm, UserForm
+from .forms import (PasienForm, PendaftaranForm, UbahPasswordForm, UserForm,
+                    NAMA_BULAN)
 from .models import (WAKTU_CHOICES, Hari, Jadwal, Keluarga, Pasien, Tempat,
                      User, Pendaftaran)
 
@@ -13,15 +14,6 @@ from .models import (WAKTU_CHOICES, Hari, Jadwal, Keluarga, Pasien, Tempat,
 # from django.utils.html import escape
 # from django.views.generic.detail import DetailView
 # from .utils import Calendar
-
-DEFAULT_WAKTU = {
-        'PG': ('08:00', '12:00'),
-        'SG': ('13:00', '16:00'),
-        'SR': ('16:00', '20:00'),
-        }
-nama_bulan = ("", "Januari", "Februari", "Maret", "April", "Mei",
-              "Juni", "Juli", "Agustus", "September", "Oktober",
-              "November", "Desember")
 
 
 def beranda(request, year=None, month=None, day=None):
@@ -31,7 +23,7 @@ def beranda(request, year=None, month=None, day=None):
     context = {
         'date': '{} {} {}'.format(
             date.day,
-            nama_bulan[date.month],
+            NAMA_BULAN[date.month],
             date.year),
         }
 
@@ -186,10 +178,6 @@ def details(request):
     """
     Show the names who booked that day.
     """
-    nama_bulan = ("", "Januari", "Februari", "Maret", "April", "Mei",
-                  "Juni", "Juli", "Agustus", "September", "Oktober",
-                  "November", "Desember")
-
     if request.is_ajax():
         day = int(request.GET.get('day'))
         month = int(request.GET.get('month'))
@@ -233,7 +221,7 @@ def details(request):
             tutup = hari.waktu_tutup
 
         return JsonResponse({
-            'data': data, 'month_name': nama_bulan[month], 'buka': buka,
+            'data': data, 'month_name': NAMA_BULAN[month], 'buka': buka,
             'tutup': tutup, 'pendaftar': '\n'.join(pendaftars_kk)})
 
     raise Http404('no data on views.details')
