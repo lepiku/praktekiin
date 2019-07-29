@@ -23,7 +23,28 @@ function antri() {
     data: {},
     success: function(result) {
       console.log(result)
-      $('#antri').html(result.data)
+      var table = document.getElementById('antri')
+      var tbody = document.createElement('tbody')
+      table.appendChild(tbody)
+
+      var tr = document.createElement('tr')
+      tbody.appendChild(tr)
+      for (var head of result.table_head) {
+          var td = document.createElement('td')
+          td.appendChild(document.createTextNode(head))
+          tr.appendChild(td)
+      }
+
+      for (var x = 0; x < result.data.length; x++) {
+        var tr = document.createElement('tr')
+        tbody.appendChild(tr)
+
+        for (y in result.data[x]) {
+          var td = document.createElement('td')
+          td.appendChild(document.createTextNode(result.data[x][y]))
+          tr.appendChild(td)
+        }
+      }
     },
     error: function(a, b) {
       console.log(a)
