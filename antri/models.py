@@ -14,10 +14,12 @@ REGEX_ALAMAT = RegexValidator(regex=r'[`~!@#$%^&*()_+=\[\]{}\\|;:"<>/?]',
         inverse_match=True)
 JENIS_KELAMIN_CHOICES = (('L', 'Laki-Laki'), ('P', 'Perempuan'))
 WAKTU_CHOICES = (('PG', 'Pagi'), ('SG', 'Siang'), ('SR', 'Sore'))
+STATUS_CHOICES = (('B', 'Baru'), ('L', 'Lama'))
+PENDAFTARAN_STATUS_CHOICES = (('N', 'Not Done'), ('W', 'Worked On'), ('D', 'Done'))
 NAME_LENGTH = 128
 
 
-def regex_no_id(nama, digit=16):
+def regex_no(nama, digit=16):
     return RegexValidator(regex=r'^\d{' + str(digit) + r'}$',
             message="{} harus memiliki {} digit.".format(nama, digit))
 
@@ -34,13 +36,16 @@ class Pasien(models.Model):
     nama = models.CharField(max_length=NAME_LENGTH, validators=[REGEX_NAMA])
     tanggal_lahir = models.DateField()
     jenis_kelamin = models.CharField(max_length=9,
-            choices=JENIS_KELAMIN_CHOICES)
+                                     choices=JENIS_KELAMIN_CHOICES)
     mrid = models.CharField(max_length=6)
     keluarga = models.ForeignKey(Keluarga, on_delete=models.CASCADE)
+    kepala_keluarga = models.CharField(max_length=NAME_LENGTH,
+                                       validators=[REGEX_NAMA])
 
+    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='B')
     telp = models.CharField(max_length=18, blank=True, validators=[REGEX_TELP])
     nik = models.CharField(max_length=16, blank=True,
-            validators=[regex_no_id('Nomor Induk Kependudukan')])
+                           validators=[regex_no('Nomor Induk Kependudukan')])
 
     waktu_buat = models.DateTimeField(auto_now_add=True)
     waktu_ubah = models.DateTimeField(auto_now=True)
@@ -117,14 +122,14 @@ class Hari(models.Model):
 
 
 class Pendaftaran(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    pasien = models.ForeignKey(Pasien, on_delete=models.CASCADE)
     hari = models.ForeignKey(Hari, on_delete=models.CASCADE)
-    pasien_set = models.ManyToManyField(Pasien)
+    status = models.CharField(max_length=1, choices=PENDAFTARAN_STATUS_CHOICES,
+                              default='N')
     waktu_buat = models.DateTimeField(auto_now_add=True)
-    waktu_ubah = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return str(self.user) + ': ' + str(self.hari)
+        return str(self.pasien) + ': ' + str(self.hari)
 
 
 class Pesan(models.Model):

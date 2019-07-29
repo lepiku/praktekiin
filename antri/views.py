@@ -26,9 +26,6 @@ nama_bulan = ("", "Januari", "Februari", "Maret", "April", "Mei",
 
 def beranda(request, year=None, month=None, day=None):
     """Homepage."""
-    if not request.user.is_authenticated:
-        return render(request, 'antri/bukan_utama.html')
-
     date = timezone.localtime(timezone.now())
 
     context = {
@@ -42,6 +39,7 @@ def beranda(request, year=None, month=None, day=None):
 
 
 def get_antri(request):
+    """get today's antrian."""
     if request.is_ajax():
         date = timezone.localtime(timezone.now())
         if date.weekday() == 6:
@@ -51,10 +49,20 @@ def get_antri(request):
 
         if not hari.exists():
             return JsonResponse({'data': None})
-        hari = hari.first()
+        hari = hari.get()
+
+        data = []
+        table_head = ['No.', 'Nama', 'Kelapa Keluarga']
+        counter = 0
+        for pendaftaran in hari.pendaftaran_set.all():
+            counter += 1
+            data.append({'number': counter,
+                         'nama': pendaftaran.pasien.nama,
+                         'kepala_keluarga': pendaftaran.pasien.kepala_keluarga})
 
         return JsonResponse({
-            'data': 1,
+            'table_head': table_head,
+            'data': data,
             })
     return None
 
@@ -78,11 +86,8 @@ def daftar_antri(request):
                 jadwal=jadwal,
                 tanggal=form.cleaned_data['tanggal'])
 
-            pendaftaran = Pendaftaran(
-                user=request.user,
-                hari=hari)
-            pendaftaran.save()
-            pendaftaran.pasien_set.set(form.cleaned_data['pasien_set'])
+            for pasien in form.cleaned_data['pasien_set']:
+                Pendaftaran(pasien=pasien, hari=hari).save()
 
             return redirect('antri:beranda')
         else:
