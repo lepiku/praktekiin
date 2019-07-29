@@ -2,12 +2,14 @@
 {% load static %}
 
 {% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'antri/css/beranda.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'antri/css/name-card.css' %}">
 {% endblock %}
 
 {% block content %}
 {% include 'antri/name-card.html' %}
 <div class="card">
-  <p>{{ date }}</p>
+  <h3>{{ date }}</h3>
   <table id="antri"></table>
   <a class="button" href="{% url 'antri:daftar-antri' %}">+ Daftar Antri Hari Lain</a>
 </div>
@@ -30,9 +32,10 @@ function antri() {
       var tr = document.createElement('tr')
       tbody.appendChild(tr)
       for (var head of result.table_head) {
-          var td = document.createElement('td')
-          td.appendChild(document.createTextNode(head))
-          tr.appendChild(td)
+          var th = document.createElement('th')
+          th.className = head.toLowerCase().replace(' ', '-').replace('.', '')
+          th.appendChild(document.createTextNode(head))
+          tr.appendChild(th)
       }
 
       for (var x = 0; x < result.data.length; x++) {

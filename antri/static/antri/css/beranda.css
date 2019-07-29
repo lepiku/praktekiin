@@ -1,0 +1,17 @@
+#antri {
+  border-collapse: collapse;
+  width: 100%;
+}
+#antri tr:nth-child(odd) {
+  background-color: #B9EBE5;
+}
+#antri th, #antri td {
+  padding: 10px;
+  text-align: left;
+}
+#antri th.no {
+  width: 10%;
+}
+#antri th.nama, #Entri th.kepala-keluarga {
+  width: 45%;
+}
