@@ -106,15 +106,18 @@ class UbahPasswordForm(PasswordChangeForm):
             )
         return password2
 
-class PendaftaranForm(forms.Form):
-    tempat = forms.ModelChoiceField(Tempat.objects.all())
-    waktu = forms.ChoiceField(choices=WAKTU_CHOICES, widget=forms.HiddenInput)
-    hari = forms.IntegerField(widget=forms.HiddenInput)
-    tanggal = forms.DateField(widget=forms.HiddenInput)
 
+class PendaftaranPasienForm(forms.Form):
     def __init__(self, *args, **kwargs):
         query = kwargs.pop('pasien_set', Pasien.objects.none())
         super().__init__(*args, **kwargs)
 
         self.fields['pasien_set'] = forms.ModelMultipleChoiceField(query,
                 widget=forms.CheckboxSelectMultiple)
+
+
+class PendaftaranForm(PendaftaranPasienForm):
+    tempat = forms.ModelChoiceField(Tempat.objects.all())
+    waktu = forms.ChoiceField(choices=WAKTU_CHOICES, widget=forms.HiddenInput)
+    hari = forms.IntegerField(widget=forms.HiddenInput)
+    tanggal = forms.DateField(widget=forms.HiddenInput)

@@ -11,7 +11,18 @@
 <div class="card">
   <h3>{{ date }}</h3>
   <table id="antri"></table>
+  {% if logged_in %}
+  <form method="post">
+    {% csrf_token %}
+    {{ form.pasien_set }}
+    <input class="button" type="submit" name="antri" value="Daftar Antri Hari Ini">
+  </form>
   <a class="button" href="{% url 'antri:daftar-antri' %}">+ Daftar Antri Hari Lain</a>
+  {% else %}
+  <p>Silahkan masuk / daftar terlebih dahulu:</p>
+  <a class="button" href="{% url 'antri:masuk' %}">Masuk</a>
+  <a class="button" href="{% url 'antri:daftar' %}">Daftar</a>
+  {% endif %}
 </div>
 {% endblock %}
 

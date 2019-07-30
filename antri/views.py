@@ -5,27 +5,52 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 
-from .forms import (PasienForm, PendaftaranForm, UbahPasswordForm, UserForm,
-                    NAMA_BULAN)
-from .models import (WAKTU_CHOICES, Hari, Jadwal, Keluarga, Pasien, Tempat,
-                     User, Pendaftaran)
+from .forms import (PasienForm, PendaftaranForm, PendaftaranPasienForm,
+                    UbahPasswordForm, UserForm, NAMA_BULAN)
+from .models import (Hari, Jadwal, Keluarga, Pasien, Pendaftaran, Tempat,
+                     User, WAKTU_CHOICES)
 
 # from django.utils.safestring import mark_safe
 # from django.utils.html import escape
 # from django.views.generic.detail import DetailView
 # from .utils import Calendar
 
+NAMA_HARI = ("Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu")
+
 
 def beranda(request, year=None, month=None, day=None):
     """Homepage."""
     date = timezone.localtime(timezone.now())
 
+    form = None
+    if request.user.is_authenticated:
+        pasien_set = request.user.pengguna.keluarga.pasien_set.all()
+
+        if request.method == 'POST':
+            form = PendaftaranPasienForm(request.POST, pasien_set=pasien_set)
+            if form.is_valid():
+                hari, _ = Hari.objects.get_or_create(tanggal=date.date())
+                p_set = hari.pendaftaran_set.all()
+
+                cleaned_pasien_set = form.cleaned_data['pasien_set']
+                for pasien in pasien_set:
+                    p_pasien = p_set.filter(pasien=pasien).exists()
+                    if pasien in cleaned_pasien_set and not p_pasien:
+                        Pendaftaran(pasien=pasien, hari=hari).save()
+                    elif pasien not in cleaned_pasien_set and p_pasien:
+                        p_set.filter(pasien=pasien).delete()
+                return redirect('antri:beranda')
+        else:
+            form = PendaftaranPasienForm(pasien_set=pasien_set)
+
     context = {
-        'date': '{} {} {}'.format(
+        'date': '{}, {} {} {}'.format(
+            NAMA_HARI[date.weekday()],
             date.day,
             NAMA_BULAN[date.month],
             date.year),
-        }
+        'form': form,
+        'logged_in': request.user.is_authenticated}
 
     return render(request, 'antri/beranda.html', context)
 
@@ -59,41 +84,9 @@ def get_antri(request):
     return None
 
 
-@login_required
-def daftar_antri(request):
-    pasien_set = request.user.pengguna.keluarga.pasien_set.all()
-    if request.method == 'POST':
-        form = PendaftaranForm(request.POST, pasien_set=pasien_set)
-        if form.is_valid():
-            print('VALID')
-            print(request.POST)
-            form.cleaned_data['tempat']
-
-            jadwal = Jadwal.objects.get(
-                tempat=form.cleaned_data['tempat'],
-                waktu=form.cleaned_data['waktu'],
-                hari=form.cleaned_data['hari'])
-
-            hari, _ = Hari.objects.get_or_create(
-                jadwal=jadwal,
-                tanggal=form.cleaned_data['tanggal'])
-
-            for pasien in form.cleaned_data['pasien_set']:
-                Pendaftaran(pasien=pasien, hari=hari).save()
-
-            return redirect('antri:beranda')
-        else:
-            print('NOT VALID')
-            print(form.errors)
-    else:
-        form = PendaftaranForm(pasien_set=pasien_set)
-
-    context = {'form': form}
-
-    return render(request, 'antri/daftar-antri.html', context)
-
 def tentang(request):
     return render(request, 'antri/tentang.html')
+
 
 def daftar(request):
     if request.method == 'POST':
@@ -113,6 +106,35 @@ def daftar(request):
                   {'form': form_user, 'button': 'Buat Akun'})
 
 
+@login_required
+def daftar_antri(request):
+    pasien_set = request.user.pengguna.keluarga.pasien_set.all()
+    if request.method == 'POST':
+        form = PendaftaranForm(request.POST, pasien_set=pasien_set)
+        if form.is_valid():
+            form.cleaned_data['tempat']
+
+            jadwal = Jadwal.objects.get(
+                tempat=form.cleaned_data['tempat'],
+                waktu=form.cleaned_data['waktu'],
+                hari=form.cleaned_data['hari'])
+
+            hari, _ = Hari.objects.get_or_create(
+                jadwal=jadwal,
+                tanggal=form.cleaned_data['tanggal'])
+
+            for pasien in form.cleaned_data['pasien_set']:
+                Pendaftaran(pasien=pasien, hari=hari).save()
+
+            return redirect('antri:beranda')
+    else:
+        form = PendaftaranForm(pasien_set=pasien_set)
+
+    context = {'form': form}
+
+    return render(request, 'antri/daftar-antri.html', context)
+
+
 def get_times(request):
     '''
     return hour and day of the week of the place.
@@ -120,7 +142,6 @@ def get_times(request):
     if request.is_ajax():
         id_tempat = request.GET.get('id_tempat')
         if id_tempat != '':
-            print(id_tempat)
             nama_hari = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
             tempat = Tempat.objects.get(id=id_tempat)
@@ -148,8 +169,6 @@ def get_times(request):
                                 }
                             total_jadwal[nama_waktu].append(data)
 
-            print(total_jadwal)
-
             return JsonResponse({'hari': total_hari, 'jadwal': total_jadwal})
         return JsonResponse({'hari': None})
     return None
@@ -168,63 +187,13 @@ def get_dates(request):
                     'tanggal': next_date + timezone.timedelta(days=num * 7),
                     'jumlah': 0,
                     })
-            return JsonResponse({'tanggal': total_tanggal})
+            return JsonResponse({
+                'tanggal': total_tanggal,
+                'hari': jadwal.hari})
 
         return JsonResponse({'tanggal': None})
     return None
 
-
-def details(request):
-    """
-    Show the names who booked that day.
-    """
-    if request.is_ajax():
-        day = int(request.GET.get('day'))
-        month = int(request.GET.get('month'))
-        year = int(request.GET.get('year'))
-        pendaftars_kk = []
-        # url = reverse('antri:tambah')
-
-        buka = '17:00'
-        tutup = '20:00'
-        try:
-            hari = Hari.objects.get(tanggal__day=day, tanggal__month=month,
-                                    tanggal__year=year)
-
-        except Hari.DoesNotExist as e:
-            data = None
-
-        else:
-            data = []
-            for q in hari.pendaftaran_set.all().order_by('waktu_daftar'):
-                kk = q.pengguna.kepala_keluarga
-                option = pengguna = pengguna_id = None
-
-                pendaftars = [p.nama for p in q.pendaftar_set.all()]
-
-                if kk == request.user.pengguna.kepala_keluarga:
-                    pendaftars_kk = pendaftars
-                    option = 1
-
-                if request.user.is_staff:
-                    pengguna = str(q.pengguna)
-                    pengguna_id = q.pengguna.id
-
-                data.append({
-                    'kepala_keluarga': kk.nama,
-                    'pengguna': pengguna,
-                    'pengguna_id': pengguna_id,
-                    'pendaftars': pendaftars,
-                    'option': option})
-
-            buka = hari.waktu_buka
-            tutup = hari.waktu_tutup
-
-        return JsonResponse({
-            'data': data, 'month_name': NAMA_BULAN[month], 'buka': buka,
-            'tutup': tutup, 'pendaftar': '\n'.join(pendaftars_kk)})
-
-    raise Http404('no data on views.details')
 
 def profil(request):
     user = request.user

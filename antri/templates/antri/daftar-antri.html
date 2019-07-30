@@ -128,7 +128,7 @@
           case 'Sore': id_waktu = 'SR'; break;
         }
         $('#id_waktu').val(id_waktu)
-        $('#id_hari').val(id_jadwal)
+        $('#id_hari').val(result.hari)
 
         var tanggal_table = '<table><tbody><tr>'
         for (var tanggal in result.tanggal) {
