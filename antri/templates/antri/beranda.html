@@ -12,17 +12,29 @@
   <h3>{{ date }}</h3>
   <table id="antri"></table>
   {% if logged_in %}
-  <form method="post">
-    {% csrf_token %}
-    {{ form.pasien_set }}
-    <input class="button" type="submit" name="antri" value="Daftar Antri Hari Ini">
-  </form>
+  <a class="button" onclick="show_popup()">+ Daftar Antri Hari Ini</a>
   <a class="button" href="{% url 'antri:daftar-antri' %}">+ Daftar Antri Hari Lain</a>
   {% else %}
   <p>Silahkan masuk / daftar terlebih dahulu:</p>
   <a class="button" href="{% url 'antri:masuk' %}">Masuk</a>
   <a class="button" href="{% url 'antri:daftar' %}">Daftar</a>
   {% endif %}
+</div>
+<div id="popup">
+  <div id="cover" onclick="hide_popup()"></div>
+  <div id="popup-card" onclick="show_popup()">
+    <form method="post">
+      {% csrf_token %}
+      <table>
+        <tr>
+          <th>Hari, Tanggal:</th>
+          <td>{{ date }}</td>
+        </tr>
+        {{ form }}
+      </table>
+      <input class="button" type="submit" name="antri" value="+ Daftar Antri Hari Ini">
+    </form>
+  </div>
 </div>
 {% endblock %}
 
@@ -68,5 +80,12 @@ function antri() {
 }
 
 antri()
+
+function show_popup() {
+  $('#popup').css('display', 'block')
+}
+function hide_popup() {
+  $('#popup').css('display', 'none')
+}
 </script>
 {% endblock %}

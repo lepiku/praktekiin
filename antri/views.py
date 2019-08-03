@@ -29,7 +29,9 @@ def beranda(request, year=None, month=None, day=None):
         if request.method == 'POST':
             form = PendaftaranPasienForm(request.POST, pasien_set=pasien_set)
             if form.is_valid():
-                hari, _ = Hari.objects.get_or_create(tanggal=date.date())
+                hari, _ = Hari.objects.get_or_create(
+                    jadwal=Jadwal.objects.get(hari=date.weekday()),
+                    tanggal=date.date())
                 p_set = hari.pendaftaran_set.all()
 
                 cleaned_pasien_set = form.cleaned_data['pasien_set']
