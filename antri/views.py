@@ -61,6 +61,10 @@ def get_antri(request):
     """get today's antrian."""
     if request.is_ajax():
         date = timezone.localtime(timezone.now())
+        staff = False
+        if request.user.is_authenticated:
+            staff = request.user.is_staff
+
         if date.weekday() == 6:
             date += timezone.timedelta(days=1)
 
@@ -71,18 +75,24 @@ def get_antri(request):
         hari = hari.get()
 
         data = []
-        table_head = ['No.', 'Nama', 'Kelapa Keluarga']
-        counter = 0
-        for pendaftaran in hari.pendaftaran_set.all():
-            counter += 1
-            data.append({'number': counter,
-                         'nama': pendaftaran.pasien.nama,
-                         'kepala_keluarga': pendaftaran.pasien.kepala_keluarga})
+        if not staff:
+            table_head = ['No.', 'Nama Pasien', 'Nama Kelapa Keluarga']
+            for counter, pendaftaran in enumerate(hari.pendaftaran_set.all()):
+                data.append({'number': counter + 1,
+                             'nama': pendaftaran.pasien.nama,
+                             'kk': pendaftaran.pasien.kepala_keluarga})
+        else:
+            table_head = ['No.', 'Nama Pasien', 'Status', 'Nama Kepala Keluarga']
+            for counter, pendaftaran in enumerate(hari.pendaftaran_set.all()):
+                data.append({'number': counter + 1,
+                             'nama': pendaftaran.pasien.nama,
+                             'status': pendaftaran.pasien.status,
+                             'kk': pendaftaran.pasien.kepala_keluarga})
 
         return JsonResponse({
             'table_head': table_head,
             'data': data,
-            })
+            'staff': staff})
     return None
 
 

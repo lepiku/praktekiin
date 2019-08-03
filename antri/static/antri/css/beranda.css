@@ -9,11 +9,8 @@
   padding: 10px;
   text-align: left;
 }
-#antri th.no {
-  width: 10%;
-}
-#antri th.nama, #Entri th.kepala-keluarga {
-  width: 45%;
+#antri th.nama-pasien, #antri th.nama-kepala-keluarga {
+  width: 50%;
 }
 #popup {
   display: none;

@@ -56,7 +56,7 @@ function antri() {
       tbody.appendChild(tr)
       for (var head of result.table_head) {
           var th = document.createElement('th')
-          th.className = head.toLowerCase().replace(' ', '-').replace('.', '')
+          th.className = head.toLowerCase().replace(/ /g, '-').replace('.', '')
           th.appendChild(document.createTextNode(head))
           tr.appendChild(th)
       }
