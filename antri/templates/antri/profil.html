@@ -24,7 +24,7 @@ tr:nth-child(odd) {
 {% block content %}
 <div class="card">
   <table id="pengguna">
-    {% for label, value in pengguna %}
+    {% for label, value in pasien %}
     <tr>
       <th id="label">{{ label }}</td>
       <td id="value">{{ value }}</td>
@@ -44,9 +44,11 @@ tr:nth-child(odd) {
   <a class="button" href="{% url 'antri:ubah-password' %}">Ubah Password</a>
   <hr>
   <p>Nama-nama pasien satu keluarga</p>
-  <a href="{% url 'antri:pasien-daftar' %}">Daftar Pasien Baru</a>
-  {% if pasien %}<ul>
-    {% for p in pasien %}<li><a href="{% url 'antri:pasien-detail' p.pk %}">{{ p.nama }}</a></li>{% endfor %}
+  {% if keluarga %}<ul>
+    {% for p in keluarga %}
+    <li><a href="{% url 'antri:pasien-detail' p.pk %}">{{ p.nama }}</a></li>
+    {% endfor %}
   </ul>{% endif %}
+  <a href="{% url 'antri:pasien-daftar' %}">+ Daftar Pasien Baru</a>
 </div>
 {% endblock %}

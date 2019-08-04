@@ -1,14 +1,13 @@
 from django.contrib.auth import login, update_session_auth_hash
-from django.contrib.auth.decorators import login_required
-from django.http import Http404, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 
 from .forms import (PasienForm, PendaftaranForm, PendaftaranPasienForm,
                     UbahPasswordForm, UserForm, NAMA_BULAN)
-from .models import (Hari, Jadwal, Keluarga, Pasien, Pendaftaran, Tempat,
-                     User, WAKTU_CHOICES)
+from .models import (Hari, Jadwal, Keluarga, Pasien, Pendaftaran, Pengguna,
+                     Tempat, User, WAKTU_CHOICES)
 
 # from django.utils.safestring import mark_safe
 # from django.utils.html import escape
@@ -72,7 +71,7 @@ def get_antri(request):
 
         hari = Hari.objects.filter(tanggal=date.date())
 
-        if not hari.exists():
+        if not hari.exists() or not hari.get().pendaftaran_set.exists():
             return JsonResponse({'data': None})
         hari = hari.get()
 
@@ -108,11 +107,14 @@ def daftar(request):
 
         form_user = UserForm(request.POST, instance=user)
         if form_user.is_valid():
-            user.keluarga = Keluarga()
-            form_user.save()
+            user = form_user.save()
+            keluarga = Keluarga()
+            keluarga.save()
+            pengguna = Pengguna(user=user, keluarga=keluarga)
+            pengguna.save()
 
             login(request, user)
-            return redirect(reverse('antri:utama'))
+            return redirect('antri:beranda')
     else:
         form_user = UserForm()
 
@@ -120,7 +122,6 @@ def daftar(request):
                   {'form': form_user, 'button': 'Buat Akun'})
 
 
-@login_required
 def daftar_antri(request):
     pasien_set = request.user.pengguna.keluarga.pasien_set.all()
     if request.method == 'POST':
@@ -214,29 +215,24 @@ def get_dates(request):
 
 def profil(request):
     user = request.user
-    pengguna = user.pengguna
-    keluarga = pengguna.keluarga
+    pasien = user.pengguna.pasien
 
-    if pengguna.pasien != None:
-        data_pengguna = [
-            ('Nama Lengkap', pengguna.pasien.nama),
-            ('Tanggal Lahir', pengguna.pasien.tanggal_lahir),
-            ('Jenis Kelamin', pengguna.pasien.jenis_kelamin),
-            ('No. HP / Telp', pengguna.pasien.telp),
-            ('NIK', pengguna.pasien.nik),
-            ('MRID', pengguna.pasien.mrid)]
-    else:
-        data_pengguna = []
+    data_pasien = []
+    if pasien is not None:
+        data_pasien = [
+            ('Nama Lengkap', pasien.nama),
+            ('Tanggal Lahir', pasien.tanggal_lahir),
+            ('Jenis Kelamin', pasien.jenis_kelamin),
+            ('No. HP / Telp', pasien.telp),
+            ('NIK', pasien.nik),
+            ('MRID', pasien.mrid),
+            ('Nama Kepala Keluarga', pasien.kepala_keluarga)]
 
-    data_pasien = [{'nama': p.nama, 'pk': p.pk} for p in keluarga.pasien_set.all()]
+    data_user = [('Username', user.username)]
 
-    data_user = [
-        ('Username', user.username),
-        ('Email', user.email),
-        ]
-
-    data = {'pengguna': data_pengguna, 'user': data_user,
-            'pasien': data_pasien}
+    data = {'pasien': data_pasien,
+            'user': data_user,
+            'keluarga': user.pengguna.keluarga.pasien_set.all()}
 
     return render(request, 'antri/profil.html', data)
 
