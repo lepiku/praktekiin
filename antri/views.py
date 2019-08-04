@@ -21,6 +21,8 @@ NAMA_HARI = ("Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu")
 def beranda(request, year=None, month=None, day=None):
     """Homepage."""
     date = timezone.localtime(timezone.now())
+    if date.weekday() == 6:
+        date += timezone.timedelta(days=1)
 
     form = None
     if request.user.is_authenticated:
@@ -154,7 +156,8 @@ def get_times(request):
     if request.is_ajax():
         id_tempat = request.GET.get('id_tempat')
         if id_tempat != '':
-            nama_hari = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            nama_hari = ['Senin', 'Selasa', 'Rabu', 'Kamis', "Jum'at", 'Sabtu',
+                         'Minggu']
 
             tempat = Tempat.objects.get(id=id_tempat)
             id_hari = []
@@ -195,8 +198,10 @@ def get_dates(request):
             total_tanggal = []
             next_date = jadwal.get_next_date()
             for num in range(6):
+                date = next_date + timezone.timedelta(days=num * 7)
+                date_repr = '{}/{}'.format(date.day, date.month)
                 total_tanggal.append({
-                    'tanggal': next_date + timezone.timedelta(days=num * 7),
+                    'tanggal': date_repr,
                     'jumlah': 0,
                     })
             return JsonResponse({

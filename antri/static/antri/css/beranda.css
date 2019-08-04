@@ -26,6 +26,7 @@
 #popup-card {
   position: fixed;
   padding: 15px;
+  width: 500px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -47,4 +48,9 @@
   padding-right: 5px;
   text-align: left;
   vertical-align: top;
+}
+@media (max-width: 600px) {
+  #popup-card {
+    width: 90%;
+  }
 }

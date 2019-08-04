@@ -102,8 +102,8 @@ class Jadwal(models.Model):
         return str(self.tempat) + ': ' + nama_hari[self.hari] + ' ' + self.waktu
 
     def get_waktu_ms(self):
-        mulai = str(self.waktu_mulai)[:5]
-        selesai = str(self.waktu_selesai)[:5]
+        mulai = str(self.waktu_mulai.hour)
+        selesai = str(self.waktu_selesai.hour)
         return mulai + '-' + selesai
 
     def get_next_date(self):

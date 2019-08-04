@@ -1,25 +1,18 @@
 {% extends 'antri/base.html' %}
+{% load static %}
 
 {% block style %}
-<style>
-#tr-waktu, #tr-tanggal, #tr-pasien {
-  display: none;
-}
-.cell {
-  background-color: #39B0A3;
-}
-</style>
+<link href="{% static 'antri/css/daftar-antri.css' %}" type="text/css" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
 <div class="card pesan">
-  <a class="button" href="{% url 'antri:pasien-daftar' %}">Daftar Pasien Baru</a>
   <form method="POST" href="{% url 'antri:daftar-antri' %}">
     <h2>Daftar Antri</h2>
     {% csrf_token %}
     <table>
       <tbody>
-        <tr>
+        <tr id="tr-tempat">
           <th>Tempat:</th>
           <td>{{ form.tempat }}</td>
         </tr>
@@ -36,7 +29,10 @@
         </tr>
         <tr id="tr-pasien">
           <th>Pasien:</th>
-          <td id="td-pasien">{{ form.pasien_set }}</td>
+          <td id="td-pasien">
+            {{ form.pasien_set }}
+            <a href="{% url 'antri:pasien-daftar' %}">+ Daftar Pasien Baru</a>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -49,6 +45,9 @@
 
 {% block script %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<noscript>Please enable javascript.</noscript>
+<script src="{% static 'admin/js/vendor/jquery/jquery.min.js' %}"></script>
+{# TODO relative url in javascrpt file #}
 <script>
   function escapeHTML(unsafe) {
     return unsafe
@@ -71,7 +70,7 @@
   }
 
   var tempat = document.getElementById('id_tempat')
-  tempat.onchange = function get_time() {
+  function get_time() {
     $.ajax({
       url: '{% url 'antri:get-times' %}',
       method: 'GET',
@@ -79,15 +78,15 @@
       success: function(result) {
         console.log(result)
         if (result.hari !== null) {
-          var waktu_table = '<table><tbody><tr><td></td>'
+          var waktu_table = '<table id="in-table"><tbody><tr><td></td>'
 
           for (var x = 0; x < result.hari.length; x++) {
-            waktu_table += '<td>' + result.hari[x] + '</td>'
+            waktu_table += '<td class="hari">' + result.hari[x] + '</td>'
           }
           waktu_table += '</tr>'
 
           for (var key in result.jadwal) {
-            waktu_table += '<tr><th>' + key + '</th>'
+            waktu_table += '<tr><td class="waktu">' + key + '</td>'
             var j = result.jadwal[key]
             for (var x in j) {
               var fx = "get_dates(" + j[x]['id'] + ", '" + key + "')"
@@ -104,8 +103,6 @@
         } else {
           hide('waktu')
         }
-
-
       },
       error: function(a, b) {
         console.log(a)
@@ -113,6 +110,7 @@
       }
     })
   }
+  tempat.onchange = function() {get_time()}
 
   function get_dates(id_jadwal, waktu) {
     $.ajax({
@@ -130,7 +128,7 @@
         $('#id_waktu').val(id_waktu)
         $('#id_hari').val(result.hari)
 
-        var tanggal_table = '<table><tbody><tr>'
+        var tanggal_table = '<table id="in-table"><tbody><tr>'
         for (var tanggal in result.tanggal) {
           var fx = "show_pasien('" + result.tanggal[tanggal]['tanggal'] + "')"
           tanggal_table += '<td class="cell" onclick=' + fx + '>' + result.tanggal[tanggal]['tanggal'] + '</td>'
@@ -151,6 +149,11 @@
   function show_pasien(tanggal) {
     $('#id_tanggal').val(tanggal)
     $('#tr-pasien').css('display', 'table-row')
+  }
+
+  console.log(tempat.value)
+  if (tempat.value !== '') {
+    get_time()
   }
 </script>
 {% endblock %}
