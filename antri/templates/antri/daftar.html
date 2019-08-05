@@ -1,89 +1,14 @@
 {% extends 'antri/base.html' %}
+{% load static %}
 
 {% block style %}
-<style>
-.card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-th {
-  width: 205px;
-  vertical-align: top;
-  text-align: left;
-  padding: 10px;
-}
-td {
-  display: flex;
-}
-td input, td select {
-  height: 1.8em;
-  margin: 4px 0;
-  width: 220px;
-}
-textarea {
-  margin: 4px 0;
-  width: 360px;
-  height: 120px;
-  padding: 8px;
-}
-ul {
-  padding-left: 0;
-  margin: 0;
-  list-style: none;
-}
-.required:after {
-  content: "*";
-}
-.not-required {
-  color: #888;
-  font-weight: normal;
-}
-.info {
-  margin: 0.5em 0 0.6em 1em;
-}
-.helptext {
-  color: #888;
-  font-size: 0.8em;
-}
-#error {
-  /* salah masuk.html */
-  color: red;
-  font-size: 0.8em;
-}
-@media (max-width: 1000px) {
-  td {
-    flex-direction: column;
-  }
-  textarea {
-    width: 310px;
-  }
-  .info {
-    margin-top: 0;
-    margin-left: 0;
-  }
-}
-@media (max-width: 600px) {
-  th {
-    display: table-row;
-    padding: 8px 0;
-  }
-  td input, td select {
-    width: 200px;
-  }
-  textarea {
-    width: 200px;
-    height: 90px;
-  }
-}
-</style>
+<link rel="stylesheet" href="{% static 'antri/css/daftar.css' %}">
 {% endblock %}
 
 {% block content %}
 <div class="card">
   <form method="post">
     {% csrf_token %}
-    {% comment %}TODO https://stackoverflow.com/questions/51369757/mark-the-label-of-required-fields-when-using-django-modelform{% endcomment %}
     <table>
       {% for field in form %}
       <tr>

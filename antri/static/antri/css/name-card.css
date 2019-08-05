@@ -3,9 +3,9 @@
   background-color: #B9EBE5;
   justify-content: center;
 }
-#name-card div {
-  margin-right: 40px;
-}
 #name-card h1 {
   margin: 10px 0 0 0;
+}
+#name-card #logo-gigi {
+  margin: 14px 20px 0 0;
 }
