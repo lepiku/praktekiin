@@ -2,13 +2,13 @@
 
 {% block content %}
 <div class="card">
-  {% if user.is_authenticated %}{% if next %}
-  <p>Kamu tidak bisa masuk ke halaman ini.
-  <a href="{% url 'antri:masuk' %}?next={{ next }}/">Ganti Akun?</a></p>
-  {% else %}
+  {% if user.is_authenticated and not next %}
   <p>Kamu sudah masuk sebagai pengguna.
   <a href="{% url 'antri:keluar' %}">Keluar?</a></p>
-  {% endif %}{% else %}
+  {% else %}
+  {% if next %}
+  <p>Kamu tidak bisa masuk ke halaman ini.
+  {% endif %}
   <form method="post" action="{% url 'antri:masuk' %}">
     {% csrf_token %}
     <table>

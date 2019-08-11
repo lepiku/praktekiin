@@ -85,10 +85,13 @@ def get_antri(request):
         else:
             table_head = ['No.', 'Nama Pasien', 'Status', 'Nama Kepala Keluarga']
             for counter, pendaftaran in enumerate(hari.pendaftaran_set.all()):
-                data.append({'number': counter + 1,
-                             'nama': pendaftaran.pasien.nama,
-                             'status': pendaftaran.pasien.status,
-                             'kk': pendaftaran.pasien.kepala_keluarga})
+                data.append({
+                    'number': counter + 1,
+                    'pasien_url': reverse('antri:pasien-detail',
+                                          kwargs={'pk': pendaftaran.pasien.pk}),
+                    'nama': pendaftaran.pasien.nama,
+                    'status': pendaftaran.pasien.status,
+                    'kk': pendaftaran.pasien.kepala_keluarga})
 
         return JsonResponse({
             'table_head': table_head,
@@ -274,7 +277,19 @@ def pasien_daftar(request):
                   {'form': form, 'button': 'Buat Pasien'})
 
 def pasien_detail(request, pk):
-    if not request.user.is_staff:
+    pasien = get_object_or_404(Pasien, pk=pk)
+    if (not request.user.is_staff
+            and pasien.keluarga != request.user.pengguna.keluarga):
         return redirect('{}?next=/profil/{}/'.format(reverse('antri:masuk'), pk))
+
+    data_pasien = [
+        ('Nama Lengkap', pasien.nama),
+        ('Tanggal Lahir', pasien.tanggal_lahir),
+        ('Jenis Kelamin', pasien.jenis_kelamin),
+        ('No. HP / Telp', pasien.telp),
+        ('NIK', pasien.nik),
+        ('MRID', pasien.mrid),
+        ('Nama Kepala Keluarga', pasien.kepala_keluarga)]
+
     return render(request, 'antri/pasien_detail.html',
-            {'pasien': get_object_or_404(Pasien, pk=pk)})
+            {'data': data_pasien})

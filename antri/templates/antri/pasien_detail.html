@@ -2,15 +2,14 @@
 
 {% block content %}
 <div class="card">
-  <ul>
-    <li>{{ pasien.nama }}</li>
-    <li>{{ pasien.tanggal_lahir }}</li>
-    <li>{{ pasien.jenis_kelamin }}</li>
-    <li>{{ pasien.telp }}</li>
-    <li>{{ pasien.nik }}</li>
-    <li>{{ pasien.pengguna.user.username }}</li>
-    <li>{{ pasien.waktu_daftar }}</li>
-    <li>{{ pasien.waktu_ubah }}</li>
-  </ul>
+  <p><a href="{% url 'antri:profil' %}">Kembali ke Profil</a></p>
+  <table id="pengguna">
+    {% for label, value in data %}
+    <tr>
+      <th id="label">{{ label }}</td>
+      <td id="value">{{ value }}</td>
+    </tr>
+    {% endfor %}
+  </table>
 </div>
 {% endblock %}

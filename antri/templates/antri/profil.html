@@ -18,11 +18,15 @@ th, td {
 tr:nth-child(odd) {
   background-color: #ceecee;
 }
+p {
+  margin-top: 0;
+}
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="card">
+  <p><a href="{% url 'antri:beranda' %}">Kembali ke Beranda</a></p>
   <table id="pengguna">
     {% for label, value in pasien %}
     <tr>
@@ -44,11 +48,11 @@ tr:nth-child(odd) {
   <a class="button" href="{% url 'antri:ubah-password' %}">Ubah Password</a>
   <hr>
   <p>Nama-nama pasien satu keluarga</p>
-  {% if keluarga %}<ul>
+  <ul>
     {% for p in keluarga %}
     <li><a href="{% url 'antri:pasien-detail' p.pk %}">{{ p.nama }}</a></li>
     {% endfor %}
-  </ul>{% endif %}
-  <a href="{% url 'antri:pasien-daftar' %}">+ Daftar Pasien Baru</a>
+    <li><a href="{% url 'antri:pasien-daftar' %}">+ Daftar Pasien Baru</a></li>
+  </ul>
 </div>
 {% endblock %}

@@ -20,14 +20,25 @@ function antri() {
           tr.appendChild(th)
         }
 
-        for (var x = 0; x < result.data.length; x++) {
+        for (var x in result.data) {
+          console.log(x)
           var tr = document.createElement('tr')
           tbody.appendChild(tr)
 
-          for (y in result.data[x]) {
+          for (var y in result.data[x]) {
+            if (y === 'pasien_url') {
+              continue
+            }
             var td = document.createElement('td')
-            td.appendChild(document.createTextNode(result.data[x][y]))
             tr.appendChild(td)
+            if (result.staff && y === 'nama') {
+              anchor = document.createElement('a')
+              anchor.href = result.data[x]['pasien_url']
+              anchor.appendChild(document.createTextNode(result.data[x][y]))
+              td.appendChild(anchor)
+            } else {
+              td.appendChild(document.createTextNode(result.data[x][y]))
+            }
           }
         }
       } else {
