@@ -31,7 +31,20 @@
           <th>Hari, Tanggal:</th>
           <td>{{ date }}</td>
         </tr>
-        {{ form }}
+        <tr>
+          <th>
+            {{ form.pasien_set.label }}
+          </th>
+          <td>
+            {{ form.pasien_set.errors }}
+            <ul>
+              {% for option in form.pasien_set %}
+              <li>{{ option }}</li>
+              {% endfor %}
+              <li><a href="{% url 'antri:pasien-daftar' %}">+ Daftar Pasien Baru</a></li>
+            </ul>
+          </td>
+        </tr>
       </table>
       <input class="button" type="submit" name="antri" value="+ Daftar Antri Hari Ini">
     </form>
