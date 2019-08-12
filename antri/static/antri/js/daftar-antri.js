@@ -15,6 +15,7 @@ function hide(name) {
       $('#tr-tanggal').css('display', 'none')
     case 'pasien':
       $('#tr-pasien').css('display', 'none')
+      $('input[value="Pesan"]').prop('type', 'hidden')
   }
 }
 
@@ -38,16 +39,16 @@ function get_times() {
           waktu_table += '<tr><td class="waktu">' + key + '</td>'
           var j = result.jadwal[key]
           for (var x in j) {
-            var fx = "get_dates(" + j[x]['id'] + ", '" + key + "')"
-            waktu_table += '<td class="cell" onclick="' + fx + '">' + j[x]['jam'] + '</td>'
+            var fx = "get_dates(" + j[x]['id'] + ", '" + key + "', this)"
+            waktu_table += '<td class="cell c-waktu" onclick="' + fx + '">' + j[x]['jam'] + '</td>'
           }
           waktu_table += '</tr>'
         }
 
         waktu_table += '</tbody></table>'
+        hide('tanggal')
         $('#td-waktu').html(waktu_table)
         $('#tr-waktu').css('display', 'table-row')
-        hide('tanggal')
 
       } else {
         hide('waktu')
@@ -61,7 +62,8 @@ function get_times() {
 }
 tempat.onchange = function() {get_times()}
 
-function get_dates(id_jadwal, waktu) {
+function get_dates(id_jadwal, waktu, element) {
+  $('.c-waktu').css('background-color', '#39B0A3')
   $.ajax({
     url: get_dates_url,
     method: 'GET',
@@ -79,14 +81,15 @@ function get_dates(id_jadwal, waktu) {
 
       var tanggal_table = '<table id="in-table"><tbody><tr>'
       result.tanggal_list.forEach(function(value, _) {
-        var fx = "get_pasien('" + value['tanggal'] + "')"
-        tanggal_table += '<td class="cell" onclick=' + fx + '>' + value['repr'] + '</td>'
+        var fx = "get_pasien('" + value['tanggal'] + "', this)"
+        tanggal_table += '<td class="cell c-tanggal" onclick="' + fx + '">' + value['repr'] + '</td>'
       })
 
       tanggal_table += '</tr></tbody></table>'
+      hide('pasien')
       $('#td-tanggal').html(tanggal_table)
       $('#tr-tanggal').css('display', 'table-row')
-      hide('pasien')
+      element.style.backgroundColor = '#20857A'
     },
     error: function(a, b) {
       console.log(a)
@@ -95,20 +98,22 @@ function get_dates(id_jadwal, waktu) {
   })
 }
 
-function get_pasien(tanggal) {
+function get_pasien(tanggal, element) {
+  $('.c-tanggal').css('background-color', '#39B0A3')
   $.ajax({
     url: get_pasien_url,
     method: 'GET',
     data: {'tanggal': tanggal},
     success: function(result) {
       console.log(result)
-      $('#id_tanggal').val(tanggal)
-      $('#tr-pasien').css('display', 'table-row')
-
       $('input[name="pasien_set"]').prop('checked', false)
-      result.pasien_set.forEach(function (value, index) {
+      result.pasien_set.forEach(function (value, _) {
         $('input[name="pasien_set"][value="' + value + '"]').prop('checked', true)
       })
+      $('#id_tanggal').val(tanggal)
+      $('#tr-pasien').css('display', 'table-row')
+      $('input[value="Pesan"]').prop('type', 'submit')
+      element.style.backgroundColor = '#20857A'
     },
     error: function(a, b) {
       console.log(a)

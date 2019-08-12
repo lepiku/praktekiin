@@ -236,7 +236,6 @@ def get_pasien(request):
         tanggal = request.GET.get('tanggal')
         p_set = Pendaftaran.objects.filter(hari__tanggal=tanggal,
                                            pasien__keluarga=kel)
-
         pasien_set = []
         for pend in p_set:
             pasien_set.append(pend.pasien.id)
