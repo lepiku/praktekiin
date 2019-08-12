@@ -63,6 +63,7 @@ def get_antri(request):
     if request.is_ajax():
         date = timezone.localtime(timezone.now())
         staff = False
+        pasien_set = []
         if request.user.is_authenticated:
             staff = request.user.is_staff
 
@@ -75,9 +76,14 @@ def get_antri(request):
             return JsonResponse({'data': None})
         hari = hari.get()
 
+        if request.user.is_authenticated:
+            kel = request.user.pengguna.keluarga
+            for pend in hari.pendaftaran_set.filter(pasien__keluarga=kel):
+                pasien_set.append(pend.pasien.id)
+
         data = []
         if not staff:
-            table_head = ['No.', 'Nama Pasien', 'Nama Kelapa Keluarga']
+            table_head = ['No.', 'Nama Pasien', 'Nama Kepala Keluarga']
             for counter, pendaftaran in enumerate(hari.pendaftaran_set.all()):
                 data.append({'number': counter + 1,
                              'nama': pendaftaran.pasien.nama,
@@ -96,7 +102,8 @@ def get_antri(request):
         return JsonResponse({
             'table_head': table_head,
             'data': data,
-            'staff': staff})
+            'staff': staff,
+            'pasien_set': pasien_set})
     return None
 
 

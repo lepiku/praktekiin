@@ -113,7 +113,8 @@ class PendaftaranPasienForm(forms.Form):
         super().__init__(*args, **kwargs)
 
         self.fields['pasien_set'] = forms.ModelMultipleChoiceField(
-            query, widget=forms.CheckboxSelectMultiple, label="Pasien")
+            query, widget=forms.CheckboxSelectMultiple, label="Pasien",
+            required=False)
 
 
 class PendaftaranForm(PendaftaranPasienForm):

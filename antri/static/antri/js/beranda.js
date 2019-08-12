@@ -21,7 +21,6 @@ function antri() {
         }
 
         for (var x in result.data) {
-          console.log(x)
           var tr = document.createElement('tr')
           tbody.appendChild(tr)
 
@@ -40,6 +39,18 @@ function antri() {
               td.appendChild(document.createTextNode(result.data[x][y]))
             }
           }
+        }
+
+        $('input[name="pasien_set"]').prop('checked', false)
+        result.pasien_set.forEach(function (value, index) {
+          $('input[name="pasien_set"][value="' + value + '"]').prop('checked', true)
+        })
+
+        if (result.pasien_set.length > 0) {
+          $('#hari-ini').css('background-color', '#D458FF')
+          $('#hari-ini').html('Ubah Antri Hari ini')
+          $('input[name="antri"]').css('background-color', '#D458FF')
+          $('input[name="antri"]').val('Ubah Antri Hari ini')
         }
       } else {
         var td = document.createElement('td')

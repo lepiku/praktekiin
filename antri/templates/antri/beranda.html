@@ -13,7 +13,7 @@
   <h3>{{ date }}</h3>
   <table id="antri"></table>
   {% if logged_in %}
-  <a class="button" onclick="show_popup()">+ Daftar Antri Hari Ini</a>
+  <a class="button" id="hari-ini" onclick="show_popup()">+ Daftar Antri Hari Ini</a>
   <a class="button" href="{% url 'antri:daftar-antri' %}">+ Daftar Antri Hari Lain</a>
   {% else %}
   <p>Silahkan masuk / daftar terlebih dahulu:</p>
