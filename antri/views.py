@@ -148,8 +148,14 @@ def daftar_antri(request):
                 jadwal=jadwal,
                 tanggal=form.cleaned_data['tanggal'])
 
-            for pasien in form.cleaned_data['pasien_set']:
-                Pendaftaran(pasien=pasien, hari=hari).save()
+            p_set = hari.pendaftaran_set.all()
+            cleaned_pasien_set = form.cleaned_data['pasien_set']
+            for pasien in pasien_set:
+                p_pasien = p_set.filter(pasien=pasien).exists()
+                if pasien in cleaned_pasien_set and not p_pasien:
+                    Pendaftaran(pasien=pasien, hari=hari).save()
+                elif pasien not in cleaned_pasien_set and p_pasien:
+                    p_set.filter(pasien=pasien).delete()
 
             return redirect('antri:beranda')
     else:
@@ -212,11 +218,12 @@ def get_dates(request):
                 date = next_date + timezone.timedelta(days=num * 7)
                 date_repr = '{}/{}'.format(date.day, date.month)
                 total_tanggal.append({
-                    'tanggal': date_repr,
+                    'repr': date_repr,
+                    'tanggal': date,
                     'jumlah': 0,
                     })
             return JsonResponse({
-                'tanggal': total_tanggal,
+                'tanggal_list': total_tanggal,
                 'hari': jadwal.hari})
 
         return JsonResponse({'tanggal': None})

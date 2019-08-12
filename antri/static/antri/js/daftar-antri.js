@@ -78,10 +78,11 @@ function get_dates(id_jadwal, waktu) {
       $('#id_hari').val(result.hari)
 
       var tanggal_table = '<table id="in-table"><tbody><tr>'
-      for (var tanggal in result.tanggal) {
-        var fx = "show_pasien('" + result.tanggal[tanggal]['tanggal'] + "')"
-        tanggal_table += '<td class="cell" onclick=' + fx + '>' + result.tanggal[tanggal]['tanggal'] + '</td>'
-      }
+      console.log(result.tanggal)
+      result.tanggal_list.forEach(function(value, _) {
+        var fx = "show_pasien('" + value['tanggal'] + "')"
+        tanggal_table += '<td class="cell" onclick=' + fx + '>' + value['repr'] + '</td>'
+      })
 
       tanggal_table += '</tr></tbody></table>'
       $('#td-tanggal').html(tanggal_table)
