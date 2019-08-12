@@ -13,6 +13,7 @@ urlpatterns = [
     path('antri.json', views.get_antri, name='get-antri'),
     path('times.json', views.get_times, name='get-times'),
     path('dates.json', views.get_dates, name='get-dates'),
+    path('pasien.json', views.get_pasien, name='get-pasien'),
     path('masuk/', LoginView.as_view(template_name='antri/masuk.html'), name='masuk'),
     path('keluar/', LogoutView.as_view(template_name='antri/keluar.html'), name='keluar'),
     path('profil/', login_required(views.profil), name='profil'),

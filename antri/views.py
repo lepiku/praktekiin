@@ -230,6 +230,20 @@ def get_dates(request):
     return None
 
 
+def get_pasien(request):
+    if request.is_ajax():
+        kel = request.user.pengguna.keluarga
+        tanggal = request.GET.get('tanggal')
+        p_set = Pendaftaran.objects.filter(hari__tanggal=tanggal,
+                                           pasien__keluarga=kel)
+
+        pasien_set = []
+        for pend in p_set:
+            pasien_set.append(pend.pasien.id)
+
+        return JsonResponse({'pasien_set': pasien_set})
+
+
 def profil(request):
     user = request.user
     pasien = user.pengguna.pasien

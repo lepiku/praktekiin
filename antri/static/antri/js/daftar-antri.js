@@ -19,7 +19,7 @@ function hide(name) {
 }
 
 var tempat = document.getElementById('id_tempat')
-function get_time() {
+function get_times() {
   $.ajax({
     url: get_times_url,
     method: 'GET',
@@ -59,7 +59,7 @@ function get_time() {
     }
   })
 }
-tempat.onchange = function() {get_time()}
+tempat.onchange = function() {get_times()}
 
 function get_dates(id_jadwal, waktu) {
   $.ajax({
@@ -78,9 +78,8 @@ function get_dates(id_jadwal, waktu) {
       $('#id_hari').val(result.hari)
 
       var tanggal_table = '<table id="in-table"><tbody><tr>'
-      console.log(result.tanggal)
       result.tanggal_list.forEach(function(value, _) {
-        var fx = "show_pasien('" + value['tanggal'] + "')"
+        var fx = "get_pasien('" + value['tanggal'] + "')"
         tanggal_table += '<td class="cell" onclick=' + fx + '>' + value['repr'] + '</td>'
       })
 
@@ -96,12 +95,29 @@ function get_dates(id_jadwal, waktu) {
   })
 }
 
-function show_pasien(tanggal) {
-  $('#id_tanggal').val(tanggal)
-  $('#tr-pasien').css('display', 'table-row')
+function get_pasien(tanggal) {
+  $.ajax({
+    url: get_pasien_url,
+    method: 'GET',
+    data: {'tanggal': tanggal},
+    success: function(result) {
+      console.log(result)
+      $('#id_tanggal').val(tanggal)
+      $('#tr-pasien').css('display', 'table-row')
+
+      $('input[name="pasien_set"]').prop('checked', false)
+      result.pasien_set.forEach(function (value, index) {
+        $('input[name="pasien_set"][value="' + value + '"]').prop('checked', true)
+      })
+    },
+    error: function(a, b) {
+      console.log(a)
+      console.log(b)
+    }
+  })
 }
 
 if (tempat.value !== '') {
-  get_time()
+  get_times()
 }
 
