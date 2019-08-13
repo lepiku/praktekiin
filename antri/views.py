@@ -1,4 +1,5 @@
 from django.contrib.auth import login, update_session_auth_hash
+from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
@@ -168,26 +169,28 @@ def get_times(request):
     '''
     if request.is_ajax():
         id_tempat = request.GET.get('id_tempat')
-        if id_tempat != '':
+        try:
+            tempat = Tempat.objects.get(id=id_tempat)
+        except Tempat.DoesNotExist:
+            return JsonResponse({'html': None})
+        else:
             nama_hari = ['Senin', 'Selasa', 'Rabu', 'Kamis', "Jum'at", 'Sabtu',
                          'Minggu']
-
-            tempat = Tempat.objects.get(id=id_tempat)
             id_hari = []
             total_hari = []
             total_jadwal = {}
 
-            for x in range(6):
-                if tempat.jadwal_set.filter(hari=x).exists():
-                    total_hari.append(nama_hari[x])
-                    id_hari.append(x)
+            for index in range(6):
+                if tempat.jadwal_set.filter(hari=index).exists():
+                    total_hari.append(nama_hari[index])
+                    id_hari.append(index)
 
             for waktu, nama_waktu in WAKTU_CHOICES:
                 if tempat.jadwal_set.filter(waktu=waktu).exists():
                     total_jadwal[nama_waktu] = []
 
-                    for ha in id_hari:
-                        query = tempat.jadwal_set.filter(waktu=waktu, hari=ha)
+                    for hari in id_hari:
+                        query = tempat.jadwal_set.filter(waktu=waktu, hari=hari)
 
                         if query.exists():
                             jadwal = query.first()
@@ -201,16 +204,17 @@ def get_times(request):
                 'antri/ajax/waktu.html',
                 {'total_hari': total_hari, 'jadwal': total_jadwal})
             return JsonResponse({'html': html})
-        return JsonResponse({'html': None})
     return None
 
 
 def get_dates(request):
     if request.is_ajax():
         id_jadwal = request.GET.get('id_jadwal')
-        jadwal = Jadwal.objects.filter(id=id_jadwal)
-        if jadwal.exists():
-            jadwal = jadwal.first()
+        try:
+            jadwal = Jadwal.objects.get(id=id_jadwal)
+        except Jadwal.DoesNotExist:
+            return JsonResponse({'html': None})
+        else:
             total_tanggal = []
             next_date = jadwal.get_next_date()
             for num in range(6):
@@ -224,7 +228,6 @@ def get_dates(request):
                 'antri/ajax/dates.html',
                 {'total_tanggal': total_tanggal})
             return JsonResponse({'html': html})
-        return JsonResponse({'html': None})
     return None
 
 
@@ -232,13 +235,17 @@ def get_pasien(request):
     if request.is_ajax():
         kel = request.user.pengguna.keluarga
         tanggal = request.GET.get('tanggal')
-        p_set = Pendaftaran.objects.filter(hari__tanggal=tanggal,
-                                           pasien__keluarga=kel)
-        pasien_set = []
-        for pend in p_set:
-            pasien_set.append(pend.pasien.id)
+        try:
+            p_set = Pendaftaran.objects.filter(hari__tanggal=tanggal,
+                                               pasien__keluarga=kel)
+        except ValidationError:
+            return JsonResponse({'pasien_set': None})
+        else:
+            pasien_set = []
+            for pend in p_set:
+                pasien_set.append(pend.pasien.id)
 
-        return JsonResponse({'pasien_set': pasien_set})
+            return JsonResponse({'pasien_set': pasien_set})
     return None
 
 
