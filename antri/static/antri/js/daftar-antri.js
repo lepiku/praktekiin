@@ -27,29 +27,10 @@ function get_times() {
     data: {'id_tempat': tempat.value},
     success: function(result) {
       console.log(result)
-      if (result.hari !== null) {
-        var waktu_table = '<table id="in-table"><tbody><tr><td></td>'
-
-        for (var x = 0; x < result.hari.length; x++) {
-          waktu_table += '<td class="hari">' + result.hari[x] + '</td>'
-        }
-        waktu_table += '</tr>'
-
-        for (var key in result.jadwal) {
-          waktu_table += '<tr><td class="waktu">' + key + '</td>'
-          var j = result.jadwal[key]
-          for (var x in j) {
-            var fx = "get_dates(" + j[x]['id'] + ", '" + key + "', this)"
-            waktu_table += '<td class="cell c-waktu" onclick="' + fx + '">' + j[x]['jam'] + '</td>'
-          }
-          waktu_table += '</tr>'
-        }
-
-        waktu_table += '</tbody></table>'
+      if (result.html !== null) {
         hide('tanggal')
-        $('#td-waktu').html(waktu_table)
+        $('#td-waktu').html(result.html)
         $('#tr-waktu').css('display', 'table-row')
-
       } else {
         hide('waktu')
       }
@@ -79,15 +60,8 @@ function get_dates(id_jadwal, waktu, element) {
       $('#id_waktu').val(id_waktu)
       $('#id_hari').val(result.hari)
 
-      var tanggal_table = '<table id="in-table"><tbody><tr>'
-      result.tanggal_list.forEach(function(value, _) {
-        var fx = "get_pasien('" + value['tanggal'] + "', this)"
-        tanggal_table += '<td class="cell c-tanggal" onclick="' + fx + '">' + value['repr'] + '</td>'
-      })
-
-      tanggal_table += '</tr></tbody></table>'
       hide('pasien')
-      $('#td-tanggal').html(tanggal_table)
+      $('#td-tanggal').html(result.html)
       $('#tr-tanggal').css('display', 'table-row')
       element.style.backgroundColor = '#20857A'
     },

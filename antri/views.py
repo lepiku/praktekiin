@@ -1,6 +1,7 @@
 from django.contrib.auth import login, update_session_auth_hash
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
 
@@ -201,8 +202,11 @@ def get_times(request):
                                 }
                             total_jadwal[nama_waktu].append(data)
 
-            return JsonResponse({'hari': total_hari, 'jadwal': total_jadwal})
-        return JsonResponse({'hari': None})
+            html = render_to_string(
+                'antri/ajax/waktu.html',
+                {'total_hari': total_hari, 'jadwal': total_jadwal})
+            return JsonResponse({'html': html})
+        return JsonResponse({'html': None})
     return None
 
 
@@ -216,17 +220,16 @@ def get_dates(request):
             next_date = jadwal.get_next_date()
             for num in range(6):
                 date = next_date + timezone.timedelta(days=num * 7)
-                date_repr = '{}/{}'.format(date.day, date.month)
                 total_tanggal.append({
-                    'repr': date_repr,
                     'tanggal': date,
-                    'jumlah': 0,
+                    'jumlah': 0, # TODO and implementation
                     })
-            return JsonResponse({
-                'tanggal_list': total_tanggal,
-                'hari': jadwal.hari})
 
-        return JsonResponse({'tanggal': None})
+            html = render_to_string(
+                'antri/ajax/dates.html',
+                {'total_tanggal': total_tanggal})
+            return JsonResponse({'html': html, 'hari': jadwal.hari})
+        return JsonResponse({'html': None})
     return None
 
 

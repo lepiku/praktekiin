@@ -1,0 +1,10 @@
+<table id="in-table">
+  <tbody>
+    <tr>
+      {% for tanggal in total_tanggal %}
+      <td class="cell c-tanggal" onclick="get_pasien('{{ tanggal.tanggal|date:"Y-m-d" }}', this)">
+        {{ tanggal.tanggal|date:"d M" }}
+      </td>{% endfor %}
+    </tr>
+  </tbody>
+</table>

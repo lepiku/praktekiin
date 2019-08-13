@@ -1,0 +1,22 @@
+<div>
+  <table id="in-table">
+    <tbody>
+      <tr>
+        <td></td>
+        {% for hari in total_hari %}
+        <td class="hari">{{ hari }}</td>
+        {% endfor %}
+      </tr>
+      {% for waktu, total_jam in jadwal.items %}
+      <tr>
+        <td class="waktu">{{ waktu }}</td>
+        {% for jam in total_jam %}
+        <td class="cell c-waktu" onclick="get_dates('{{ jam.id }}', '{{ waktu }}', this)">
+          {{ jam.jam }}
+        </td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
