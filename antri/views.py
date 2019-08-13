@@ -223,7 +223,7 @@ def get_dates(request):
             html = render_to_string(
                 'antri/ajax/dates.html',
                 {'total_tanggal': total_tanggal})
-            return JsonResponse({'html': html, 'hari': jadwal.hari})
+            return JsonResponse({'html': html})
         return JsonResponse({'html': None})
     return None
 
@@ -239,6 +239,7 @@ def get_pasien(request):
             pasien_set.append(pend.pasien.id)
 
         return JsonResponse({'pasien_set': pasien_set})
+    return None
 
 
 def profil(request):
