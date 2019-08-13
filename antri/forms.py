@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import PasswordChangeForm, UserCreationForm
 from django.utils import timezone
 
-from .models import WAKTU_CHOICES, Pasien, Tempat
+from .models import Jadwal, Pasien, Tempat
 
 NAMA_BULAN = {1: "Januari", 2: "Februari", 3: "Maret", 4: "April", 5: "Mei",
               6: "Juni", 7: "Juli", 8: "Agustus", 9: "September", 10: "Oktober",
@@ -119,6 +119,5 @@ class PendaftaranPasienForm(forms.Form):
 
 class PendaftaranForm(PendaftaranPasienForm):
     tempat = forms.ModelChoiceField(Tempat.objects.all())
-    waktu = forms.ChoiceField(choices=WAKTU_CHOICES, widget=forms.HiddenInput)
-    hari = forms.IntegerField(widget=forms.HiddenInput)
+    jadwal = forms.ModelChoiceField(Jadwal.objects.all(), widget=forms.HiddenInput)
     tanggal = forms.DateField(widget=forms.HiddenInput)

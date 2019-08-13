@@ -43,7 +43,7 @@ function get_times() {
 }
 tempat.onchange = function() {get_times()}
 
-function get_dates(id_jadwal, waktu, element) {
+function get_dates(id_jadwal, element) {
   $('.c-waktu').css('background-color', '#39B0A3')
   $.ajax({
     url: get_dates_url,
@@ -51,14 +51,7 @@ function get_dates(id_jadwal, waktu, element) {
     data: {'id_jadwal': id_jadwal},
     success: function(result) {
       console.log(result)
-      var id_waktu = '2'
-      switch (waktu) {
-        case 'Pagi': id_waktu = 'PG'; break;
-        case 'Siang': id_waktu = 'SG'; break;
-        case 'Sore': id_waktu = 'SR'; break;
-      }
-      $('#id_waktu').val(id_waktu)
-      $('#id_hari').val(result.hari)
+      $('#id_jadwal').val(id_jadwal)
 
       hide('pasien')
       $('#td-tanggal').html(result.html)

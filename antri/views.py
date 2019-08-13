@@ -138,12 +138,7 @@ def daftar_antri(request):
     if request.method == 'POST':
         form = PendaftaranForm(request.POST, pasien_set=pasien_set)
         if form.is_valid():
-            form.cleaned_data['tempat']
-
-            jadwal = Jadwal.objects.get(
-                tempat=form.cleaned_data['tempat'],
-                waktu=form.cleaned_data['waktu'],
-                hari=form.cleaned_data['hari'])
+            jadwal = form.cleaned_data['jadwal']
 
             hari, _ = Hari.objects.get_or_create(
                 jadwal=jadwal,
