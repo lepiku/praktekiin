@@ -1,15 +1,8 @@
-#antri {
-  border-collapse: collapse;
-  width: 100%;
-}
-#antri tr:nth-child(odd) {
-  background-color: #B9EBE5;
-}
-#antri th, #antri td {
+.table th, .table td {
   padding: 10px;
   text-align: left;
 }
-#antri th.nama-pasien, #antri th.nama-kepala-keluarga {
+.table th.nama-pasien, .table th.nama-kepala-keluarga {
   width: 50%;
 }
 #popup {

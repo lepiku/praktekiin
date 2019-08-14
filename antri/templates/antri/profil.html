@@ -1,22 +1,16 @@
 {% extends 'antri/base.html' %}
+{% load static %}
 
 {% block style %}
 <style>
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
 th {
   width: 35%;
-  vertical-align: top;
   min-width: 144px;
 }
 th, td {
+  vertical-align: top;
   text-align: left;
   padding: 8px;
-}
-tr:nth-child(odd) {
-  background-color: #ceecee;
 }
 p {
   margin-top: 0;
@@ -27,7 +21,7 @@ p {
 {% block content %}
 <div class="card">
   <p><a href="{% url 'antri:beranda' %}">Kembali ke Beranda</a></p>
-  <table id="pengguna">
+  <table class="table" id="pengguna">
     {% for label, value in pasien %}
     <tr>
       <th id="label">{{ label }}</td>
@@ -37,7 +31,7 @@ p {
   </table>
    <a class="button" href="{% url 'antri:ubah-profil' %}">Ubah Profil</a> 
   <hr>
-  <table id="user">
+  <table class="table" id="user">
     {% for label, value in user %}
     <tr>
       <th id="label">{{ label }}</td>

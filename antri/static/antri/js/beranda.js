@@ -5,7 +5,7 @@ function antri() {
     data: {},
     success: function(result) {
       console.log(result)
-      var table = document.getElementById('antri')
+      var table = document.getElementsByClassName('table')[0]
       var tbody = document.createElement('tbody')
       table.appendChild(tbody)
 
@@ -73,4 +73,3 @@ function show_popup() {
 function hide_popup() {
   $('#popup').css('display', 'none')
 }
-
