@@ -3,6 +3,9 @@
   flex-direction: column;
   align-items: center;
 }
+p.helptext {
+  margin-bottom: 2em;
+}
 th {
   width: 205px;
   vertical-align: top;

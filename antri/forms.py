@@ -50,7 +50,7 @@ class UserForm(UserCreationForm):
                 'invalid': 'Username hanya boleh mengandung huruf, angka, dan @/./+/-/_ saja.'
                 }
         self.fields['password2'].label = 'Konfirmasi Password'
-        self.fields['username'].help_text = 'hanya mengandung huruf, angka, dan @/./+/-/_ saja.'
+        self.fields['username'].help_text = 'Hanya mengandung huruf, angka, dan @/./+/-/_ saja.'
         self.fields['password1'].help_text = 'Panjang minimal 6 karakter.'
         self.fields['password2'].help_text = 'Ulangi password, untuk konfirmasi.'
         self.error_messages['password_mismatch'] = "Konfirmasi password tidak sama."
