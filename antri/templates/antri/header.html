@@ -1,0 +1,42 @@
+<div class="navback">
+  <div class="spacing">
+    <div class="navbar">
+      <div id="left">
+        {% if request.user.is_authenticated %}
+        <div class="dropdown">
+          <div id="item">
+            <div id="bar">
+              <div id="bar1"></div>
+              <div id="bar2"></div>
+              <div id="bar1"></div>
+              <div id="bar2"></div>
+              <div id="bar1"></div>
+            </div>
+          </div>
+          <div class="dropdown-content">
+            <div id="mobile-name">
+              {% if request.user.pengguna.pasien != None %}
+              <p>{{ request.user.pengguna.pasien.nama }}</p>
+              {% else %}
+              <p>{{ request.user.username }}</p>
+              {% endif %}
+            </div>
+            <a href="{% url 'antri:profil' %}">Profil</a>
+            <a href="{% url 'antri:keluar' %}">Keluar</a>
+          </div>
+        </div>
+        {% endif %}
+        <a href="{% url 'antri:beranda' %}">
+          <div id="item">
+            <b>Beranda</b>
+          </div>
+        </a>
+        <a href="{% url 'antri:tentang' %}">
+          <div id="item">
+            <b>Tentang</b>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

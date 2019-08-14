@@ -1,0 +1,67 @@
+.navbar {
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.1em;
+}
+.navbar a {
+  color: #fff;
+  text-decoration: none;
+}
+#left {
+  display: flex;
+  justify-content: flex-start;
+}
+#item {
+  padding: 20px 14px;
+  height: 24px;
+}
+#item:hover {
+  background-color: #39b0a3;
+}
+.dropdown {
+  position: relative;
+}
+.dropdown #item {
+  cursor: default;
+}
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #d3e9e4;
+  width: 240px;
+  z-index: 1;
+}
+.dropdown-content a {
+  color: #009688;
+  padding: 12px 16px;
+  display: block;
+}
+.dropdown-content a:hover {
+  background-color: #e3f2ee;
+}
+/* burger menu */
+#bar div {
+  width: 26px;
+  height: 3px;
+  border-radius: 2px;
+}
+#bar1 {
+  background-color: white;
+}
+#bar2 {
+  height: 7px !important;
+}
+#mobile-name {
+  margin: 12px 16px;
+  color: #000;
+  overflow: hidden;
+}
+#mobile-name p {
+  margin: 0;
+  max-height: 2.8em;
+}
