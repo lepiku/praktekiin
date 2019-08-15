@@ -47,6 +47,7 @@
     </table>
     <div id="buttons">
       <input class="button" type="submit" name="create" value="{{ button }}">
+      <a class="button cancel" href="{% if prev %}{{ prev }}{% else %}{% url 'antri:profil' %}{% endif %}">Kembali</a>
     </div>
   </form>
 </div>

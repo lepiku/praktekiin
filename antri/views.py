@@ -127,18 +127,22 @@ def daftar(request):
                 pengguna.save()
 
                 login(request, user)
-                return redirect('antri:beranda')
+                return redirect('antri:daftar')
         else:
             form_user = UserForm()
 
-        return render(request, 'antri/daftar.html',
-                      {'form': form_user, 'button': 'Buat Akun'})
+        return render(request, 'antri/daftar.html', {
+            'form': form_user,
+            'button': 'Buat Akun',
+            'prev': reverse('antri:beranda'),
+            })
 
     context = {'pasien_set': request.user.pengguna.keluarga.pasien_set.all()}
     return render(request, 'antri/daftar-pasien-list.html', context)
 
 
 def daftar_pasien(request):
+    prev = request.GET.get('prev', reverse('antri:profil'))
     if request.method == 'POST':
         pasien = Pasien()
         form = PasienForm(request.POST, instance=pasien)
@@ -146,14 +150,19 @@ def daftar_pasien(request):
             pasien.mrid = '000102' # TODO generate mrid
             pasien.keluarga = request.user.pengguna.keluarga
             form.save()
-            return redirect(reverse('antri:profil'))
+
+            if prev == '':
+                return redirect('antri:profil')
+            return redirect(prev)
     else:
         form = PasienForm()
+
     return render(request, 'antri/daftar.html', {
         'form': form,
         'button': 'Buat Pasien',
         'card_title': 'Daftar Pasien',
         'card_desc': 'Mengisi data diri seorang pasien.',
+        'prev': prev,
         })
 
 
@@ -303,8 +312,10 @@ def ubah_profil(request):
             return redirect(reverse('antri:profil'))
     else:
         form = PasienForm(instance=request.user.pengguna.pasien)
-    return render(request, 'antri/daftar.html',
-                  {'form': form, 'button': 'Ubah Profil'})
+    return render(request, 'antri/daftar.html', {
+        'form': form,
+        'button': 'Ubah Profil',
+        })
 
 def ubah_password(request):
     if request.method == 'POST':
@@ -315,8 +326,10 @@ def ubah_password(request):
             return redirect(reverse('antri:profil'))
     else:
         form = UbahPasswordForm(request.user)
-    return render(request, 'antri/daftar.html',
-                  {'form': form, 'button': 'Ubah Password'})
+    return render(request, 'antri/daftar.html', {
+        'form': form,
+        'button': 'Ubah Password',
+        })
 
 
 def pasien_detail(request, pk):

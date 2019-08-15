@@ -1,4 +1,9 @@
-{% extends 'antri/daftar.html' %}
+{% extends 'antri/base.html' %}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'antri/css/daftar.css' %}">
+{% endblock %}
 
 {% block content %}
 <div class="card">
@@ -9,13 +14,34 @@
   {% if next %}
   <p>Kamu tidak bisa masuk ke halaman ini.
   {% endif %}
+  <div id="title">
+    <h1>Masuk</h1>
+  </div>
   <form method="post" action="{% url 'antri:masuk' %}">
     {% csrf_token %}
     <table>
-      {{ form.as_table }}
+      {% for field in form %}
+      <tr>
+        <th>
+          <label class="{% if field.field.required %}required{% else %}not-required{% endif %}" for="id_{{ field.name }}">{{ field.label }}</label>
+        </th>
+        <td>
+          {{ field }}
+          <div class="info">
+            {% if field.errors %}<ul class="errorlist">
+              {% for error in field.errors %}<li>{{ error }}</li>{% endfor %}
+            </ul>{% endif %}
+            {% if field.help_text %}<span class="helptext">{{ field.help_text|safe }}</span>{% endif %}
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
     </table>
     <input type="hidden" name="next" value="{{ next }}">
-    <input class="button" type="submit" value="Masuk">
+    <div id="buttons">
+      <input class="button" type="submit" value="Masuk">
+      <a class="button cancel" href="{% url 'antri:beranda' %}">Kembali</a>
+    </div>
   </form>
   <p>Belum punya akun? <a href="{% url 'antri:daftar' %}">Buat Akun</a></p>
   {% comment %}TODO reset password{% endcomment %}

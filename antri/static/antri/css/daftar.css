@@ -34,7 +34,7 @@ ul {
 }
 .required:after {
   content: "*";
-  color: #F00;
+  color: #E84A4A;
 }
 .not-required {
   color: #888;
@@ -47,6 +47,9 @@ ul {
   /* salah masuk.html */
   color: red;
   font-size: 0.8em;
+}
+.cancel {
+  background-color: #E84A4A;
 }
 @media (max-width: 600px) {
   th {
