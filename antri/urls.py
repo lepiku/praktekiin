@@ -9,6 +9,7 @@ urlpatterns = [
     path('', views.beranda, name='beranda'),
     path('tentang/', views.tentang, name='tentang'),
     path('daftar/', views.daftar, name='daftar'),
+    path('daftar-pasien/', login_required(views.daftar_pasien), name='daftar-pasien'),
     path('daftar-antri/', login_required(views.daftar_antri), name='daftar-antri'),
     path('antri.json', views.get_antri, name='get-antri'),
     path('times.json', login_required(views.get_times), name='get-times'),
@@ -19,7 +20,6 @@ urlpatterns = [
     path('profil/', login_required(views.profil), name='profil'),
     path('ubah/profil/', login_required(views.ubah_profil), name='ubah-profil'),
     path('ubah/password/', login_required(views.ubah_password), name='ubah-password'),
-    path('pasien/daftar/', login_required(views.pasien_daftar), name='pasien-daftar'),
     path('pasien/<int:pk>/', login_required(views.pasien_detail),
-        name='pasien-detail'),
+         name='pasien-detail'),
 ]

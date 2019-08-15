@@ -138,6 +138,25 @@ def daftar(request):
     return render(request, 'antri/daftar-pasien-list.html', context)
 
 
+def daftar_pasien(request):
+    if request.method == 'POST':
+        pasien = Pasien()
+        form = PasienForm(request.POST, instance=pasien)
+        if form.is_valid():
+            pasien.mrid = '000102' # TODO generate mrid
+            pasien.keluarga = request.user.pengguna.keluarga
+            form.save()
+            return redirect(reverse('antri:profil'))
+    else:
+        form = PasienForm()
+    return render(request, 'antri/daftar.html', {
+        'form': form,
+        'button': 'Buat Pasien',
+        'card_title': 'Daftar Pasien',
+        'card_desc': 'Mengisi data diri seorang pasien.',
+        })
+
+
 def daftar_antri(request):
     pasien_set = request.user.pengguna.keluarga.pasien_set.all()
     if request.method == 'POST':
@@ -299,23 +318,6 @@ def ubah_password(request):
     return render(request, 'antri/daftar.html',
                   {'form': form, 'button': 'Ubah Password'})
 
-def pasien_daftar(request):
-    if request.method == 'POST':
-        pasien = Pasien()
-        form = PasienForm(request.POST, instance=pasien)
-        if form.is_valid():
-            pasien.mrid = '000102' # TODO generate mrid
-            pasien.keluarga = request.user.pengguna.keluarga
-            form.save()
-            return redirect(reverse('antri:profil'))
-    else:
-        form = PasienForm()
-    return render(request, 'antri/daftar.html', {
-        'form': form,
-        'button': 'Buat Pasien',
-        'card_title': 'Daftar Pasien',
-        'card_desc': 'Mengisi data diri seorang pasien.',
-        })
 
 def pasien_detail(request, pk):
     pasien = get_object_or_404(Pasien, pk=pk)

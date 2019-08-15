@@ -2,8 +2,8 @@
 
 {% block content %}
 <div class="card">
-  <p><a href="{% url 'antri:profil' %}">Kembali ke Profil</a></p>
-  <table id="pengguna">
+  <p><a href="{% url 'antri:profil' %}"><i class="fa fa-chevron-left"></i> Kembali ke Profil</a></p>
+  <table class="table" id="pengguna">
     {% for label, value in data %}
     <tr>
       <th id="label">{{ label }}</td>

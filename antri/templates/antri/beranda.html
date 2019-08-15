@@ -4,7 +4,6 @@
 {% block style %}
 <link rel="stylesheet" href="{% static 'antri/css/beranda.css' %}">
 <link rel="stylesheet" href="{% static 'antri/css/name-card.css' %}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 {% endblock %}
 
 {% block content %}
@@ -45,7 +44,7 @@
               {% for option in form.pasien_set %}
               <li>{{ option }}</li>
               {% endfor %}
-              <li><a href="{% url 'antri:pasien-daftar' %}">+ Daftar Pasien Baru</a></li>
+              <li><a href="{% url 'antri:daftar-pasien' %}">+ Daftar Pasien Baru</a></li>
             </ul>
           </td>
         </tr>

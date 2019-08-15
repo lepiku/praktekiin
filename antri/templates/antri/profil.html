@@ -20,7 +20,7 @@ p {
 
 {% block content %}
 <div class="card">
-  <p><a href="{% url 'antri:beranda' %}">Kembali ke Beranda</a></p>
+  <p><a href="{% url 'antri:beranda' %}"><i class="fa fa-chevron-left"></i> Kembali ke Beranda</a></p>
   <table class="table" id="pengguna">
     {% for label, value in pasien %}
     <tr>
@@ -46,7 +46,7 @@ p {
     {% for p in keluarga %}
     <li><a href="{% url 'antri:pasien-detail' p.pk %}">{{ p.nama }}</a></li>
     {% endfor %}
-    <li><a href="{% url 'antri:pasien-daftar' %}">+ Daftar Pasien Baru</a></li>
+    <li><a href="{% url 'antri:daftar-pasien' %}">+ Daftar Pasien Baru</a></li>
   </ul>
 </div>
 {% endblock %}
