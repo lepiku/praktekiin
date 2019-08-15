@@ -4,13 +4,23 @@ body {
   font-size: 18px;
   background-color: #eef4e8;
 }
-input, select, textarea {
-  font-family: 'Muli', sans-serif;
-  font-size: 18px;
-}
 a {
   color: #009688;
   text-decoration: none;
+}
+input, select, textarea {
+  font-family: 'Muli', sans-serif;
+  font-size: 18px;
+  border: 2px solid #39B0A3;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 4px 6px;
+}
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding-right: 23px;
 }
 .spacing {
   max-width: 1200px;

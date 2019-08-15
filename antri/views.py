@@ -310,8 +310,12 @@ def pasien_daftar(request):
             return redirect(reverse('antri:profil'))
     else:
         form = PasienForm()
-    return render(request, 'antri/daftar.html',
-                  {'form': form, 'button': 'Buat Pasien'})
+    return render(request, 'antri/daftar.html', {
+        'form': form,
+        'button': 'Buat Pasien',
+        'card_title': 'Daftar Pasien',
+        'card_desc': 'Mengisi data diri seorang pasien.',
+        })
 
 def pasien_detail(request, pk):
     pasien = get_object_or_404(Pasien, pk=pk)

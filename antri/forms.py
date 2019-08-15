@@ -18,10 +18,11 @@ class PasienForm(forms.ModelForm):
         model = Pasien
         exclude = ('mrid', 'keluarga')
         labels = {
-                'nama': 'Nama Lengkap',
-                'telp': 'No. Telp / HP',
-                'nik': 'NIK',
-                }
+            'nama': 'Nama Lengkap',
+            'telp': 'No. Telp / HP',
+            'nik': 'NIK',
+            'kepala_keluarga': 'Nama Kepala Keluarga',
+            }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

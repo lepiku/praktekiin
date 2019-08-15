@@ -8,8 +8,20 @@
 {% block content %}
 <div class="card">
   <div id="title">
-    <h1>Daftar Pengguna</h1>
-    <p class="helptext">Username dan password digunakan untuk masuk kembali sebagai Pengguna.</p>
+    <h1>
+      {% if card_title %}
+      {{ card_title }}
+      {% else %}
+      Daftar Pengguna
+      {% endif %}
+    </h1>
+    <p class="helptext">
+    {% if card_desc %}
+    {{ card_desc }}
+    {% else %}
+    Username dan password digunakan untuk masuk kembali sebagai Pengguna.
+    {% endif %}
+    </p>
   </div>
   <form method="post">
     {% csrf_token %}
@@ -20,7 +32,7 @@
           <label class="{% if field.field.required %}required{% else %}not-required{% endif %}" for="id_{{ field.name }}">{{ field.label }}</label>
         </th>
         <td>
-          <div>
+          <div class="field">
             {{ field }}
           </div>
           <div class="info">
@@ -33,7 +45,9 @@
       </tr>
       {% endfor %}
     </table>
-    <input class="button" type="submit" name="create" value="{{ button }}">
+    <div id="buttons">
+      <input class="button" type="submit" name="create" value="{{ button }}">
+    </div>
   </form>
 </div>
 {% endblock %}
