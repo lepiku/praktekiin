@@ -28,7 +28,8 @@ a {
 }
 .button {
   font-family: 'Muli', sans-serif;
-  background-color: #009688;
+  font-weight: bold;
+  background-color: #39B0A3;
   color: #fff;
   border: none;
   display: inline-block;
@@ -37,18 +38,28 @@ a {
   margin: 12px;
   border-radius: 8px;
 }
-.button:hover {
-  background-color: #39b0a3;
+#buttons {
+  display: flex;
+  align-items: baseline;
+  margin-top: 20px;
+}
+#buttons .button {
+  margin-left: 0;
+}
+.helptext {
+  color: #888;
+  font-size: 0.9em;
 }
 #title {
   text-align: center;
+  margin-bottom: 1.6em;
 }
 #title h1, #title h2, #title h3 {
   margin: 0;
 }
-.helptext {
-  color: #888;
-  font-size: 0.8em;
+#title .helptext {
+  margin-top: 0.5em;
+  margin-bottom: 0;
 }
 .footer {
   margin: 20px 40px;
@@ -85,6 +96,13 @@ a {
 }
 .table tr:nth-child(odd) {
   background-color: #B9EBE5;
+}
+.table th, .table td {
+  padding: 10px;
+  text-align: left;
+}
+.table td {
+  vertical-align: top;
 }
 @media (max-width: 600px) {
   body {

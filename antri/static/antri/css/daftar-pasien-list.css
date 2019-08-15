@@ -1,0 +1,9 @@
+tr#tambah {
+  color: #fff;
+  font-weight: bold;
+  background-color: #39B0A3;
+  cursor: pointer;
+}
+th#nama-pasien, th#nama-kepala-keluarga {
+  width: 50%;
+}

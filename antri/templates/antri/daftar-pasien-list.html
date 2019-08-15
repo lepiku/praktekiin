@@ -1,0 +1,41 @@
+{% extends 'antri/base.html' %}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'antri/css/daftar-pasien-list.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div id="title">
+    <h1>Daftar Pasien</h1>
+    <p class="helptext">Membuat daftar pasien agar dapat mendaftar untuk antri.</p>
+  </div>
+  <table class="table">
+    <tbody>
+      <tr>
+        <th>No.</th>
+        <th id="nama-pasien">Nama Pasien</th>
+        <th id="nama-kepala-keluarga">Nama Kepala Keluarga</th>
+        <th>Hapus?</th>
+      </tr>
+      {% for pasien in pasien_set %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ pasien.nama }}</td>
+        <td>{{ pasien.kepala_keluarga }}</td>
+        <td></td>
+      </tr>
+      {% endfor %}
+      <tr id="tambah" onclick="window.location='{% url 'antri:pasien-daftar' %}'">
+          <td>+</td>
+          <td colspan="3">Tambah Pasien</td>
+      </tr>
+    </tbody>
+  </table>
+  <div id="buttons">
+    <a class="button" href="{% url 'antri:beranda' %}">Simpan</a>
+    <p class="helptext">Bisa diubah-ubah lagi nanti.</p>
+  </div>
+</div>
+{% endblock %}

@@ -114,24 +114,28 @@ def tentang(request):
 
 
 def daftar(request):
-    if request.method == 'POST':
-        user = User()
+    if not request.user.is_authenticated:
+        if request.method == 'POST':
+            user = User()
 
-        form_user = UserForm(request.POST, instance=user)
-        if form_user.is_valid():
-            user = form_user.save()
-            keluarga = Keluarga()
-            keluarga.save()
-            pengguna = Pengguna(user=user, keluarga=keluarga)
-            pengguna.save()
+            form_user = UserForm(request.POST, instance=user)
+            if form_user.is_valid():
+                user = form_user.save()
+                keluarga = Keluarga()
+                keluarga.save()
+                pengguna = Pengguna(user=user, keluarga=keluarga)
+                pengguna.save()
 
-            login(request, user)
-            return redirect('antri:beranda')
-    else:
-        form_user = UserForm()
+                login(request, user)
+                return redirect('antri:beranda')
+        else:
+            form_user = UserForm()
 
-    return render(request, 'antri/daftar.html',
-                  {'form': form_user, 'button': 'Buat Akun'})
+        return render(request, 'antri/daftar.html',
+                      {'form': form_user, 'button': 'Buat Akun'})
+
+    context = {'pasien_set': request.user.pengguna.keluarga.pasien_set.all()}
+    return render(request, 'antri/daftar-pasien-list.html', context)
 
 
 def daftar_antri(request):

@@ -1,9 +1,11 @@
-.table th, .table td {
-  padding: 10px;
-  text-align: left;
-}
-.table th.nama-pasien, .table th.nama-kepala-keluarga {
+th.nama-pasien, th.nama-kepala-keluarga {
   width: 50%;
+}
+#buttons {
+  display: block;
+}
+#buttons p {
+  margin-bottom: 0;
 }
 #popup {
   display: none;
