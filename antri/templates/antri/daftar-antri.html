@@ -8,9 +8,11 @@
 {% block content %}
 <div class="card pesan">
   <form method="POST" href="{% url 'antri:daftar-antri' %}">
-    <h2>Daftar Antri</h2>
+    <div id="title">
+      <h1>Daftar Antri</h1>
+    </div>
     {% csrf_token %}
-    <table>
+    <table id="out-table">
       <tbody>
         <tr id="tr-tempat">
           <th>Tempat:</th>
@@ -18,12 +20,12 @@
         </tr>
         <tr id="tr-waktu">
           <th>Waktu:</th>
-          <td id="td-waktu"></td>
+          <td><div id="td-waktu" class="scroll"></div></td>
           {{ form.jadwal }}
         </tr>
         <tr id="tr-tanggal">
           <th>Tanggal:</th>
-          <td id="td-tanggal"></td>
+          <td><div id="td-tanggal" class="scroll"></div></td>
           {{ form.tanggal }}
         </tr>
         <tr id="tr-pasien">

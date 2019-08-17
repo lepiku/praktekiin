@@ -1,19 +1,24 @@
 #tr-waktu, #tr-tanggal, #tr-pasien {
   display: none;
 }
-.pesan th {
+#out-table {
+  table-layout: fixed;
+  width: 100%;
+}
+#out-table th {
+  width: 96px;
   vertical-align: top;
   text-align: left;
 }
-#tr-tempat > th {
-  width: 100px;
+.scroll {
+  overflow-x: auto;
 }
 #in-table {
   border-collapse: separate;
   border-spacing: 6px;
 }
-#in-table th, #in-table td {
-  width: 64px;
+#in-table td {
+  min-width: 64px;
   padding: 8px;
   text-align: center;
 }
@@ -32,3 +37,10 @@ ul {
   padding: 0;
   list-style: none;
 }
+@media (max-width: 600px) {
+  #out-table th {
+    width: 72px;
+  }
+  #in-table td {
+    min-width: 54px;
+  }
