@@ -1,6 +1,11 @@
 {% extends 'antri/base.html' %}
+
+{% block head %}
+<meta http-equiv="refresh" content="3;url=/" />
+{% endblock %}
+
 {% block content %}
 <div class="card">
-  <p>Kamu sudah keluar, kembali ke <a href="{% url 'antri:beranda' %}">Halaman Utama</a></p>
+  <p>Kamu sudah keluar, Dalam 3 detik akan dirahkan ke <a href="{% url 'antri:beranda' %}">Halaman Utama</a>.</p>
 </div>
 {% endblock %}
