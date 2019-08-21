@@ -31,8 +31,24 @@
         <tr id="tr-pasien">
           <th>Pasien:</th>
           <td id="td-pasien">
-            {{ form.pasien_set }}
-            <a href="{% url 'antri:daftar-pasien' %}">+ Daftar Pasien Baru</a>
+            {{ form.pasien_set.errors }}
+            <ul>
+              {% for pk, option in form.pasien_set.field.widget.choices %}
+              <li>
+                <label for="id_{{ form.pasien_set.name }}_{{ forloop.counter|add:"-1" }}">
+                  <input type="checkbox" name="{{ form.pasien_set.name }}" value="{{ pk }}" id="id_{{ form.pasien_set.name }}_{{ forloop.counter|add:"-1" }}">
+                  <span class="checkmark"></span>
+                  {{ option }}
+                </label>
+              </li>
+              {% endfor %}
+              <li class="addition">
+                <a class="new-pasien" href="{% url 'antri:daftar-pasien' %}">
+                  <span class="plus"></span>
+                  Daftar Pasien Baru
+                </a>
+              </li>
+            </ul>
           </td>
         </tr>
       </tbody>

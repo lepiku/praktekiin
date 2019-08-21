@@ -36,15 +36,26 @@
         </tr>
         <tr>
           <th>
-            {{ form.pasien_set.label }}
+            {{ form.pasien_set.label }}:
           </th>
           <td>
             {{ form.pasien_set.errors }}
             <ul>
-              {% for option in form.pasien_set %}
-              <li>{{ option }}</li>
+              {% for pk, option in form.pasien_set.field.widget.choices %}
+              <li>
+                <label for="id_{{ form.pasien_set.name }}_{{ forloop.counter|add:"-1" }}">
+                  <input type="checkbox" name="{{ form.pasien_set.name }}" value="{{ pk }}" id="id_{{ form.pasien_set.name }}_{{ forloop.counter|add:"-1" }}">
+                  <span class="checkmark"></span>
+                  {{ option }}
+                </label>
+              </li>
               {% endfor %}
-              <li><a href="{% url 'antri:daftar-pasien' %}">+ Daftar Pasien Baru</a></li>
+              <li class="addition">
+                <a class="new-pasien" href="{% url 'antri:daftar-pasien' %}">
+                  <span class="plus"></span>
+                  Daftar Pasien Baru
+                </a>
+              </li>
             </ul>
           </td>
         </tr>

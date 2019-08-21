@@ -5,7 +5,7 @@ body {
   background-color: #eef4e8;
 }
 a {
-  color: #009688;
+  color: #39B0A3;
   text-decoration: none;
 }
 input, select, textarea {
@@ -113,6 +113,87 @@ select {
 }
 .table td {
   vertical-align: top;
+}
+ul > li > label {
+  position: relative;
+  padding-left: 31px;
+  line-height: 28px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+label input[type="checkbox"] {
+  position: absolute;
+  cursor: pointer;
+  opacity: 0;
+  height: 0;
+  width: 0;
+  margin: 0;
+}
+label input[type="checkbox"] ~ .checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 18px;
+  width: 18px;
+  border: 2px solid #39B0A3;
+  border-radius: 7px;
+  background-color: #FFF;
+}
+label:hover input[type="checkbox"] ~ .checkmark {
+  background-color: #DBF7F4;
+}
+input[type="checkbox"] ~ .checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+  top: 3px;
+  left: 6px;
+  width: 5px;
+  height: 9px;
+  border: solid #39B0A3;
+  border-width: 0 2px 2px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+input[type="checkbox"]:checked ~ .checkmark:after {
+  display: block;
+}
+li.addition {
+  margin-top: 5px;
+}
+a.new-pasien {
+  position: relative;
+  padding-left: 31px;
+}
+a.new-pasien .plus:after {
+  content: "";
+  position: absolute;
+  transform: translate(8px, 2px);
+  width: 2px;
+  height: 14px;
+  background: #39B0A3;
+}
+a.new-pasien .plus:before {
+  content: "";
+  position: absolute;
+  transform: translate(2px, 8px);
+  width: 14px;
+  height: 2px;
+  background: #39B0A3;
+}
+a.new-pasien .plus {
+  position: absolute;
+  border: 2px solid;
+  width: 18px;
+  height: 18px;
+  border-radius: 7px;
+  position: absolute;
+  left: 0;
+  top: 0px;
 }
 @media (max-width: 600px) {
   body {
