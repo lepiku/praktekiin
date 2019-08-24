@@ -11,7 +11,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 1.2em;
   height: 60px;
 }
 .navbar a {
@@ -19,22 +18,18 @@
 }
 #left {
   display: flex;
+  font-size: 1.2em;
 }
 /* menu */
 #left .item {
-  margin-right: 1.1em;
+  margin-right: 1em;
   font-weight: bold;
 }
 #right .item {
-  margin-left: 1.2em;
+  margin-left: 1em;
 }
-#beranda {
-  position: relative;
-  padding-left: 30px;
-}
-#beranda img {
-  position: absolute;
-  left: 0;
+.item img {
+  margin-top: 1px;
 }
 .menu {
   position: relative;
@@ -45,9 +40,10 @@
 #menu-content {
   display: none;
   position: absolute;
-  top: 66px;
-  right: 0;
+  top: 54px;
+  right: -12px;
   width: 270px;
+  padding-bottom: 15px;
   z-index: 50;
   background-color: #FFF;
   box-shadow: 0 16px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
@@ -57,14 +53,23 @@
 }
 #menu-content a {
   color: #000;
-  padding: 12px 16px;
+  padding: 9px;
   display: block;
+  margin: 0 20px;
+  border-radius: 6px;
 }
 #menu-content a:hover {
-  background-color: #e3f2ee;
+  background-color: #B9EBE5;
+}
+.menu-section {
+  margin: 15px 20px 0;
+  padding: 0 9px 3px;
+  color: #39B0A3;
+  font-size: 0.9em;
+  border-bottom: 2px solid #39B0A3;
 }
 #username {
-  margin: 12px 16px;
+  margin: 9px 29px;
   overflow: hidden;
   font-weight: bold;
 }
@@ -96,7 +101,7 @@
   .navbar {
     height: 50px;
   }
-  #beranda img {
+  .item img {
     height: 20px;
   }
   #bar div {
@@ -115,6 +120,7 @@
   #menu-content {
     position: fixed;
     top: 50px;
+    right: 0;
     bottom: 0;
     border-radius: 0;
     box-shadow: none;

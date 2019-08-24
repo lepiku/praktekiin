@@ -2,14 +2,14 @@
 <div class="navback">
   <div class="navbar">
     <div id="left">
-      <a id="beranda" class="item" href="{% url 'antri:beranda' %}">
-        <img src="{% static 'antri/media/tooth-solid.svg' %}" height="24px"> Beranda
+      <a class="item" href="{% url 'antri:beranda' %}">
+        <img src="{% static 'antri/media/tooth-solid.svg' %}" height="24px">
       </a>
-      <a class="item" href="{% url 'antri:tentang' %}">
-        Tentang
-      </a>
+      <div class="desktop-only">
+        <a class="item" href="{% url 'antri:beranda' %}">Beranda</a>
+        <a class="item" href="{% url 'antri:tentang' %}">Tentang</a>
+      </div>
     </div>
-    {% if request.user.is_authenticated %}
     <div id="right">
       <div class="item menu">
         <div id="bar" onclick="show_menu()">
@@ -20,13 +20,26 @@
           <div class="bar1"></div>
         </div>
         <div id="menu-content">
+          <div class="menu-section">
+            Akun
+          </div>
+          {% if request.user.is_authenticated %}
           <div id="username">{{ request.user.username }}</div>
           <a href="{% url 'antri:profil' %}">Profil</a>
           <a href="{% url 'antri:keluar' %}">Keluar</a>
+          {% else %}
+          <a href="{% url 'antri:masuk' %}">Masuk</a>
+          {% endif %}
+          <div class="mobile-only">
+            <div class="menu-section">
+              Halaman Lain
+            </div>
+            <a href="{% url 'antri:beranda' %}">Beranda</a>
+            <a href="{% url 'antri:tentang' %}">Tentang</a>
+          </div>
         </div>
         <div class="cover" id="menu-cover" onclick="hide_menu()"></div>
       </div>
     </div>
-    {% endif %}
   </div>
 </div>
