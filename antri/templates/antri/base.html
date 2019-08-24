@@ -9,8 +9,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="shortcut icon" href="{% static 'antri/media/logo-gigi.ico' %}">
     {% block head %}{% endblock %}
-    <link rel="stylesheet" href="{% static 'antri/css/base.css' %}">
-    <link rel="stylesheet" href="{% static 'antri/css/header.css' %}">
 <style>
 body {
   background-color: #EEF4E8;
@@ -22,22 +20,25 @@ select {
   background: url({% static 'antri/media/chevron-down-solid.svg' %}) right 8px center / 12px no-repeat;
 }
 </style>
+    <link rel="stylesheet" href="{% static 'antri/css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'antri/css/header.css' %}">
     {% block style %}{% endblock %}
   </head>
   <body>
     {% include 'antri/header.html' %}
-    <div class="spacing spacing-content">
-      <div class="content">
+    <div id="container">
+      <div id="content">
         {% block content %}
         <p>Blank Content</p>
         {% endblock %}
       </div>
-      <div class="footer">
+      <div id="footer">
         {% if request.user.is_authenticated %}
         <a href="{% url 'antri:keluar' %}">Keluar</a>{% endif %}
         <p>Dibuat oleh M. Oktoluqman F.</p>
       </div>
     </div>
+    <script src="{% static 'antri/js/header.js' %}"></script>
     {% block script %}{% endblock %}
   </body>
 </html>

@@ -1,42 +1,32 @@
+{% load static %}
 <div class="navback">
-  <div class="spacing">
-    <div class="navbar">
-      <div id="left">
-        {% if request.user.is_authenticated %}
-        <div class="dropdown">
-          <div id="item">
-            <div id="bar">
-              <div id="bar1"></div>
-              <div id="bar2"></div>
-              <div id="bar1"></div>
-              <div id="bar2"></div>
-              <div id="bar1"></div>
-            </div>
-          </div>
-          <div class="dropdown-content">
-            <div id="mobile-name">
-              {% if request.user.pengguna.pasien != None %}
-              <p>{{ request.user.pengguna.pasien.nama }}</p>
-              {% else %}
-              <p>{{ request.user.username }}</p>
-              {% endif %}
-            </div>
-            <a href="{% url 'antri:profil' %}">Profil</a>
-            <a href="{% url 'antri:keluar' %}">Keluar</a>
-          </div>
+  <div class="navbar">
+    <div id="left">
+      <a id="beranda" class="item" href="{% url 'antri:beranda' %}">
+        <img src="{% static 'antri/media/tooth-solid.svg' %}" height="24px"> Beranda
+      </a>
+      <a class="item" href="{% url 'antri:tentang' %}">
+        Tentang
+      </a>
+    </div>
+    {% if request.user.is_authenticated %}
+    <div id="right">
+      <div class="item menu">
+        <div id="bar" onclick="show_menu()">
+          <div class="bar1"></div>
+          <div class="bar0"></div>
+          <div class="bar2"></div>
+          <div class="bar0"></div>
+          <div class="bar1"></div>
         </div>
-        {% endif %}
-        <a href="{% url 'antri:beranda' %}">
-          <div id="item">
-            <b>Beranda</b>
-          </div>
-        </a>
-        <a href="{% url 'antri:tentang' %}">
-          <div id="item">
-            <b>Tentang</b>
-          </div>
-        </a>
+        <div id="menu-content">
+          <div id="username">{{ request.user.username }}</div>
+          <a href="{% url 'antri:profil' %}">Profil</a>
+          <a href="{% url 'antri:keluar' %}">Keluar</a>
+        </div>
+        <div class="cover" id="menu-cover" onclick="hide_menu()"></div>
       </div>
     </div>
+    {% endif %}
   </div>
 </div>

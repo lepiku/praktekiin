@@ -1,67 +1,125 @@
+/* navbar */
+.navback {
+  position: fixed;
+  width: 100vw;
+  max-width: 100%;
+}
 .navbar {
-  color: #fff;
+  padding: 0 24px;
+  margin: 0 auto;
+  max-width: 1200px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 1.1em;
+  font-size: 1.2em;
+  height: 60px;
 }
 .navbar a {
   color: #fff;
-  text-decoration: none;
 }
 #left {
   display: flex;
-  justify-content: flex-start;
 }
-#item {
-  padding: 20px 14px;
-  height: 24px;
+/* menu */
+#left .item {
+  margin-right: 1.1em;
+  font-weight: bold;
 }
-#item:hover {
-  background-color: #39b0a3;
+#right .item {
+  margin-left: 1.2em;
 }
-.dropdown {
+#beranda {
+  position: relative;
+  padding-left: 30px;
+}
+#beranda img {
+  position: absolute;
+  left: 0;
+}
+.menu {
   position: relative;
 }
-.dropdown #item {
-  cursor: default;
+.menu #bar {
+  cursor: pointer;
 }
-.dropdown:hover .dropdown-content {
-  display: block;
-}
-.dropdown-content {
+#menu-content {
   display: none;
   position: absolute;
-  background-color: #d3e9e4;
-  width: 240px;
-  z-index: 1;
+  top: 66px;
+  right: 0;
+  width: 270px;
+  z-index: 50;
+  background-color: #FFF;
+  box-shadow: 0 16px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  text-align: right;
+  overflow: hidden;
 }
-.dropdown-content a {
-  color: #009688;
+#menu-content a {
+  color: #000;
   padding: 12px 16px;
   display: block;
 }
-.dropdown-content a:hover {
+#menu-content a:hover {
   background-color: #e3f2ee;
+}
+#username {
+  margin: 12px 16px;
+  overflow: hidden;
+  font-weight: bold;
+}
+#menu-cover {
+  display: none;
+  top: 50px;
 }
 /* burger menu */
 #bar div {
-  width: 26px;
-  height: 3px;
+  height: 4px;
   border-radius: 2px;
 }
-#bar1 {
-  background-color: white;
-}
-#bar2 {
+.bar0 {
   height: 7px !important;
 }
-#mobile-name {
-  margin: 12px 16px;
-  color: #000;
-  overflow: hidden;
+.bar1 {
+  width: 24px;
+  background-color: white;
 }
-#mobile-name p {
-  margin: 0;
-  max-height: 2.8em;
+.bar2 {
+  width: 18px;
+  background-color: white;
+  margin-left: 6px;
+}
+.show {
+  display: block !important;
+}
+@media (max-width: 600px) {
+  .navbar {
+    height: 50px;
+  }
+  #beranda img {
+    height: 20px;
+  }
+  #bar div {
+    height: 3px;
+  }
+  .bar0 {
+    height: 5px !important;
+  }
+  .bar1 {
+    width: 17px;
+  }
+  .bar2 {
+    width: 13px;
+    margin-left: 4px;
+  }
+  #menu-content {
+    position: fixed;
+    top: 50px;
+    bottom: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .show-cover {
+    display: block !important;
+  }
 }

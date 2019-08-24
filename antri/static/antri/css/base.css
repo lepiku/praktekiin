@@ -3,6 +3,7 @@ body {
   font-family: 'Muli', sans-serif;
   font-size: 18px;
   background-color: #eef4e8;
+  min-height: 100vh;
 }
 a {
   color: #39B0A3;
@@ -22,20 +23,30 @@ select {
   appearance: none;
   padding-right: 23px;
 }
-.spacing {
+#container {
+  min-height: 100vh;
+  padding: 0 24px;
+}
+#container > div {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 30px;
 }
-.content {
-  padding-top: 10px;
+#content {
+  padding-top: 60px;
+}
+#footer {
+  margin: 20px auto;
+  height: 100%;
+  font-size: 0.8em;
+  text-align: center;
 }
 .card {
   background-color: #fff;
   border-radius: 10px;
-  margin: 24px 10px;
-  padding: 20px;
+  margin: 24px 0;
+  padding: 24px;
 }
+/* button */
 .button {
   font-family: 'Muli', sans-serif;
   font-weight: bold;
@@ -56,10 +67,7 @@ select {
 #buttons .button {
   margin-left: 0;
 }
-.helptext {
-  color: #888;
-  font-size: 0.9em;
-}
+/* title */
 #title {
   text-align: center;
   margin-bottom: 1.6em;
@@ -71,35 +79,15 @@ select {
   margin-top: 0.5em;
   margin-bottom: 0;
 }
-.footer {
-  margin: 20px 40px;
-  font-size: 0.8em;
-  text-align: center;
+.helptext {
+  color: #888;
+  font-size: 0.9em;
 }
 .errorlist {
   color: red;
   font-size: 0.8em;
 }
-#bar div {
-  width: 26px;
-  height: 3px;
-  border-radius: 2px;
-}
-#bar1 {
-  background-color: white;
-}
-#bar2 {
-  height: 7px !important;
-}
-#mobile-name {
-  margin: 12px 16px;
-  color: #000;
-  overflow: hidden;
-}
-#mobile-name p {
-  margin: 0;
-  max-height: 2.8em;
-}
+/* table */
 .table {
   border-collapse: collapse;
   width: 100%;
@@ -114,6 +102,7 @@ select {
 .table td {
   vertical-align: top;
 }
+/* checkbox */
 ul > li > label {
   position: relative;
   padding-left: 31px;
@@ -195,33 +184,27 @@ a.new-pasien .plus {
   left: 0;
   top: 0px;
 }
+/* cover */
+.cover {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+}
 @media (max-width: 600px) {
   body {
     font-size: 15px;
   }
-  #item {
-    padding: 20px 12px;
-    height: 20px;
-  }
   input, select, textarea {
     font-size: 15px;
   }
-  #bar {
-    display: block;
-  }
-  #bar div {
-    width: 24px;
-    height: 3px;
-    border-radius: 2px;
-  }
-  #bar2 {
-    height: 5px !important;
-  }
-  .spacing {
-    padding: 0 12px;
-  }
-  .spacing-content {
+  #container {
     padding: 0;
+  }
+  #content {
+    padding-top: 50px;
   }
   .card {
     border-radius: 0;
