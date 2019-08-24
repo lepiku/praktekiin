@@ -22,11 +22,15 @@
 }
 /* menu */
 #left .item {
-  margin-right: 1em;
+  margin-right: 0.75em;
+  padding: 9px 9px 9px 0;
   font-weight: bold;
 }
+#left .desktop-only {
+  display: flex;
+}
 #right .item {
-  margin-left: 1em;
+  margin-left: 0.75em;
 }
 .item img {
   margin-top: 1px;
@@ -35,12 +39,12 @@
   position: relative;
 }
 .menu #bar {
+  padding: 12px 0px 12px 12px;
   cursor: pointer;
 }
 #menu-content {
-  display: none;
   position: absolute;
-  top: 54px;
+  top: -200px;
   right: -12px;
   width: 270px;
   padding-bottom: 15px;
@@ -50,6 +54,10 @@
   border-radius: 10px;
   text-align: right;
   overflow: hidden;
+  -webkit-transition: right 0.2s, top 0.2s;
+  -moz-transition: right 0.2s, top 0.2s;
+  -o-transition: right 0.2s, top 0.2s;
+  transition: right 0.2s, top 0.2s;
 }
 #menu-content a {
   color: #000;
@@ -81,11 +89,15 @@
 #bar div {
   height: 4px;
   border-radius: 2px;
+  -webkit-transition: transform 0.2s;
+  -moz-transition: transform 0.2s;
+  -o-transition: transform 0.2s;
+  transition: transform 0.2s;
 }
 .bar0 {
   height: 7px !important;
 }
-.bar1 {
+.bar1, .bar3 {
   width: 24px;
   background-color: white;
 }
@@ -94,8 +106,17 @@
   background-color: white;
   margin-left: 6px;
 }
-.show {
-  display: block !important;
+#menu-content.show {
+  top: 67px;
+}
+.close > .bar1 {
+  transform: translate(0, 11px) rotate(-45deg);
+}
+.close > .bar2 {
+  transform: scale(0);
+}
+.close > .bar3 {
+  transform: translate(0, -11px) rotate(45deg);
 }
 @media (max-width: 600px) {
   .navbar {
@@ -103,6 +124,7 @@
   }
   .item img {
     height: 20px;
+    margin-top: 4px;
   }
   #bar div {
     height: 3px;
@@ -110,7 +132,7 @@
   .bar0 {
     height: 5px !important;
   }
-  .bar1 {
+  .bar1, .bar3 {
     width: 17px;
   }
   .bar2 {
@@ -120,12 +142,22 @@
   #menu-content {
     position: fixed;
     top: 50px;
-    right: 0;
+    right: -270px;
     bottom: 0;
     border-radius: 0;
     box-shadow: none;
   }
-  .show-cover {
-    display: block !important;
+  #menu-content.show {
+    top: 50px;
+    right: 0;
+  }
+  #menu-cover.show-cover {
+    display: block;
+  }
+  .close > .bar1 {
+    transform: translate(0, 8px) rotate(-45deg);
+  }
+  .close > .bar3 {
+    transform: translate(0, -8px) rotate(45deg);
   }
 }
