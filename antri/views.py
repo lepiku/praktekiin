@@ -121,13 +121,8 @@ def daftar(request):
             form_user = UserForm(request.POST, instance=user)
             if form_user.is_valid():
                 user = form_user.save()
-                keluarga = Keluarga()
-                keluarga.save()
-                pengguna = Pengguna(user=user, keluarga=keluarga)
-                pengguna.save()
-
                 login(request, user)
-                return redirect('antri:daftar')
+                return redirect('antri:new-user')
         else:
             form_user = UserForm()
 
@@ -139,6 +134,16 @@ def daftar(request):
 
     context = {'pasien_set': request.user.pengguna.keluarga.pasien_set.all()}
     return render(request, 'antri/daftar-pasien-list.html', context)
+
+
+def new_user(request):
+    if request.user.is_authenticated and not hasattr(request.user, 'pengguna'):
+        keluarga = Keluarga()
+        keluarga.save()
+        pengguna = Pengguna(user=request.user, keluarga=keluarga)
+        pengguna.save()
+
+    return redirect('antri:daftar')
 
 
 def daftar_pasien(request):

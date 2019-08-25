@@ -42,6 +42,11 @@
       <input class="button" type="submit" value="Masuk">
       <a class="button cancel" href="{% url 'antri:beranda' %}">Kembali</a>
     </div>
+    <a href="{% url 'social:begin' 'google-oauth2' %}">
+      <img class="responsive-img"
+           id="google-signin"
+           src="http://www.setyourowntests.com/_/rsrc/1468869481521/help/accounts/btn_google_signin_dark_normal_web%402x.png">
+    </a>
   </form>
   <p>Belum punya akun? <a href="{% url 'antri:daftar' %}">Buat Akun</a></p>
   {% comment %}TODO reset password{% endcomment %}

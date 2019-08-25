@@ -9,6 +9,7 @@ urlpatterns = [
     path('', views.beranda, name='beranda'),
     path('tentang/', views.tentang, name='tentang'),
     path('daftar/', views.daftar, name='daftar'),
+    path('new-user/', views.new_user, name='new-user'),
     path('daftar-pasien/', login_required(views.daftar_pasien), name='daftar-pasien'),
     path('daftar-antri/', login_required(views.daftar_antri), name='daftar-antri'),
     path('antri.json', views.get_antri, name='get-antri'),
