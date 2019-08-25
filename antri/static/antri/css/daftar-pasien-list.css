@@ -4,6 +4,9 @@ tr#tambah {
   background-color: #39B0A3;
   cursor: pointer;
 }
-th#nama-pasien, th#nama-kepala-keluarga {
+th#nama-pasien, th#nama-kepala-keluarga, th#username, th#tanggal-dibuat {
   width: 50%;
+}
+#pengaturan th {
+  width: 6em;
 }

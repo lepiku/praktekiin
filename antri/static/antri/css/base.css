@@ -59,23 +59,26 @@ select {
   margin: 12px;
   border-radius: 8px;
 }
-#buttons {
+div.buttons {
   display: flex;
-  align-items: baseline;
+  flex-wrap: wrap;
   margin-top: 20px;
 }
-#buttons .button {
-  margin-left: 0;
+div.buttons .button {
+  margin: 0 12px 12px 0;
+}
+div.buttons .helptext {
+  margin: 26px 0 0;
 }
 /* title */
-#title {
+.title {
   text-align: center;
   margin-bottom: 1.6em;
 }
-#title h1, #title h2, #title h3 {
+.title h1, .title h2, .title h3 {
   margin: 0;
 }
-#title .helptext {
+.title .helptext {
   margin-top: 0.5em;
   margin-bottom: 0;
 }
@@ -195,6 +198,14 @@ a.new-pasien .plus {
 }
 .mobile-only {
   display: none !important;
+}
+a.back {
+  display: block;
+  margin-bottom: 12px;
+  font-weight: bold;
+}
+a.back .fa {
+  font-size: 0.9em;
 }
 @media (max-width: 600px) {
   body {

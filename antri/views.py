@@ -282,27 +282,7 @@ def get_pasien(request):
 
 
 def profil(request):
-    user = request.user
-    pasien = user.pengguna.pasien
-
-    data_pasien = []
-    if pasien is not None:
-        data_pasien = [
-            ('Nama Lengkap', pasien.nama),
-            ('Tanggal Lahir', pasien.tanggal_lahir),
-            ('Jenis Kelamin', pasien.jenis_kelamin),
-            ('No. HP / Telp', pasien.telp),
-            ('NIK', pasien.nik),
-            ('MRID', pasien.mrid),
-            ('Nama Kepala Keluarga', pasien.kepala_keluarga)]
-
-    data_user = [('Username', user.username)]
-
-    data = {'pasien': data_pasien,
-            'user': data_user,
-            'keluarga': user.pengguna.keluarga.pasien_set.all()}
-
-    return render(request, 'antri/profil.html', data)
+    return render(request, 'antri/profil.html')
 
 def ubah_profil(request):
     if request.method == 'POST':

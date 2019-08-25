@@ -7,7 +7,7 @@
 
 {% block content %}
 <div class="card">
-  <div id="title">
+  <div class="title">
     <h1>
       {% if card_title %}
       {{ card_title }}
@@ -45,7 +45,7 @@
       </tr>
       {% endfor %}
     </table>
-    <div id="buttons">
+    <div class="buttons">
       <input class="button" type="submit" name="create" value="{{ button }}">
       <a class="button cancel" href="{% if prev %}{{ prev }}{% else %}{% url 'antri:profil' %}{% endif %}">Kembali</a>
     </div>

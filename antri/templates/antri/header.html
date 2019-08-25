@@ -24,7 +24,7 @@
             Akun
           </div>
           {% if request.user.is_authenticated %}
-          <div id="username">{{ request.user.username }}</div>
+          <div id="menu-username">{{ request.user.username }}</div>
           <a href="{% url 'antri:profil' %}">Profil</a>
           <a href="{% url 'antri:keluar' %}">Keluar</a>
           {% else %}

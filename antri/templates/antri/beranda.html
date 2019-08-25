@@ -9,20 +9,22 @@
 {% block content %}
 {% include 'antri/name-card.html' %}
 <div class="card">
-  <div id="title">
+  <div class="title">
     <h3>{{ date }}</h3>
   </div>
   <table class="table"></table>
-  <div id="buttons">
-    {% if logged_in %}
+  {% if logged_in %}
+  <div class="buttons">
     <a class="button" id="hari-ini" onclick="show_popup()">+ Daftar Antri Hari Ini</a>
     <a class="button" href="{% url 'antri:daftar-antri' %}">+ Daftar Antri Hari Lain</a>
-    {% else %}
-    <p>Silahkan masuk / daftar terlebih dahulu:</p>
+  </div>
+  {% else %}
+  <p>Silahkan masuk / daftar terlebih dahulu:</p>
+  <div class="buttons">
     <a class="button" href="{% url 'antri:masuk' %}">Masuk</a>
     <a class="button" href="{% url 'antri:daftar' %}">Daftar</a>
-    {% endif %}
   </div>
+    {% endif %}
 </div>
 <div id="popup">
   <div class="cover" onclick="hide_popup()"></div>

@@ -6,11 +6,14 @@
 {% endblock %}
 
 {% block content %}
-<div class="card pesan">
+<div class="card">
+  <div class="title">
+    <h1>Daftar Antri</h1>
+    <p class="helptext">
+    Daftar antri untuk tanggal selain hari ini.
+    </p>
+  </div>
   <form method="POST" href="{% url 'antri:daftar-antri' %}">
-    <div id="title">
-      <h1>Daftar Antri</h1>
-    </div>
     {% csrf_token %}
     <table id="out-table">
       <tbody>

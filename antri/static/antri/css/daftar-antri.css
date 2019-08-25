@@ -4,6 +4,7 @@
 #out-table {
   table-layout: fixed;
   width: 100%;
+  border-collapse: collapse;
 }
 #out-table th {
   width: 96px;

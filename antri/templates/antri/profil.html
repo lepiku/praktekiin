@@ -2,51 +2,83 @@
 {% load static %}
 
 {% block style %}
-<style>
-th {
-  width: 35%;
-  min-width: 144px;
-}
-th, td {
-  vertical-align: top;
-  text-align: left;
-  padding: 8px;
-}
-p {
-  margin-top: 0;
-}
-</style>
+<link rel="stylesheet" href="{% static 'antri/css/daftar-pasien-list.css' %}">
 {% endblock %}
 
 {% block content %}
 <div class="card">
-  <p><a href="{% url 'antri:beranda' %}"><i class="fa fa-chevron-left"></i> Kembali ke Beranda</a></p>
-  <table class="table" id="pengguna">
-    {% for label, value in pasien %}
-    <tr>
-      <th id="label">{{ label }}</td>
-      <td id="value">{{ value }}</td>
-    </tr>
-    {% endfor %}
+  <a class="back" href="{% url 'antri:beranda' %}"><i class="fa fa-chevron-left"></i> Kembali ke Beranda</a>
+  <div class="title">
+    <h1>Daftar Pasien</h1>
+    <p class="helptext">Membuat daftar pasien agar dapat mendaftar untuk antri.</p>
+  </div>
+  <table class="table">
+    <tbody>
+      <tr>
+        <th>No.</th>
+        <th id="nama-pasien">Nama Pasien</th>
+        <th id="nama-kepala-keluarga">Nama Kepala Keluarga</th>
+        <th>Hapus?</th>
+      </tr>
+      {% for pasien in request.user.pengguna.keluarga.pasien_set.all %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ pasien.nama }}</td>
+        <td>{{ pasien.kepala_keluarga }}</td>
+        <td></td>
+      </tr>
+      {% endfor %}
+      <tr id="tambah" onclick="window.location='{% url 'antri:daftar-pasien' %}?prev={{ request.path }}'">
+          <td>+</td>
+          <td colspan="3">Tambah Pasien</td>
+      </tr>
+    </tbody>
   </table>
-   <a class="button" href="{% url 'antri:ubah-profil' %}">Ubah Profil</a> 
-  <hr>
-  <table class="table" id="user">
-    {% for label, value in user %}
-    <tr>
-      <th id="label">{{ label }}</td>
-      <td id="value">{{ value }}</td>
-    </tr>
-    {% endfor %}
-  </table>
-  <a class="button" href="{% url 'antri:ubah-password' %}">Ubah Password</a>
-  <hr>
-  <p>Nama-nama pasien satu keluarga</p>
-  <ul>
-    {% for p in keluarga %}
-    <li><a href="{% url 'antri:pasien-detail' p.pk %}">{{ p.nama }}</a></li>
-    {% endfor %}
-    <li><a href="{% url 'antri:daftar-pasien' %}">+ Daftar Pasien Baru</a></li>
-  </ul>
 </div>
+<div class="card">
+  <div class="title">
+    <h1>Daftar Pengguna</h1>
+    <p class="helptext">Daftar pasien yang dapat mendaftarkan pasien dari daftar diatas.</p>
+  </div>
+  <table class="table">
+    <tbody>
+      <tr>
+        <th>No.</th>
+        <th id="username">Username</th>
+        <th id="tanggal-dibuat">Tanggal Dibuat</th>
+        <th>Hapus?</th>
+      </tr>
+      {% for pengguna in request.user.pengguna.keluarga.pengguna_set.all %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ pengguna.user.username }}</td>
+        <td>{{ pengguna.user.date_joined }}</td>
+        <td></td>
+      </tr>
+      {% endfor %}
+      <tr id="tambah" onclick="window.location='/'"> {# TODO create pengguna page #}
+          <td>+</td>
+          <td colspan="3">Tambah Pengguna</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="card">
+  <div class="title">
+    <h1>Pengaturan</h1>
+  </div>
+  <table class="table" id="pengaturan">
+    <tr>
+      <th>Username</th>
+      <td>{{ request.user.username }}</td>
+    </tr>
+    <tr>
+      <th>Password</th>
+      <td>********</td>
+    </tr>
+  </table>
+  <div class="buttons">
+    <a class="button" href="/">Ubah Username</a>
+    <a class="button" href="{% url 'antri:ubah-password' %}">Ubah Password</a>
+  </div>
 {% endblock %}

@@ -3,6 +3,9 @@
   flex-direction: column;
   align-items: center;
 }
+table {
+  border-collapse: collapse;
+}
 th {
   vertical-align: top;
   text-align: left;
@@ -17,9 +20,6 @@ td {
   justify-content: space-between;
   width: 300px;
 }
-input, select {
-  margin-bottom: 3px;
-}
 select[name="jenis_kelamin"], select[name="status"] {
   width: 100%;
 }
@@ -28,7 +28,6 @@ td input {
 }
 ul {
   padding-left: 0;
-  margin: 0;
   list-style: none;
   margin: auto;
 }
@@ -41,7 +40,7 @@ ul {
   font-weight: normal;
 }
 .info {
-  margin: 0 0 6px 0;
+  margin: 0 0 10px 0;
 }
 #error {
   /* salah masuk.html */
