@@ -27,10 +27,9 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get('praktekiin_google_KEY')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get('praktekiin_google_SECRET')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-# ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'praktekiin.herokuapp.com', 'testserver']
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'praktekiin.herokuapp.com', 'testserver']
 
 
 # Application definition
@@ -157,3 +156,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 LOGIN_URL = '/masuk'
 LOGIN_REDIRECT_URL = '/'
+SECURE_SSL_REDIRECT = True
