@@ -129,7 +129,8 @@ def daftar(request):
         return render(request, 'antri/daftar.html', {
             'form': form_user,
             'button': 'Buat Akun',
-            'prev': reverse('antri:beranda'),
+            'card_title': 'Daftar Pengguna',
+            'card_desc': 'Username dan password digunakan untuk masuk kembali sebagai Pengguna.',
             })
 
     context = {'pasien_set': request.user.pengguna.keluarga.pasien_set.all()}
@@ -155,9 +156,6 @@ def daftar_pasien(request):
             pasien.mrid = '000102' # TODO generate mrid
             pasien.keluarga = request.user.pengguna.keluarga
             form.save()
-
-            if prev == '':
-                return redirect('antri:profil')
             return redirect(prev)
     else:
         form = PasienForm()
@@ -167,7 +165,6 @@ def daftar_pasien(request):
         'button': 'Buat Pasien',
         'card_title': 'Daftar Pasien',
         'card_desc': 'Mengisi data diri seorang pasien.',
-        'prev': prev,
         })
 
 
@@ -289,17 +286,23 @@ def get_pasien(request):
 def profil(request):
     return render(request, 'antri/profil.html')
 
-def ubah_profil(request):
+def ubah_pasien(request, pk):
+    prev = request.GET.get('prev', reverse('antri:profil'))
+    pasien = get_object_or_404(request.user.pengguna.keluarga.pasien_set.all(),
+                               pk=pk)
     if request.method == 'POST':
-        form = PasienForm(request.POST, instance=request.user.pengguna.pasien)
+        form = PasienForm(request.POST, instance=pasien)
         if form.is_valid():
             form.save()
-            return redirect(reverse('antri:profil'))
+            return redirect(prev)
     else:
-        form = PasienForm(instance=request.user.pengguna.pasien)
+        form = PasienForm(instance=pasien)
+
     return render(request, 'antri/daftar.html', {
         'form': form,
-        'button': 'Ubah Profil',
+        'button': 'Ubah Pasien',
+        'card_title': 'Ubah Pasien',
+        'card_desc': 'Mengubah data diri seorang pasien.',
         })
 
 def ubah_password(request):
@@ -314,6 +317,7 @@ def ubah_password(request):
     return render(request, 'antri/daftar.html', {
         'form': form,
         'button': 'Ubah Password',
+        'card_title': 'Ubah Password',
         })
 
 
@@ -334,3 +338,10 @@ def pasien_detail(request, pk):
 
     return render(request, 'antri/pasien_detail.html',
             {'data': data_pasien})
+
+
+def hapus_pasien(request):
+    pasien = get_object_or_404(request.user.pengguna.keluarga.pasien_set.all(),
+                               pk=request.GET.get('id'))
+    pasien.delete()
+    return redirect('antri:profil')

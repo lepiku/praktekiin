@@ -19,8 +19,9 @@ urlpatterns = [
     path('masuk/', LoginView.as_view(template_name='antri/masuk.html'), name='masuk'),
     path('keluar/', LogoutView.as_view(template_name='antri/keluar.html'), name='keluar'),
     path('profil/', login_required(views.profil), name='profil'),
-    path('ubah/profil/', login_required(views.ubah_profil), name='ubah-profil'),
+    path('ubah/pasien/<int:pk>/', login_required(views.ubah_pasien), name='ubah-pasien'),
     path('ubah/password/', login_required(views.ubah_password), name='ubah-password'),
     path('pasien/<int:pk>/', login_required(views.pasien_detail),
          name='pasien-detail'),
+    path('hapus/pasien/', login_required(views.hapus_pasien), name='hapus-pasien')
 ]

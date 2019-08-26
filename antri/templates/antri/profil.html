@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block style %}
-<link rel="stylesheet" href="{% static 'antri/css/daftar-pasien-list.css' %}">
+<link rel="stylesheet" href="{% static 'antri/css/profil.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -18,17 +18,20 @@
         <th>No.</th>
         <th id="nama-pasien">Nama Pasien</th>
         <th id="nama-kepala-keluarga">Nama Kepala Keluarga</th>
-        <th>Hapus?</th>
+        <th class="ubah">Ubah</th>
       </tr>
       {% for pasien in request.user.pengguna.keluarga.pasien_set.all %}
       <tr>
         <td>{{ forloop.counter }}</td>
         <td>{{ pasien.nama }}</td>
         <td>{{ pasien.kepala_keluarga }}</td>
-        <td></td>
+        <td class="ubah">
+          <a href="{% url 'antri:ubah-pasien' pasien.id %}"><span class="edit"><i class="fa fa-pencil"></i></span></a>
+          <span class="delete" onclick="hapus_pasien('{{ pasien.id }}', '{{ pasien.nama }}')"><i class="fa fa-trash-o"></i></span>
+        </td>
       </tr>
       {% endfor %}
-      <tr id="tambah" onclick="window.location='{% url 'antri:daftar-pasien' %}?prev={{ request.path }}'">
+      <tr id="tambah" onclick="window.location='{% url 'antri:daftar-pasien' %}'">
           <td>+</td>
           <td colspan="3">Tambah Pasien</td>
       </tr>
@@ -81,4 +84,11 @@
     <a class="button" href="/">Ubah Username</a>
     <a class="button" href="{% url 'antri:ubah-password' %}">Ubah Password</a>
   </div>
+{% endblock %}
+
+{% block script %}
+<script>
+  var hapus_pasien_url = '{% url 'antri:hapus-pasien' %}'
+</script>
+<script src="{% static 'antri/js/profil.js' %}"></script>
 {% endblock %}

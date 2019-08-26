@@ -46,7 +46,7 @@
               </li>
               {% endfor %}
               <li class="addition">
-                <a class="new-pasien" href="{% url 'antri:daftar-pasien' %}">
+                <a class="new-pasien" href="{% url 'antri:daftar-pasien' %}?prev={{ request.path }}">
                   <span class="plus"></span>
                   Daftar Pasien Baru
                 </a>

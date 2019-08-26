@@ -1,0 +1,28 @@
+tr#tambah {
+  color: #fff;
+  font-weight: bold;
+  background-color: #39B0A3;
+  cursor: pointer;
+}
+th#nama-pasien, th#nama-kepala-keluarga, th#username, th#tanggal-dibuat {
+  width: 50%;
+}
+#pengaturan th {
+  width: 6em;
+}
+.table .ubah {
+  text-align: center;
+  min-width: 4em;
+}
+td.ubah span {
+  padding: 1px 4px;
+  cursor: pointer;
+  color: #FFF;
+  font-size: 1.2em;
+  border-radius: 8px;
+  background-color: #39B0A3;
+}
+td.ubah span.delete {
+  background-color: #E84A4A;
+}
+

@@ -19,10 +19,9 @@
     <a class="button" href="{% url 'antri:daftar-antri' %}">+ Daftar Antri Hari Lain</a>
   </div>
   {% else %}
-  <p>Silahkan masuk / daftar terlebih dahulu:</p>
+  <p>Silahkan masuk terlebih dahulu.</p>
   <div class="buttons">
     <a class="button" href="{% url 'antri:masuk' %}">Masuk</a>
-    <a class="button" href="{% url 'antri:daftar' %}">Daftar</a>
   </div>
     {% endif %}
 </div>
@@ -53,7 +52,7 @@
               </li>
               {% endfor %}
               <li class="addition">
-                <a class="new-pasien" href="{% url 'antri:daftar-pasien' %}">
+                <a class="new-pasien" href="{% url 'antri:daftar-pasien' %}?prev={{ request.path }}">
                   <span class="plus"></span>
                   Daftar Pasien Baru
                 </a>

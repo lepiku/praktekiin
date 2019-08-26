@@ -1,6 +1,7 @@
 /* navbar */
 .navback {
   position: fixed;
+  z-index: 500;
   width: 100vw;
   max-width: 100%;
 }
@@ -48,12 +49,11 @@
   right: -12px;
   width: 270px;
   padding-bottom: 15px;
-  z-index: 50;
   background-color: #FFF;
   box-shadow: 0 16px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
   border-radius: 10px;
   text-align: right;
-  overflow: hidden;
+  overflow-y: auto;
   -webkit-transition: right 0.2s, top 0.2s;
   -moz-transition: right 0.2s, top 0.2s;
   -o-transition: right 0.2s, top 0.2s;

@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block style %}
-<link rel="stylesheet" href="{% static 'antri/css/daftar-pasien-list.css' %}">
+<link rel="stylesheet" href="{% static 'antri/css/profil.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -24,7 +24,10 @@
         <td>{{ forloop.counter }}</td>
         <td>{{ pasien.nama }}</td>
         <td>{{ pasien.kepala_keluarga }}</td>
-        <td></td>
+        <td class="ubah">
+          <a href="{% url 'antri:ubah-pasien' pasien.id %}?prev={{ request.path }}"><span class="edit"><i class="fa fa-pencil"></i></span></a>
+          <span class="delete" onclick="hapus_pasien('{{ pasien.id }}', '{{ pasien.nama }}')"><i class="fa fa-trash-o"></i></span>
+        </td>
       </tr>
       {% endfor %}
       <tr id="tambah" onclick="window.location='{% url 'antri:daftar-pasien' %}?prev={{ request.path }}'">
@@ -38,4 +41,11 @@
     <p class="helptext">Bisa diubah-ubah lagi nanti.</p>
   </div>
 </div>
+{% endblock %}
+
+{% block script %}
+<script>
+  var hapus_pasien_url = '{% url 'antri:hapus-pasien' %}'
+</script>
+<script src="{% static 'antri/js/profil.js' %}"></script>
 {% endblock %}

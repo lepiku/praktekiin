@@ -8,20 +8,8 @@
 {% block content %}
 <div class="card">
   <div class="title">
-    <h1>
-      {% if card_title %}
-      {{ card_title }}
-      {% else %}
-      Daftar Pengguna
-      {% endif %}
-    </h1>
-    <p class="helptext">
-    {% if card_desc %}
-    {{ card_desc }}
-    {% else %}
-    Username dan password digunakan untuk masuk kembali sebagai Pengguna.
-    {% endif %}
-    </p>
+    <h1>{{ card_title }}</h1>
+    <p class="helptext">{{ card_desc }}</p>
   </div>
   <form method="post">
     {% csrf_token %}
@@ -47,7 +35,7 @@
     </table>
     <div class="buttons">
       <input class="button" type="submit" name="create" value="{{ button }}">
-      <a class="button cancel" href="{% if prev %}{{ prev }}{% else %}{% url 'antri:profil' %}{% endif %}">Kembali</a>
+      <a class="button cancel" href="{% if request.GET.prev %}{{ request.GET.prev }}{% else %}{% url 'antri:profil' %}{% endif %}">Kembali</a>
     </div>
   </form>
 </div>

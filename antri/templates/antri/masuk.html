@@ -28,9 +28,9 @@
         <td>
           {{ field }}
           <div class="info">
-            {% if field.errors %}<ul class="errorlist">
-              {% for error in field.errors %}<li>{{ error }}</li>{% endfor %}
-            </ul>{% endif %}
+            {% if field.label == "Password" and form.errors %}
+            <ul class="errorlist"><li>Username atau Password salah.</li></ul>
+            {% endif %}
             {% if field.help_text %}<span class="helptext">{{ field.help_text|safe }}</span>{% endif %}
           </div>
         </td>
@@ -42,17 +42,12 @@
       <input class="button" type="submit" value="Masuk">
       <a class="button cancel" href="{% url 'antri:beranda' %}">Kembali</a>
     </div>
-    <a href="{% url 'social:begin' 'google-oauth2' %}">
-      <img class="responsive-img"
-           id="google-signin"
-           src="http://www.setyourowntests.com/_/rsrc/1468869481521/help/accounts/btn_google_signin_dark_normal_web%402x.png">
-    </a>
   </form>
-  <p>Belum punya akun? <a href="{% url 'antri:daftar' %}">Buat Akun</a></p>
+  <a class="button" id="google-login" href="{% url 'social:begin' 'google-oauth2' %}">
+    Masuk dengan akun <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" height="18"><span>Google</span>
+  </a>
+  <p>Belum punya akun? <a href="{% url 'antri:daftar' %}?prev={{ request.path }}">Buat Akun</a></p>
   {% comment %}TODO reset password{% endcomment %}
   {% endif %}
 </div>
-{% if form.errors %}
-<p id="error">Username atau Password salah.</p>
-{% endif %}
 {% endblock %}
