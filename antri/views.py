@@ -121,7 +121,7 @@ def daftar(request):
             form_user = UserForm(request.POST, instance=user)
             if form_user.is_valid():
                 user = form_user.save()
-                login(request, user)
+                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                 return redirect('antri:new-user')
         else:
             form_user = UserForm()
