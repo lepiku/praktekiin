@@ -64,15 +64,8 @@ class Pasien(models.Model):
 class Pengguna(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     keluarga = models.ForeignKey(Keluarga, on_delete=models.CASCADE)
-    pasien = models.OneToOneField(Pasien, on_delete=models.SET_NULL, blank=True,
-            null=True)
-
-    waktu_buat = models.DateTimeField(auto_now_add=True)
-    waktu_ubah = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        if self.pasien:
-            return self.pasien.nama
         return self.user.username
 
 
