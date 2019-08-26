@@ -39,7 +39,6 @@ Pasien(
 Pengguna(
         user=user,
         keluarga=kel,
-        pasien=p,
         ).save()
 
 rumah = Tempat(nama_tempat="Rumah",
