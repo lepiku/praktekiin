@@ -324,6 +324,9 @@ def ubah_username(request):
 
 
 def ubah_password(request):
+    if request.user.social_auth.exists():
+        return redirect(reverse('antri:masuk') + '?next=' + request.path)
+
     if request.method == 'POST':
         form = UbahPasswordForm(request.user, request.POST)
         if form.is_valid():

@@ -82,7 +82,9 @@
   </table>
   <div class="buttons">
     <a class="button" href="{% url 'antri:ubah-username' %}">Ubah Username</a>
+    {% if not request.user.social_auth.exists %}
     <a class="button" href="{% url 'antri:ubah-password' %}">Ubah Password</a>
+    {% endif %}
   </div>
 {% endblock %}
 
