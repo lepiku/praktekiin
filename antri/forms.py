@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import PasswordChangeForm, UserCreationForm
+from django.contrib.auth.models import User
 from django.utils import timezone
 
 from .models import Jadwal, Pasien, Tempat
@@ -70,6 +71,21 @@ class UserForm(UserCreationForm):
     # disable password verification
     def _post_clean(self):
         super(forms.ModelForm, self)._post_clean()
+
+
+class UbahUsernameForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('username',)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].error_messages = {
+                'unique': 'Username sudah dipakai',
+                'invalid': 'Username hanya boleh mengandung huruf, angka, dan @/./+/-/_ saja.'
+                }
+        self.fields['username'].help_text = 'Hanya mengandung huruf, angka, dan @/./+/-/_ saja.'
+
 
 class UbahPasswordForm(PasswordChangeForm):
     error_messages = {

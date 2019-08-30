@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from .forms import (PasienForm, PendaftaranForm, PendaftaranPasienForm,
-                    UbahPasswordForm, UserForm, NAMA_BULAN)
+                    UbahPasswordForm, UbahUsernameForm, UserForm, NAMA_BULAN)
 from .models import (Hari, Jadwal, Keluarga, Pasien, Pendaftaran, Pengguna,
                      Tempat, User, WAKTU_CHOICES)
 
@@ -305,6 +305,24 @@ def ubah_pasien(request, pk):
         'card_desc': 'Mengubah data diri seorang pasien.',
         })
 
+
+def ubah_username(request):
+    prev = request.GET.get('prev', reverse('antri:profil'))
+    if request.method == 'POST':
+        form = UbahUsernameForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect(prev)
+    else:
+        form = UbahUsernameForm(instance=request.user)
+
+    return render(request, 'antri/daftar.html', {
+        'form': form,
+        'button': 'Simpan',
+        'card_title': 'Ubah Username',
+        })
+
+
 def ubah_password(request):
     if request.method == 'POST':
         form = UbahPasswordForm(request.user, request.POST)
@@ -316,7 +334,7 @@ def ubah_password(request):
         form = UbahPasswordForm(request.user)
     return render(request, 'antri/daftar.html', {
         'form': form,
-        'button': 'Ubah Password',
+        'button': 'Simpan',
         'card_title': 'Ubah Password',
         })
 
