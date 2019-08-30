@@ -11,6 +11,9 @@
       </div>
     </div>
     <div id="right">
+      {% if request.user.is_authenticated %}
+      <a class="item" href="{% url 'antri:profil' %}">{{ request.user.username }}</a>
+      {% endif %}
       <div class="item menu">
         <div id="bar" onclick="show_menu()">
           <div class="bar1"></div>
@@ -21,20 +24,15 @@
         </div>
         <div class="cover" id="menu-cover" onclick="hide_menu()"></div>
         <div id="menu-content">
-          <div class="menu-section">
-            Akun
-          </div>
+          <div class="menu-section">Akun</div>
           {% if request.user.is_authenticated %}
-          <div id="menu-username">{{ request.user.username }}</div>
           <a href="{% url 'antri:profil' %}">Profil</a>
           <a href="{% url 'antri:keluar' %}">Keluar</a>
           {% else %}
           <a href="{% url 'antri:masuk' %}">Masuk</a>
           {% endif %}
           <div class="mobile-only">
-            <div class="menu-section">
-              Halaman Lain
-            </div>
+            <div class="menu-section">Halaman Lain</div>
             <a href="{% url 'antri:beranda' %}">Beranda</a>
             <a href="{% url 'antri:tentang' %}">Tentang</a>
           </div>

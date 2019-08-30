@@ -17,7 +17,7 @@
 .navbar a {
   color: #fff;
 }
-#left {
+#left, #right {
   display: flex;
   font-size: 1.2em;
 }
@@ -30,8 +30,12 @@
 #left .desktop-only {
   display: flex;
 }
-#right .item {
+#right {
+  align-items: center;
+}
+#right .item:not(.menu) {
   margin-left: 0.75em;
+  padding: 9px 0 9px 9px;
 }
 .item img {
   margin-top: 1px;
@@ -40,6 +44,7 @@
   position: relative;
 }
 .menu #bar {
+  margin-left: 0.75em;
   padding: 12px 0px 12px 12px;
   cursor: pointer;
 }
