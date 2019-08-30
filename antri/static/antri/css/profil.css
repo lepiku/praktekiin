@@ -7,9 +7,6 @@ tr#tambah {
 th#nama-pasien, th#nama-kepala-keluarga, th#username, th#tanggal-dibuat {
   width: 50%;
 }
-#pengaturan th {
-  width: 6em;
-}
 .table .ubah {
   text-align: center;
   min-width: 4em;
