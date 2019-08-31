@@ -220,23 +220,26 @@ def get_times(request):
                     id_hari.append(index)
 
             for waktu, nama_waktu in WAKTU_CHOICES:
-                if tempat.jadwal_set.filter(waktu=waktu).exists():
-                    total_jadwal[nama_waktu] = []
+                total_jadwal[nama_waktu] = []
 
-                    for hari in id_hari:
-                        query = tempat.jadwal_set.filter(waktu=waktu, hari=hari)
+                for hari in id_hari:
+                    query = tempat.jadwal_set.filter(waktu=waktu, hari=hari)
 
-                        if query.exists():
-                            jadwal = query.first()
-                            data = {
-                                'id': jadwal.id,
-                                'jam': jadwal.get_waktu_ms(),
-                                }
-                            total_jadwal[nama_waktu].append(data)
+                    if query.exists():
+                        jadwal = query.first()
+                        data = {
+                            'id': jadwal.id,
+                            'jam': jadwal.get_waktu_ms(),
+                            }
+                        total_jadwal[nama_waktu].append(data)
+                    else:
+                        total_jadwal[nama_waktu].append({})
 
-            html = render_to_string(
-                'antri/ajax/waktu.html',
-                {'total_hari': total_hari, 'jadwal': total_jadwal})
+            print(total_jadwal)
+            html = render_to_string('antri/ajax/waktu.html', {
+                'total_hari': total_hari,
+                'total_jadwal': total_jadwal,
+                })
             return JsonResponse({'html': html})
     return None
 

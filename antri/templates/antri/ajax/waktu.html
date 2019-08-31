@@ -6,14 +6,14 @@
       <td class="hari">{{ hari }}</td>
       {% endfor %}
     </tr>
-    {% for waktu, total_jam in jadwal.items %}
+    {% for waktu, total_jam in total_jadwal.items %}
     <tr>
       <td class="waktu">{{ waktu }}</td>
-      {% for jam in total_jam %}
+      {% for jam in total_jam %}{% if jam %}
       <td class="cell c-waktu" onclick="get_dates('{{ jam.id }}', this)">
         {{ jam.jam }}
       </td>
-      {% endfor %}
+      {% else %}<td></td>{% endif %}{% endfor %}
     </tr>
     {% endfor %}
   </tbody>
