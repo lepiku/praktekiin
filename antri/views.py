@@ -188,7 +188,7 @@ def daftar_antri(request):
                 elif pasien not in cleaned_pasien_set and p_pasien:
                     p_set.filter(pasien=pasien).delete()
 
-            return redirect('antri:beranda')
+            return redirect('antri:pendaftaran-list')
     else:
         form = PendaftaranForm(pasien_set=pasien_set)
 
@@ -369,3 +369,30 @@ def hapus_pasien(request):
                                pk=request.GET.get('id'))
     pasien.delete()
     return redirect('antri:profil')
+
+def pendaftaran_list(request):
+    date = timezone.now()
+    keluarga = request.user.pengguna.keluarga
+    hari_set = Hari.objects.filter(
+        pendaftaran__pasien__keluarga=keluarga, tanggal__gte=date).distinct()
+
+    total_data = []
+    for hari in hari_set:
+        data = {
+            'tanggal': hari.tanggal,
+            'hari': NAMA_HARI[hari.jadwal.hari],
+            'pendaftaran': []
+            }
+        pen_set = hari.pendaftaran_set.all()
+        for num, pen in enumerate(pen_set):
+            if pen.pasien.keluarga == keluarga:
+                data['pendaftaran'].append({
+                    'urutan': num + 1,
+                    'nama': pen.pasien.nama,
+                    })
+
+        total_data.append(data)
+        print(data)
+
+
+    return render(request, 'antri/pendaftaran_list.html', {'data': total_data})

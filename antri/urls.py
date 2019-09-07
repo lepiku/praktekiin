@@ -24,5 +24,6 @@ urlpatterns = [
     path('ubah/password/', login_required(views.ubah_password), name='ubah-password'),
     path('pasien/<int:pk>/', login_required(views.pasien_detail),
          name='pasien-detail'),
-    path('hapus/pasien/', login_required(views.hapus_pasien), name='hapus-pasien')
+    path('hapus/pasien/', login_required(views.hapus_pasien), name='hapus-pasien'),
+    path('pendaftaran/', login_required(views.pendaftaran_list), name='pendaftaran-list')
 ]

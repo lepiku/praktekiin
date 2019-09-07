@@ -1,0 +1,6 @@
+.table tr.even {
+  background-color: #B9EBE5;
+}
+.table tr:not(.even) {
+  background: none;
+}

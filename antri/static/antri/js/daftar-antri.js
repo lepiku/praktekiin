@@ -40,7 +40,7 @@ function set_pasien(result, element) {
     $('input[name="pasien_set"][value="' + value + '"]').prop('checked', true)
   })
   $('#tr-pasien').css('display', 'table-row')
-  $('input[value="Pesan"]').prop('type', 'submit')
+  $('input[value="Simpan"]').prop('type', 'submit')
   element.style.backgroundColor = '#20857A'
 }
 

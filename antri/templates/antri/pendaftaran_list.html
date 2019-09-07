@@ -1,0 +1,43 @@
+{% extends 'antri/base.html' %}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'antri/css/pendaftaran.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="title">
+    <h1>List Pendaftaran</h1>
+  </div>
+  <div class="buttons">
+    <a class="button" href="{% url 'antri:daftar-antri' %}">Daftar Antri Hari Lain</a>
+  </div>
+  <table class="table">
+    <tbody>
+      <tr class="even">
+        <th>Tanggal</th>
+        <th>Hari</th>
+        <th>No. Urut</th>
+        <th>Nama Pasien</th>
+      </tr>
+      {% for d in data %}
+      {% with counter=forloop.counter %}
+      <tr class="{% if counter|divisibleby:"2" %} even{% endif %}">
+        <td rowspan="{{ d.pendaftaran|length }}">{{ d.tanggal }}</td>
+        <td rowspan="{{ d.pendaftaran|length }}">{{ d.hari }}</td>
+        <td>{{ d.pendaftaran.0.urutan }}</td>
+        <td>{{ d.pendaftaran.0.nama }}</td>
+      </tr>
+      {% for p in d.pendaftaran|slice:"1:" %}
+      <tr class="{% if counter|divisibleby:"2" %} even{% endif %}">
+        <td>{{ p.urutan }}</td>
+        <td>{{ p.nama }}</td>
+      </tr>
+      {% endfor %}
+      {% endwith %}
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

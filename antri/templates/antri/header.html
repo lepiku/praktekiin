@@ -26,6 +26,7 @@
         <div id="menu-content">
           <div class="menu-section">Akun</div>
           {% if request.user.is_authenticated %}
+          <a href="{% url 'antri:pendaftaran-list' %}">Pendaftaran</a>
           <a href="{% url 'antri:profil' %}">Profil</a>
           <a href="{% url 'antri:keluar' %}">Keluar</a>
           {% else %}
