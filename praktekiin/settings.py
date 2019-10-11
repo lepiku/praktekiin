@@ -22,7 +22,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('django_KEY_2')
-PRODUCTION = os.environ.get('PRODUCTION')
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get('praktekiin_google_KEY')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get('praktekiin_google_SECRET')
 
@@ -110,9 +109,13 @@ AUTHENTICATION_BACKENDS = (
 SOCIAL_AUTH_URL_NAMESPACE = 'auth'
 SOCIAL_AUTH_NEW_USER_REDIRECT_URL = 'antri:new-user'
 
-if PRODUCTION == "1":
+PRODUCTION = os.environ.get('DATABASE_URL') is not None
+if PRODUCTION:
+    DEBUG = False
     DATABASES['default'] = dj_database_url.config()
+    ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'praktekiin.herokuapp.com']
     SOCIAL_AUTH_POSTGRES_JSONFIELD = True
+    SECURE_SSL_REDIRECT = True
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -150,9 +153,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-STATIC_URL = '/static/'
-
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 LOGIN_URL = '/masuk'
 LOGIN_REDIRECT_URL = '/'
