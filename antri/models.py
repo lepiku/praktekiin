@@ -1,17 +1,23 @@
 from django.contrib.auth.models import User
-from django.core.validators import MaxValueValidator, MinValueValidator
-from django.core.validators import RegexValidator
+from django.core.validators import (MaxValueValidator, MinValueValidator,
+                                    RegexValidator)
 from django.db import models
 from django.utils import timezone
 
-REGEX_TELP = RegexValidator(regex=r'^(\+62|0)\d{9,15}$',
-        message="Format nomor telepon: '+628...' atau '08...', 9-15 digit.")
-REGEX_NAMA = RegexValidator(regex=r'[`~!@#$%^&*()_+=\[\]{}\\|;:",<>/?\d]',
-        message="Nama tidak boleh mengandung simbol yang aneh.",
-        inverse_match=True)
-REGEX_ALAMAT = RegexValidator(regex=r'[`~!@#$%^&*()_+=\[\]{}\\|;:"<>/?]',
-        message="Alamat tidak boleh mengandung simbol yang aneh.",
-        inverse_match=True)
+REGEX_TELP = RegexValidator(
+    regex=r'^(\+62|0)\d{9,15}$',
+    message="Format nomor telepon: '+628...' atau '08...', 9-15 digit.",
+)
+REGEX_NAMA = RegexValidator(
+    regex=r'[`~!@#$%^&*()_+=\[\]{}\\|;:",<>/?\d]',
+    message="Nama tidak boleh mengandung simbol yang aneh.",
+    inverse_match=True,
+)
+REGEX_ALAMAT = RegexValidator(
+    regex=r'[`~!@#$%^&*()_+=\[\]{}\\|;:"<>/?]',
+    message="Alamat tidak boleh mengandung simbol yang aneh.",
+    inverse_match=True,
+)
 JENIS_KELAMIN_CHOICES = (('L', 'Laki-Laki'), ('P', 'Perempuan'))
 WAKTU_CHOICES = (('PG', 'Pagi'), ('SG', 'Siang'), ('SR', 'Sore'))
 STATUS_CHOICES = (('B', 'Baru'), ('L', 'Lama'))
@@ -74,7 +80,7 @@ class Tempat(models.Model):
     Tempat Praktek
     """
     nama_tempat = models.CharField(max_length=NAME_LENGTH,
-            validators=[REGEX_ALAMAT])
+                                   validators=[REGEX_ALAMAT])
     alamat_tempat = models.TextField(validators=[REGEX_ALAMAT])
 
     def __str__(self):

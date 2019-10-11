@@ -5,6 +5,7 @@
 
 # ignore the database
 db.sqlite3
+.coverage
 
 # ignore staticfiles for whitenoise
 staticfiles/
