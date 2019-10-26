@@ -19,7 +19,7 @@
   border-spacing: 6px;
 }
 #in-table td {
-  min-width: 64px;
+  min-width: 66px;
   padding: 8px;
   text-align: center;
 }
@@ -28,6 +28,7 @@
   cursor: pointer;
   padding: 8px;
   background-color: #39B0A3;
+  font-weight: bold;
 }
 #in-table .waktu, #in-table .hari {
   text-align: left;
@@ -38,10 +39,14 @@ ul {
   padding: 0;
   list-style: none;
 }
+.jumlah {
+  font-weight: normal;
+}
 @media (max-width: 600px) {
   #out-table th {
     width: 72px;
   }
   #in-table td {
-    min-width: 54px;
+    min-width: 58px;
   }
+}

@@ -23,11 +23,13 @@ WAKTU_CHOICES = (('PG', 'Pagi'), ('SG', 'Siang'), ('SR', 'Sore'))
 STATUS_CHOICES = (('B', 'Baru'), ('L', 'Lama'))
 PENDAFTARAN_STATUS_CHOICES = (('N', 'Not Done'), ('W', 'Worked On'), ('D', 'Done'))
 NAME_LENGTH = 128
+MRID_START = 256
 
 
 def regex_no(nama, digit=16):
-    return RegexValidator(regex=r'^\d{' + str(digit) + r'}$',
-            message="{} harus memiliki {} digit.".format(nama, digit))
+    return RegexValidator(
+        regex=r'^\d{' + str(digit) + r'}$',
+        message="{} harus memiliki {} digit.".format(nama, digit))
 
 
 class Keluarga(models.Model):
@@ -63,6 +65,12 @@ class Pasien(models.Model):
         return str.title(self.nama)
 
     def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        # generate mrid
+        if self.mrid == '':
+            self.mrid = '{:06X}'.format(self.id + MRID_START)
+
         self.full_clean()
         super().save(*args, **kwargs)
 

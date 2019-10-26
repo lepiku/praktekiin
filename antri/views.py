@@ -153,7 +153,6 @@ def daftar_pasien(request):
         pasien = Pasien()
         form = PasienForm(request.POST, instance=pasien)
         if form.is_valid():
-            pasien.mrid = '000102' # TODO generate mrid
             pasien.keluarga = request.user.pengguna.keluarga
             form.save()
             return redirect(prev)
@@ -258,7 +257,7 @@ def get_dates(request):
                 date = next_date + timezone.timedelta(days=num * 7)
                 total_tanggal.append({
                     'tanggal': date,
-                    'jumlah': 0, # TODO and implementation
+                    'jumlah': Pendaftaran.objects.filter(hari__tanggal=date).count()
                     })
 
             html = render_to_string(

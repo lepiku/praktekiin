@@ -56,7 +56,6 @@ class ModelUsersTest(TestCase):
             nama="Muhammad Oktoluqman Fakhrianto",
             tanggal_lahir="2000-10-10",
             jenis_kelamin="L",
-            mrid="000101",
             keluarga=kel,
             kepala_keluarga='Bapak',
         )
@@ -139,7 +138,6 @@ class ModelAntriTest(TestCase):
             nama="Muhammad Oktoluqman Fakhrianto",
             tanggal_lahir="2000-10-10",
             jenis_kelamin="L",
-            mrid="000101",
             keluarga=kel,
             kepala_keluarga='Bapak',
         )

@@ -4,6 +4,8 @@
       {% for tanggal in total_tanggal %}
       <td class="cell c-tanggal" onclick="get_pasien('{{ tanggal.tanggal|date:"Y-m-d" }}', this)">
         {{ tanggal.tanggal|date:"d M" }}
+        <br>
+        <span class="jumlah">({{ tanggal.jumlah }})</span>
       </td>{% endfor %}
     </tr>
   </tbody>

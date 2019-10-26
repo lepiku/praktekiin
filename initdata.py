@@ -12,7 +12,6 @@ p = Pasien(
         nama="Muhammad Oktoluqman Fakhrianto",
         tanggal_lahir="2000-10-24",
         jenis_kelamin="L",
-        mrid="000101",
         keluarga=kel,
         kepala_keluarga='Eko Winarso',
         )
@@ -22,7 +21,6 @@ Pasien(
         nama="Adinda Natasya Maharani",
         tanggal_lahir="2002-2-10",
         jenis_kelamin="P",
-        mrid="000102",
         keluarga=kel,
         kepala_keluarga='Eko Winarso',
         ).save()
@@ -31,7 +29,6 @@ Pasien(
         nama="Fabiola Nadhira Maharani",
         tanggal_lahir="2002-2-17",
         jenis_kelamin="P",
-        mrid="000103",
         keluarga=kel,
         kepala_keluarga='Eko Winarso',
         ).save()
