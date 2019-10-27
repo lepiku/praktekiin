@@ -26,8 +26,17 @@
         <td>{{ pasien.nama }}</td>
         <td>{{ pasien.kepala_keluarga }}</td>
         <td class="ubah">
-          <a href="{% url 'antri:ubah-pasien' pasien.id %}"><span class="edit"><i class="fa fa-pencil"></i></span></a>
-          <span class="delete" onclick="hapus_pasien('{{ pasien.id }}', '{{ pasien.nama }}')"><i class="fa fa-trash-o"></i></span>
+          <form action="{% url 'antri:hapus-pasien' %}" method="POST" onsubmit="return hapus_pasien('{{ pasien.nama }}')">
+            {% csrf_token %}
+            <a href="{% url 'antri:ubah-pasien' pasien.id %}">
+              <button class="edit">
+                <i class="fa fa-pencil"></i>
+              </button>
+            </a>
+            <button class="delete" type="submit" name="delete_id" value="{{ pasien.id }}">
+              <i class="fa fa-trash-o"></i>
+            </button>
+          </form>
         </td>
       </tr>
       {% endfor %}

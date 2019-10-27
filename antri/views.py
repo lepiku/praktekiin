@@ -234,7 +234,6 @@ def get_times(request):
                     else:
                         total_jadwal[nama_waktu].append({})
 
-            print(total_jadwal)
             html = render_to_string('antri/ajax/waktu.html', {
                 'total_hari': total_hari,
                 'total_jadwal': total_jadwal,
@@ -364,9 +363,12 @@ def pasien_detail(request, pk):
 
 
 def hapus_pasien(request):
-    pasien = get_object_or_404(request.user.pengguna.keluarga.pasien_set.all(),
-                               pk=request.GET.get('id'))
-    pasien.delete()
+    if request.method == 'POST':
+        pasien = get_object_or_404(
+            request.user.pengguna.keluarga.pasien_set.all(),
+            pk=request.POST.get('delete_id'))
+        pasien.delete()
+
     return redirect('antri:profil')
 
 def pendaftaran_list(request):
@@ -391,7 +393,5 @@ def pendaftaran_list(request):
                     })
 
         total_data.append(data)
-        print(data)
-
 
     return render(request, 'antri/pendaftaran_list.html', {'data': total_data})

@@ -17,19 +17,21 @@ class DateField(forms.DateField):
 class PasienForm(forms.ModelForm):
     class Meta:
         model = Pasien
-        exclude = ('mrid', 'keluarga')
+        fields = ['nama', 'tanggal_lahir', 'jenis_kelamin', 'kepala_keluarga',
+                  'status', 'telp', 'nik']
         labels = {
             'nama': 'Nama Lengkap',
+            'tanggal_lahir': 'Tanggal Lahir',
+            'jenis_kelamin': 'Jenis Kelamin',
             'telp': 'No. Telp / HP',
             'nik': 'NIK',
             'kepala_keluarga': 'Nama Kepala Keluarga',
-            }
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         tanggal_lahir = self.fields['tanggal_lahir']
-        tanggal_lahir.error_messages = {
-                'invalid': 'Format tanggal: dd/mm/yyyy'}
+        tanggal_lahir.error_messages = {'invalid': 'Format tanggal: dd/mm/yyyy'}
 
         year = timezone.localtime(timezone.now()).year
         tanggal_lahir.widget = forms.SelectDateWidget(

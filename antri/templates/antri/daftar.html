@@ -11,7 +11,7 @@
     <h1>{{ card_title }}</h1>
     <p class="helptext">{{ card_desc }}</p>
   </div>
-  <form method="post">
+  <form method="POST">
     {% csrf_token %}
     <table>
       {% for field in form %}

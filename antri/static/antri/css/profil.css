@@ -11,15 +11,16 @@ th#nama-pasien, th#nama-kepala-keluarga, th#username, th#tanggal-dibuat {
   text-align: center;
   min-width: 4em;
 }
-td.ubah span {
+td.ubah button {
   padding: 1px 4px;
   cursor: pointer;
   color: #FFF;
   font-size: 1.2em;
+  border: none;
   border-radius: 8px;
   background-color: #39B0A3;
 }
-td.ubah span.delete {
+td.ubah button.delete {
   background-color: #E84A4A;
 }
 
