@@ -82,17 +82,6 @@ WSGI_APPLICATION = 'praktekiin.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'praktekiin',
-#         'USER': 'dimas',
-#         'PASSWORD': 'okto',
-#         'HOST': 'localhost',
-#         'PORT': '',
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -113,7 +102,7 @@ PRODUCTION = os.environ.get('DATABASE_URL') is not None
 if PRODUCTION:
     DEBUG = False
     DATABASES['default'] = dj_database_url.config()
-    ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'praktekiin.herokuapp.com']
+    ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'fibrianti.herokuapp.com']
     SOCIAL_AUTH_POSTGRES_JSONFIELD = True
     SECURE_SSL_REDIRECT = True
 
