@@ -102,7 +102,7 @@ PRODUCTION = os.environ.get('DATABASE_URL') is not None
 if PRODUCTION:
     DEBUG = False
     DATABASES['default'] = dj_database_url.config()
-    ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'fibrianti.herokuapp.com']
+    ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'fibrianti.id']
     SOCIAL_AUTH_POSTGRES_JSONFIELD = True
     SECURE_SSL_REDIRECT = True
 
