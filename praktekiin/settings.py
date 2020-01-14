@@ -104,7 +104,7 @@ if PRODUCTION:
     DATABASES['default'] = dj_database_url.config()
     ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'fibrianti.id', 'www.fibrianti.id']
     SOCIAL_AUTH_POSTGRES_JSONFIELD = True
-    SECURE_SSL_REDIRECT = True
+    # SECURE_SSL_REDIRECT = True
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
