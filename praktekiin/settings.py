@@ -28,7 +28,6 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get('praktekiin_google_SECRET')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'praktekiin.herokuapp.com', 'testserver']
 ALLOWED_HOSTS = ['*']
 
 
@@ -102,7 +101,7 @@ PRODUCTION = os.environ.get('DATABASE_URL') is not None
 if PRODUCTION:
     DEBUG = False
     DATABASES['default'] = dj_database_url.config()
-    ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'fibrianti.id', 'www.fibrianti.id']
+    ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'fibrianti.id']
     SOCIAL_AUTH_POSTGRES_JSONFIELD = True
     # SECURE_SSL_REDIRECT = True
 
@@ -128,7 +127,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'id'
 
 TIME_ZONE = 'Asia/Jakarta'
 

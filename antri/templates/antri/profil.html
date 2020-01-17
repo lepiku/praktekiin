@@ -20,7 +20,7 @@
         <th id="nama-kepala-keluarga">Nama Kepala Keluarga</th>
         <th class="ubah">Ubah</th>
       </tr>
-      {% for pasien in request.user.pengguna.keluarga.pasien_set.all %}
+      {% for pasien in pasien_set %}
       <tr>
         <td>{{ forloop.counter }}</td>
         <td>{{ pasien.nama }}</td>

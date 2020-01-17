@@ -39,6 +39,8 @@ class Keluarga(models.Model):
     def __str__(self):
         return 'Keluarga ' + str(self.pengguna_set.first())
 
+    def get_active_pasien(self):
+        return self.pasien_set.filter(keaktifan=True)
 
 class Pasien(models.Model):
     nama = models.CharField(max_length=NAME_LENGTH, validators=[REGEX_NAMA])
@@ -57,6 +59,7 @@ class Pasien(models.Model):
 
     waktu_buat = models.DateTimeField(auto_now_add=True)
     waktu_ubah = models.DateTimeField(auto_now=True)
+    keaktifan = models.BooleanField(default=True)
 
     def __str__(self):
         return self.nama

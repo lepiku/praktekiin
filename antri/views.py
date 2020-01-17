@@ -27,7 +27,7 @@ def beranda(request, year=None, month=None, day=None):
 
     form = None
     if request.user.is_authenticated:
-        pasien_set = request.user.pengguna.keluarga.pasien_set.all()
+        pasien_set = request.user.pengguna.keluarga.get_active_pasien()
 
         if request.method == 'POST':
             form = PendaftaranPasienForm(request.POST, pasien_set=pasien_set)
@@ -133,7 +133,7 @@ def daftar(request):
             'card_desc': 'Username dan password digunakan untuk masuk kembali sebagai Pengguna.',
             })
 
-    context = {'pasien_set': request.user.pengguna.keluarga.pasien_set.all()}
+    context = {'pasien_set': request.user.pengguna.keluarga.get_active_pasien()}
     return render(request, 'antri/daftar-pasien-list.html', context)
 
 
@@ -168,7 +168,7 @@ def daftar_pasien(request):
 
 
 def daftar_antri(request):
-    pasien_set = request.user.pengguna.keluarga.pasien_set.all()
+    pasien_set = request.user.pengguna.get_active_pasien()
     if request.method == 'POST':
         form = PendaftaranForm(request.POST, pasien_set=pasien_set)
         if form.is_valid():
@@ -285,11 +285,14 @@ def get_pasien(request):
 
 
 def profil(request):
-    return render(request, 'antri/profil.html')
+    context = {
+        'pasien_set': request.user.pengguna.keluarga.get_active_pasien()
+    }
+    return render(request, 'antri/profil.html', context)
 
 def ubah_pasien(request, pk):
     prev = request.GET.get('prev', reverse('antri:profil'))
-    pasien = get_object_or_404(request.user.pengguna.keluarga.pasien_set.all(),
+    pasien = get_object_or_404(request.user.pengguna.keluarga.get_active_pasien(),
                                pk=pk)
     if request.method == 'POST':
         form = PasienForm(request.POST, instance=pasien)
@@ -359,15 +362,16 @@ def pasien_detail(request, pk):
         ('Nama Kepala Keluarga', pasien.kepala_keluarga)]
 
     return render(request, 'antri/pasien_detail.html',
-            {'data': data_pasien})
+                  {'data': data_pasien})
 
 
 def hapus_pasien(request):
     if request.method == 'POST':
         pasien = get_object_or_404(
-            request.user.pengguna.keluarga.pasien_set.all(),
+            request.user.pengguna.keluarga.get_active_pasien(),
             pk=request.POST.get('delete_id'))
-        pasien.delete()
+        pasien.keaktifan = False
+        pasien.save()
 
     return redirect('antri:profil')
 
