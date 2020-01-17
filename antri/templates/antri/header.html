@@ -22,22 +22,26 @@
           <div class="bar0"></div>
           <div class="bar3"></div>
         </div>
-        <div class="cover" id="menu-cover" onclick="hide_menu()"></div>
-        <div id="menu-content">
-          <div class="menu-section">Akun</div>
-          {% if request.user.is_authenticated %}
-          <a href="{% url 'antri:pendaftaran-list' %}">Pendaftaran</a>
-          <a href="{% url 'antri:profil' %}">Profil</a>
-          <a href="{% url 'antri:keluar' %}">Keluar</a>
-          {% else %}
-          <a href="{% url 'antri:masuk' %}">Masuk</a>
-          {% endif %}
-          <div class="mobile-only">
-            <div class="menu-section">Halaman Lain</div>
-            <a href="{% url 'antri:beranda' %}">Beranda</a>
-            <a href="{% url 'antri:tentang' %}">Tentang</a>
-          </div>
-        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="cover" id="menu-cover" onclick="hide_menu()"></div>
+<div class="container" style="float: right">
+  <div id="menu-container">
+    <div id="menu-content">
+      <div class="menu-section">Akun</div>
+      {% if request.user.is_authenticated %}
+      <a href="{% url 'antri:pendaftaran-list' %}">Pendaftaran</a>
+      <a href="{% url 'antri:profil' %}">Profil</a>
+      <a href="{% url 'antri:keluar' %}">Keluar</a>
+      {% else %}
+      <a href="{% url 'antri:masuk' %}">Masuk</a>
+      {% endif %}
+      <div class="mobile-only">
+        <div class="menu-section">Halaman Lain</div>
+        <a href="{% url 'antri:beranda' %}">Beranda</a>
+        <a href="{% url 'antri:tentang' %}">Tentang</a>
       </div>
     </div>
   </div>

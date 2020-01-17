@@ -17,7 +17,8 @@
 .navbar a {
   color: #fff;
 }
-#left, #right {
+#left,
+#right {
   display: flex;
   font-size: 1.2em;
 }
@@ -48,13 +49,18 @@
   padding: 12px 0px 12px 12px;
   cursor: pointer;
 }
+#menu-container {
+  position: fixed;
+  z-index: 400;
+}
 #menu-content {
+  z-index: 400;
   position: absolute;
   top: -300px;
   right: -12px;
   width: 270px;
   padding-bottom: 15px;
-  background-color: #FFF;
+  background-color: #fff;
   box-shadow: 0 16px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
   border-radius: 10px;
   text-align: right;
@@ -72,14 +78,14 @@
   border-radius: 6px;
 }
 #menu-content a:hover {
-  background-color: #B9EBE5;
+  background-color: #b9ebe5;
 }
 .menu-section {
   margin: 15px 20px 0;
   padding: 0 9px 3px;
-  color: #39B0A3;
+  color: #39b0a3;
   font-size: 0.9em;
-  border-bottom: 2px solid #39B0A3;
+  border-bottom: 2px solid #39b0a3;
 }
 #menu-username {
   margin: 9px 29px;
@@ -87,6 +93,7 @@
   font-weight: bold;
 }
 #menu-cover {
+  z-index: 400;
   display: none;
   top: 50px;
 }
@@ -102,7 +109,8 @@
 .bar0 {
   height: 7px !important;
 }
-.bar1, .bar3 {
+.bar1,
+.bar3 {
   width: 24px;
   background-color: white;
 }
@@ -112,7 +120,7 @@
   margin-left: 6px;
 }
 #menu-content.show {
-  top: 67px;
+  top: 72px;
 }
 .close > .bar1 {
   transform: translate(0, 11px) rotate(-45deg);
@@ -137,7 +145,8 @@
   .bar0 {
     height: 5px !important;
   }
-  .bar1, .bar3 {
+  .bar1,
+  .bar3 {
     width: 17px;
   }
   .bar2 {

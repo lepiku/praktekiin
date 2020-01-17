@@ -1,18 +1,20 @@
 body {
   margin: 0;
-  font-family: 'Muli', sans-serif;
+  font-family: "Muli", sans-serif;
   font-size: 18px;
   background-color: #eef4e8;
   min-height: 100vh;
 }
 a {
-  color: #39B0A3;
+  color: #39b0a3;
   text-decoration: none;
 }
-input, select, textarea {
-  font-family: 'Muli', sans-serif;
+input,
+select,
+textarea {
+  font-family: "Muli", sans-serif;
   font-size: 18px;
-  border: 2px solid #39B0A3;
+  border: 2px solid #39b0a3;
   background-color: #fff;
   border-radius: 8px;
   padding: 4px 6px;
@@ -23,13 +25,11 @@ select {
   appearance: none;
   padding-right: 23px;
 }
-#container {
-  min-height: 100vh;
-  padding: 0 24px;
-}
-#container > div {
+.container {
   max-width: 1200px;
+  padding: 0 24px;
   margin: 0 auto;
+  position: relative;
 }
 #content {
   padding-top: 60px;
@@ -48,9 +48,9 @@ select {
 }
 /* button */
 .button {
-  font-family: 'Muli', sans-serif;
+  font-family: "Muli", sans-serif;
   font-weight: bold;
-  background-color: #39B0A3;
+  background-color: #39b0a3;
   color: #fff;
   border: none;
   display: inline-block;
@@ -75,7 +75,9 @@ div.buttons .helptext {
   text-align: center;
   margin-bottom: 1.6em;
 }
-.title h1, .title h2, .title h3 {
+.title h1,
+.title h2,
+.title h3 {
   margin: 0;
 }
 .title .helptext {
@@ -96,9 +98,10 @@ div.buttons .helptext {
   width: 100%;
 }
 .table tr:nth-child(odd) {
-  background-color: #B9EBE5;
+  background-color: #b9ebe5;
 }
-.table th, .table td {
+.table th,
+.table td {
   padding: 10px;
   text-align: left;
 }
@@ -130,12 +133,12 @@ label input[type="checkbox"] ~ .checkmark {
   left: 0;
   height: 18px;
   width: 18px;
-  border: 2px solid #39B0A3;
+  border: 2px solid #39b0a3;
   border-radius: 7px;
-  background-color: #FFF;
+  background-color: #fff;
 }
 label:hover input[type="checkbox"] ~ .checkmark {
-  background-color: #DBF7F4;
+  background-color: #dbf7f4;
 }
 input[type="checkbox"] ~ .checkmark:after {
   content: "";
@@ -145,7 +148,7 @@ input[type="checkbox"] ~ .checkmark:after {
   left: 6px;
   width: 5px;
   height: 9px;
-  border: solid #39B0A3;
+  border: solid #39b0a3;
   border-width: 0 2px 2px 0;
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
@@ -167,7 +170,7 @@ a.new-pasien .plus:after {
   transform: translate(8px, 2px);
   width: 2px;
   height: 14px;
-  background: #39B0A3;
+  background: #39b0a3;
 }
 a.new-pasien .plus:before {
   content: "";
@@ -175,7 +178,7 @@ a.new-pasien .plus:before {
   transform: translate(2px, 8px);
   width: 14px;
   height: 2px;
-  background: #39B0A3;
+  background: #39b0a3;
 }
 a.new-pasien .plus {
   position: absolute;
@@ -211,10 +214,12 @@ a.back .fa {
   body {
     font-size: 15px;
   }
-  input, select, textarea {
+  input,
+  select,
+  textarea {
     font-size: 15px;
   }
-  #container {
+  .container {
     padding: 0;
   }
   #content {

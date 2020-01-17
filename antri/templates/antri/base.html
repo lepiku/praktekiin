@@ -26,12 +26,10 @@ select {
   </head>
   <body>
     {% include 'antri/header.html' %}
-    <div id="container">
-      <div id="content">
-        {% block content %}
-        <p>Blank Content</p>
-        {% endblock %}
-      </div>
+    <div class="container" id="content">
+      {% block content %}
+      <p>Blank Content</p>
+      {% endblock %}
       <div id="footer">
         {% if request.user.is_authenticated %}
         <a href="{% url 'antri:keluar' %}">Keluar</a>{% endif %}
