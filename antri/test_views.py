@@ -285,5 +285,5 @@ class LoggedInTest(TestCase):
         })
 
         self.assertRedirects(response, '/profil/')
-        self.assertEqual(Pasien.objects.count(), 1)
-        self.assertFalse(Pasien.objects.filter(nama='Dimas').exists())
+        self.assertEqual(Pasien.objects.count(), 2)
+        self.assertEqual(Pasien.objects.filter(keaktifan=True).count(), 1)

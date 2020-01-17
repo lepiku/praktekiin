@@ -168,7 +168,7 @@ def daftar_pasien(request):
 
 
 def daftar_antri(request):
-    pasien_set = request.user.pengguna.get_active_pasien()
+    pasien_set = request.user.pengguna.keluarga.get_active_pasien()
     if request.method == 'POST':
         form = PendaftaranForm(request.POST, pasien_set=pasien_set)
         if form.is_valid():
