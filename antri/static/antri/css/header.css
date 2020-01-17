@@ -52,12 +52,13 @@
 #menu-container {
   position: fixed;
   z-index: 400;
+  width: 100%;
 }
 #menu-content {
   z-index: 400;
   position: absolute;
   top: -300px;
-  right: -12px;
+  right: 12px;
   width: 270px;
   padding-bottom: 15px;
   background-color: #fff;
