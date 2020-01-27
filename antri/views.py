@@ -399,3 +399,6 @@ def pendaftaran_list(request):
         total_data.append(data)
 
     return render(request, 'antri/pendaftaran_list.html', {'data': total_data})
+
+def construction(request):
+    return render(request, 'antri/construction.html')

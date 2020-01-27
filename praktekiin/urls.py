@@ -21,5 +21,5 @@ urlpatterns = [
     # path('', RedirectView.as_view(url='antri/')),
     # path('antri/', include('antri.urls'), name='utama'),
     path('', include('antri.urls'), name='utama'),
-    path('auth/', include('social_django.urls', namespace='auth')),
+    # path('auth/', include('social_django.urls', namespace='auth')),
 ]
