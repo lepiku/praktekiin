@@ -27,6 +27,6 @@ urlpatterns = [
     path('hapus/pasien/', login_required(views.hapus_pasien), name='hapus-pasien'),
     path('pendaftaran/', login_required(views.pendaftaran_list), name='pendaftaran-list')
 ]
-urlpatterns = [
-    path('', views.construction, name='construction')
-]
+# urlpatterns = [
+#     path('', views.construction, name='construction')
+# ]
